@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>内容分析简报：原神、鸣潮、终末地官方评区在谈什么</title>
+<style>
+    :root {
+      --ink: #1c1915;
+      --muted: #6a6258;
+      --paper: #e9e1d4;
+      --card: #fbf6ee;
+      --line: #d8ccbc;
+      --navy: #1e2a38;
+      --navy-2: #2a3b4f;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 420px at 0% -8%, rgba(59,109,140,.11), transparent 55%),
+        radial-gradient(800px 380px at 100% 0%, rgba(196,123,90,.10), transparent 50%),
+        var(--paper);
+      font-family: "Source Han Sans SC", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+      font-size: 15px;
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+    .hero { background: linear-gradient(160deg, var(--navy) 0%, var(--navy-2) 100%); color: #f4efe6; padding: 36px 0 28px; border-bottom: 4px solid #c47b5a; }
+    .kicker { font-size: 13px; color: #c9c0b3; margin: 0 0 10px; }
+    .hero h1 { margin: 0 0 12px; font-size: 28px; font-weight: 650; line-height: 1.3; }
+    .hero .sub { margin: 0 0 18px; color: #d5cbbd; max-width: 46em; font-size: 14.5px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { font-size: 12px; padding: 5px 11px; border: 1px solid rgba(244,239,230,.22); border-radius: 999px; color: #f4efe6; }
+    nav.toc { position: sticky; top: 0; z-index: 8; background: rgba(251,246,238,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+    nav.toc .wrap { display: flex; flex-wrap: wrap; gap: 4px 18px; padding: 10px 28px; }
+    nav.toc a { color: #3B6D8C; text-decoration: none; font-size: 13px; }
+    nav.toc a:hover { text-decoration: underline; }
+    main.wrap { padding-top: 28px; padding-bottom: 72px; }
+    .panel { background: var(--card); border: 1px solid var(--line); margin: 0 0 22px; }
+    .hd { padding: 22px 26px 14px; }
+    .hd .num { font-size: 12px; color: var(--muted); }
+    .hd h2 { margin: 4px 0 8px; font-size: 20px; font-weight: 650; }
+    .lead { margin: 0; color: var(--muted); font-size: 14px; max-width: 52em; }
+    .fig { padding: 4px 18px 10px; }
+    .fig svg { display: block; max-width: 100%; height: auto; background: #fff; border: 1px solid var(--line); }
+    .pair { display: flex; flex-wrap: wrap; gap: 10px; }
+    .pair svg { flex: 1 1 360px; }
+    .tri { display: grid; grid-template-columns: 1fr 1fr 1fr; border-top: 1px solid var(--line); }
+    .gcard { padding: 18px 20px 20px; border-right: 1px solid var(--line); min-width: 0; }
+    .gcard:last-child { border-right: none; }
+    .gcard h3 { display: flex; align-items: baseline; gap: 8px; margin: 0 0 10px; font-size: 14px; }
+    .gcard h3 i { width: 8px; height: 8px; background: var(--g); display: inline-block; border-radius: 50%; flex: none; }
+    .gcard h3 span { font-weight: 400; color: var(--muted); font-size: 12px; }
+    .gcard p { margin: 0 0 8px; font-size: 14px; }
+    .gcard p:last-child { margin-bottom: 0; }
+    .gcard .label { font-size: 12px; color: var(--muted); margin: 14px 0 4px; font-weight: 650; }
+    .callout { margin: 0; padding: 14px 26px 16px; font-size: 14px; color: #4f493f; background: #f3ebde; border-top: 1px solid var(--line); }
+    .glossary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border-top: 1px solid var(--line); }
+    .glossary > div { padding: 16px 20px 18px; border-right: 1px solid var(--line); }
+    .glossary > div:last-child { border-right: none; }
+    .glossary b { display: block; margin-bottom: 6px; font-size: 13px; }
+    .glossary p { margin: 0; font-size: 13.5px; color: #4f493f; }
+    .kpi { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border-top: 1px solid var(--line); }
+    .cell { background: var(--card); padding: 18px 20px 16px; }
+    .cell b { display: block; font-size: 28px; font-variant-numeric: tabular-nums; line-height: 1.1; }
+    .cell span { color: var(--muted); font-size: 12.5px; }
+    .legend-row { display: flex; flex-wrap: wrap; gap: 18px; padding: 12px 26px 16px; font-size: 13px; color: var(--muted); }
+    .legend-row i { width: 9px; height: 9px; display: inline-block; border-radius: 50%; margin-right: 6px; }
+    .table-wrap { overflow-x: auto; border-top: 1px solid var(--line); }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    th, td { border-bottom: 1px solid var(--line); padding: 12px 14px; vertical-align: top; text-align: left; }
+    thead th { background: #f3ebde; font-size: 13px; }
+    tbody th { width: 8em; color: var(--muted); font-weight: 650; background: #f8f2e8; }
+    .methods { padding: 0 26px 18px; }
+    .methods ul { margin: 0; padding: 0 0 0 1.15em; color: #3f3a33; }
+    .methods li { margin: 0 0 8px; font-size: 14px; }
+    footer.site { color: var(--muted); font-size: 12.5px; padding: 8px 0 24px; }
+    @media (max-width: 900px) {
+      .kpi, .tri, .glossary { grid-template-columns: 1fr; }
+      .gcard, .glossary > div { border-right: none; border-bottom: 1px solid var(--line); }
+      .hero h1 { font-size: 22px; }
+    }
+    @media print {
+      nav.toc { display: none; }
+      .hero { background: #fff; color: #111; border-bottom: 2px solid #111; }
+      .hero .sub, .chip, .kicker { color: #333; }
+      .panel { break-inside: avoid; }
+      body { background: #fff; }
+    }
+    </style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">内容分析简报 · 国服 B 站官方账号评区 · 人工试编码</p>
+    <h1>原神、鸣潮、终末地：<br/>这个大版本，评区在谈什么</h1>
+    <p class="sub">配套阅读：《研究方案》《编码手册》。每款官方视频下各读 80 条（热门、最新各 40，共 240 条），按同一套冻结规则打标签。本页比例只用「能看出在谈什么」的 198 条。词典全量初标不进入本页。这是官方评区，不是全体玩家。</p>
+    <div class="chips">
+      <span class="chip">原神 6.7</span>
+      <span class="chip">鸣潮 3.5</span>
+      <span class="chip">终末地 寻遗散记</span>
+      <span class="chip">240 条已读</span>
+      <span class="chip">2026-08-19</span>
+    </div>
+  </div>
+</header>
+<nav class="toc"><div class="wrap">
+    <a href="#brief">读法</a>
+    <a href="#s1">主题</a>
+    <a href="#s2">情绪</a>
+    <a href="#s3">噪音</a>
+    <a href="#s4">点赞</a>
+    <a href="#s5">高赞</a>
+    <a href="#s6">分布</a>
+    <a href="#s7">用词</a>
+    <a href="#portraits">画像</a>
+    <a href="#compare">对照</a>
+    <a href="#methods">范围</a>
+    </div></nav>
+<main class="wrap">
+
+    <section class="panel" id="brief">
+      <div class="hd">
+        <div class="num">读法</div>
+        <h2>怎么看这份材料</h2>
+        <p class="lead">建议顺序：主题 → 情绪 → 噪音 → 对照。先分游戏看，最后横比。比例来自逐条人工阅读，没有用关键词扫完全部评论。</p>
+      </div>
+      <div class="glossary">
+        <div>
+          <b>能打上标签</b>
+          <p>评论里有观点，或有能核对的内容。例如「她真好看」「大保底」。短也可以标。本页主题、情绪、用词都只用这类评论，共 198 条。</p>
+        </div>
+        <div>
+          <b>打不上标签</b>
+          <p>纯表情、兑换码、只 @ 人、「发一条证明关注满七天」之类，看不出在谈游戏哪一块。共 42 条，不进入主题比例。</p>
+        </div>
+        <div>
+          <b>热门 / 最新</b>
+          <p>B 站两种排序。热门更容易是完整讨论；最新更容易混进表情和跟风。每款各取 40 条。</p>
+        </div>
+      </div>
+      <div class="kpi">
+        <div class="cell"><b>240</b><span>逐条读过的评论</span></div>
+        <div class="cell"><b>198</b><span>能打上标签（82.5%）</span></div>
+        <div class="cell"><b>7</b><span>热门里打不上（7/120）</span></div>
+        <div class="cell"><b>35</b><span>最新里打不上（35/120）</span></div>
+      </div>
+      <div class="legend-row">
+        <span><i style="background:#3B6D8C"></i>原神 6.7</span>
+        <span><i style="background:#6B8F71"></i>鸣潮 3.5</span>
+        <span><i style="background:#C47B5A"></i>终末地 寻遗散记</span>
+      </div>
+    </section>
+    
+<section class="panel" id="s1"><div class="hd"><div class="num">主题</div><h2>评区在谈什么</h2><p class='lead'>一条评论可以同时算进几个主题，所以各列加起来会超过 100%。分母是该游戏里「能打上标签」的评论数。</p></div><div class="fig"><svg xmlns="http://www.w3.org/2000/svg" width="920" height="390" viewBox="0 0 920 390" role="img">
+<rect width="920" height="390" fill="#fff"/>
+<text x="16.0" y="161.0" font-size="11" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" transform="rotate(-90 16.0 161.0)">提及率（%）</text>
+<line x1="62" y1="304.0" x2="902" y2="304.0" stroke="#eee"/>
+<text x="54.0" y="308.0" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">0</text>
+<line x1="62" y1="252.0" x2="902" y2="252.0" stroke="#eee"/>
+<text x="54.0" y="256.0" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">10</text>
+<line x1="62" y1="200.0" x2="902" y2="200.0" stroke="#eee"/>
+<text x="54.0" y="204.0" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">20</text>
+<line x1="62" y1="148.0" x2="902" y2="148.0" stroke="#eee"/>
+<text x="54.0" y="152.0" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">30</text>
+<line x1="62" y1="96.0" x2="902" y2="96.0" stroke="#eee"/>
+<text x="54.0" y="100.0" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">40</text>
+<line x1="62" y1="44.0" x2="902" y2="44.0" stroke="#eee"/>
+<text x="54.0" y="48.0" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">50</text>
+<rect x="76.3" y="52.1" width="18.5" height="251.9" fill="#3B6D8C"/>
+<rect x="94.8" y="142.0" width="18.5" height="162.0" fill="#6B8F71"/>
+<rect x="113.2" y="239.9" width="18.5" height="64.1" fill="#C47B5A"/>
+<text x="104.0" y="330.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">剧情</text>
+<rect x="160.3" y="198.4" width="18.5" height="105.6" fill="#3B6D8C"/>
+<rect x="178.8" y="150.6" width="18.5" height="153.4" fill="#6B8F71"/>
+<rect x="197.2" y="182.9" width="18.5" height="121.1" fill="#C47B5A"/>
+<text x="188.0" y="318.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">角色</text>
+<text x="188.0" y="331.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">美术</text>
+<rect x="244.3" y="287.8" width="18.5" height="16.2" fill="#3B6D8C"/>
+<rect x="262.8" y="261.4" width="18.5" height="42.6" fill="#6B8F71"/>
+<rect x="281.2" y="168.7" width="18.5" height="135.3" fill="#C47B5A"/>
+<text x="272.0" y="330.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">战斗</text>
+<rect x="328.3" y="271.5" width="18.5" height="32.5" fill="#3B6D8C"/>
+<rect x="346.8" y="235.8" width="18.5" height="68.2" fill="#6B8F71"/>
+<rect x="365.2" y="197.2" width="18.5" height="106.8" fill="#C47B5A"/>
+<text x="356.0" y="330.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">商业化</text>
+<rect x="412.3" y="206.5" width="18.5" height="97.5" fill="#3B6D8C"/>
+<rect x="430.8" y="252.9" width="18.5" height="51.1" fill="#6B8F71"/>
+<rect x="449.2" y="261.3" width="18.5" height="42.7" fill="#C47B5A"/>
+<text x="440.0" y="318.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">社区</text>
+<text x="440.0" y="331.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">运营</text>
+<rect x="496.3" y="247.1" width="18.5" height="56.9" fill="#3B6D8C"/>
+<rect x="514.8" y="244.3" width="18.5" height="59.7" fill="#6B8F71"/>
+<rect x="533.2" y="268.4" width="18.5" height="35.6" fill="#C47B5A"/>
+<text x="524.0" y="318.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">长期</text>
+<text x="524.0" y="331.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">体验</text>
+<rect x="580.3" y="263.4" width="18.5" height="40.6" fill="#3B6D8C"/>
+<rect x="598.8" y="261.4" width="18.5" height="42.6" fill="#6B8F71"/>
+<rect x="617.2" y="275.5" width="18.5" height="28.5" fill="#C47B5A"/>
+<text x="608.0" y="318.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">语音</text>
+<text x="608.0" y="331.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">文本</text>
+<rect x="664.3" y="287.8" width="18.5" height="16.2" fill="#3B6D8C"/>
+<rect x="682.8" y="287.0" width="18.5" height="17.0" fill="#6B8F71"/>
+<rect x="701.2" y="268.4" width="18.5" height="35.6" fill="#C47B5A"/>
+<text x="692.0" y="330.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">养成</text>
+<rect x="748.3" y="304.0" width="18.5" height="0.0" fill="#3B6D8C"/>
+<rect x="766.8" y="269.9" width="18.5" height="34.1" fill="#6B8F71"/>
+<rect x="785.2" y="296.9" width="18.5" height="7.1" fill="#C47B5A"/>
+<text x="776.0" y="330.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">技术</text>
+<rect x="832.3" y="287.8" width="18.5" height="16.2" fill="#3B6D8C"/>
+<rect x="850.8" y="304.0" width="18.5" height="0.0" fill="#6B8F71"/>
+<rect x="869.2" y="289.8" width="18.5" height="14.2" fill="#C47B5A"/>
+<text x="860.0" y="330.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">探索</text>
+<rect x="62.0" y="363.0" width="9" height="9" fill="#3B6D8C"/>
+<text x="75.0" y="372.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">原神  64条</text>
+<rect x="192.0" y="363.0" width="9" height="9" fill="#6B8F71"/>
+<text x="205.0" y="372.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">鸣潮  61条</text>
+<rect x="322.0" y="363.0" width="9" height="9" fill="#C47B5A"/>
+<text x="335.0" y="372.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">终末地  73条</text>
+</svg></div><div class="tri"><article class="gcard" style="--g:#3B6D8C"><h3><i></i>原神<span>6.7 · 空月之歌·谐谑</span></h3><p>剧情占 48.4%，角色与美术 20.3%，社区应援 18.8%。桑多涅「欢迎回家」楼和设定考据是这个窗口的主声。</p><p>战斗只有 3.1%，技术为 0。官方评区这个月更像在跟剧情和人设，而不是在复盘打法。</p></article><article class="gcard" style="--g:#6B8F71"><h3><i></i>鸣潮<span>3.5</span></h3><p>剧情 31.1%，角色美术 29.5%，两边差不多。秧秧、穗穗、玄翎被点名很多，建模和演出也常被提起。</p><p>抽卡占 13.1%，优化和 Xbox 等技术讨论占 6.6%，这是三款里唯一成规模谈「好不好跑」的评区。</p></article><article class="gcard" style="--g:#C47B5A"><h3><i></i>终末地<span>寻遗散记</span></h3><p>战斗 26.0%，卡池 20.5%，剧情只有 12.3%。评区主轴是怎么打、这期抽什么。</p><p>干员、危机合约、明日方舟反复出现。不少人是带着方舟的习惯来读这款游戏的。</p></article></div><p class="callout">原神这边评区在跟故事，鸣潮在看角色也开始问手感，终末地在备战。三种结构来自版本片和玩家来路不同，不宜直接拿来比哪款游戏更好。</p></section>
+<section class="panel" id="s2"><div class="hd"><div class="num">情绪</div><h2>夸、骂，还是在说明</h2><p class='lead'>按整句来标。同一句里又夸又骂记成混合。看不出褒贬的考据、提问记成中性。</p></div><div class="fig"><svg xmlns="http://www.w3.org/2000/svg" width="720" height="340" viewBox="0 0 720 340" role="img">
+<rect width="720" height="340" fill="#fff"/>
+<rect x="102.8" y="158.2" width="89.1" height="117.8" fill="#5B8C5A"/>
+<text x="147.3" y="221.1" font-size="11" fill="#fff" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">45%</text>
+<rect x="102.8" y="44.4" width="89.1" height="113.8" fill="#8A8F98"/>
+<text x="147.3" y="105.3" font-size="11" fill="#fff" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">44%</text>
+<rect x="102.8" y="20.1" width="89.1" height="24.4" fill="#B85C4A"/>
+<rect x="102.8" y="16.0" width="89.1" height="4.1" fill="#C4A35A"/>
+<text x="147.3" y="296.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">原神</text>
+<rect x="325.5" y="186.5" width="89.1" height="89.5" fill="#5B8C5A"/>
+<text x="370.0" y="235.2" font-size="11" fill="#fff" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">34%</text>
+<rect x="325.5" y="62.9" width="89.1" height="123.6" fill="#8A8F98"/>
+<text x="370.0" y="128.7" font-size="11" fill="#fff" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">48%</text>
+<rect x="325.5" y="24.5" width="89.1" height="38.4" fill="#B85C4A"/>
+<text x="370.0" y="47.7" font-size="11" fill="#fff" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">15%</text>
+<rect x="325.5" y="16.0" width="89.1" height="8.5" fill="#C4A35A"/>
+<text x="370.0" y="296.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">鸣潮</text>
+<rect x="548.1" y="226.1" width="89.1" height="49.9" fill="#5B8C5A"/>
+<text x="592.7" y="255.1" font-size="11" fill="#fff" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">19%</text>
+<rect x="548.1" y="55.2" width="89.1" height="171.0" fill="#8A8F98"/>
+<text x="592.7" y="144.7" font-size="11" fill="#fff" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">66%</text>
+<rect x="548.1" y="16.0" width="89.1" height="39.2" fill="#B85C4A"/>
+<text x="592.7" y="39.6" font-size="11" fill="#fff" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">15%</text>
+<rect x="548.1" y="16.0" width="89.1" height="0.0" fill="#C4A35A"/>
+<text x="592.7" y="296.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">终末地</text>
+<rect x="36.0" y="315.0" width="9" height="9" fill="#5B8C5A"/>
+<text x="49.0" y="324.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">正面</text>
+<rect x="116.0" y="315.0" width="9" height="9" fill="#8A8F98"/>
+<text x="129.0" y="324.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">中性</text>
+<rect x="196.0" y="315.0" width="9" height="9" fill="#B85C4A"/>
+<text x="209.0" y="324.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">负面</text>
+<rect x="276.0" y="315.0" width="9" height="9" fill="#C4A35A"/>
+<text x="289.0" y="324.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">混合</text>
+</svg></div><div class="tri"><article class="gcard" style="--g:#3B6D8C"><h3><i></i>原神<span>6.7 · 空月之歌·谐谑</span></h3><p>正面 45.3%，三款最高；负面 9.4%。热评里既有应援，也有人补设定。</p><p>中性仍有 43.8%，多半是考据和提问。正面高，不等于所有人都满意；中性高，也不等于冷场。</p></article><article class="gcard" style="--g:#6B8F71"><h3><i></i>鸣潮<span>3.5</span></h3><p>正面 34.4%，负面 14.8%。有人夸角色和建模，也有人在官方视频下写优化和抽卡。</p><p>比原神拧：片子和角色仍能带来好评，体验上的不满也已经写进来了。</p></article><article class="gcard" style="--g:#C47B5A"><h3><i></i>终末地<span>寻遗散记</span></h3><p>中性 65.8%，正面 19.2%。大量评论在问入坑、算卡池、列机制，先把事情说清楚。</p><p>负面 15.1%，和鸣潮接近，但更常落在抽卡、养成，而不是嫌片子难看。</p></article></div><p class="callout">中性占比高，不等于口碑差。终末地很多中性句是在把版本算清楚，不是在发脾气。</p></section>
+<section class="panel" id="s3"><div class="hd"><div class="num">哪些没算进比例</div><h2>热门更干净，最新更吵</h2><p class='lead'>每款热门、最新各 40 条。纯表情、兑换码、只 @ 人、「证明关注满七天」这类，打不上主题，也不进入上面的比例。</p></div><div class="fig"><svg xmlns="http://www.w3.org/2000/svg" width="720" height="340" viewBox="0 0 720 340" role="img">
+<rect width="720" height="340" fill="#fff"/>
+<text x="16.0" y="146.0" font-size="11" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" transform="rotate(-90 16.0 146.0)">没法打标签的比例（%）</text>
+<line x1="62" y1="276.0" x2="704" y2="276.0" stroke="#eee"/>
+<text x="54.0" y="280.0" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">0</text>
+<line x1="62" y1="224.0" x2="704" y2="224.0" stroke="#eee"/>
+<text x="54.0" y="228.0" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">10</text>
+<line x1="62" y1="172.0" x2="704" y2="172.0" stroke="#eee"/>
+<text x="54.0" y="176.0" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">20</text>
+<line x1="62" y1="120.0" x2="704" y2="120.0" stroke="#eee"/>
+<text x="54.0" y="124.0" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">30</text>
+<line x1="62" y1="68.0" x2="704" y2="68.0" stroke="#eee"/>
+<text x="54.0" y="72.0" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">40</text>
+<line x1="62" y1="16.0" x2="704" y2="16.0" stroke="#eee"/>
+<text x="54.0" y="20.0" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">50</text>
+<rect x="108.4" y="237.0" width="55.6" height="39.0" fill="#6A7D8F"/>
+<text x="136.2" y="231.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">7.5%</text>
+<rect x="174.0" y="107.0" width="55.6" height="169.0" fill="#C47B5A"/>
+<text x="201.8" y="101.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">32.5%</text>
+<text x="169.0" y="296.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">原神</text>
+<rect x="322.4" y="237.0" width="55.6" height="39.0" fill="#6A7D8F"/>
+<text x="350.2" y="231.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">7.5%</text>
+<rect x="388.0" y="68.0" width="55.6" height="208.0" fill="#C47B5A"/>
+<text x="415.8" y="62.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">40.0%</text>
+<text x="383.0" y="296.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">鸣潮</text>
+<rect x="536.4" y="263.0" width="55.6" height="13.0" fill="#6A7D8F"/>
+<text x="564.2" y="257.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">2.5%</text>
+<rect x="602.0" y="198.0" width="55.6" height="78.0" fill="#C47B5A"/>
+<text x="629.8" y="192.0" font-size="10" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">15.0%</text>
+<text x="597.0" y="296.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">终末地</text>
+<rect x="62.0" y="315.0" width="9" height="9" fill="#6A7D8F"/>
+<text x="75.0" y="324.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">热门 各40条</text>
+<rect x="192.0" y="315.0" width="9" height="9" fill="#C47B5A"/>
+<text x="205.0" y="324.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">最新 各40条</text>
+</svg></div><div class="tri"><article class="gcard" style="--g:#3B6D8C"><h3><i></i>原神<span>6.7 · 空月之歌·谐谑</span></h3><p>热门里 7.5% 打不上标签，最新里 32.5%。热门多为应援和考据，最新更容易混进表情和跟风短句。</p><p>如果把最新原样算进主题比例，剧情的声音会被冲淡。</p></article><article class="gcard" style="--g:#6B8F71"><h3><i></i>鸣潮<span>3.5</span></h3><p>最新里 40.0% 打不上标签，三款最吵。热门里仍有比较完整的角色和技术讨论。</p><p>最新更吵，不代表更新鲜、更真实。</p></article><article class="gcard" style="--g:#C47B5A"><h3><i></i>终末地<span>寻遗散记</span></h3><p>热门 2.5%，最新 15.0%，两层都更干净。问卡池、问武器的短句，往往也能打上标签。</p><p>干净只说明评区更像在问事，不说明大家都满意。</p></article></div><p class="callout">主题和情绪只用 198 条能打上标签的评论。240 条全部拿来看，只为了看点赞长什么样、最新有多吵。</p></section>
+<section class="panel" id="s4"><div class="hd"><div class="num">点赞</div><h2>哪边更容易把一条评论推高</h2><p class='lead'>纵轴是 ln(点赞+1)，避免被几条爆款拉歪。热门和最新画在同一张图里，盒子会又扁又长，看中位数比看平均更稳。</p></div><div class="fig"><svg xmlns="http://www.w3.org/2000/svg" width="760" height="380" viewBox="0 0 760 380" role="img">
+<rect width="760" height="380" fill="#fff"/>
+<text x="18.0" y="163.0" font-size="11" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" transform="rotate(-90 18.0 163.0)">ln(点赞+1)</text>
+<line x1="70" y1="310.0" x2="740" y2="310.0" stroke="#eee"/>
+<text x="62.0" y="314.0" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">-0.9</text>
+<line x1="70" y1="251.2" x2="740" y2="251.2" stroke="#eee"/>
+<text x="62.0" y="255.2" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">1.3</text>
+<line x1="70" y1="192.4" x2="740" y2="192.4" stroke="#eee"/>
+<text x="62.0" y="196.4" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">3.5</text>
+<line x1="70" y1="133.6" x2="740" y2="133.6" stroke="#eee"/>
+<text x="62.0" y="137.6" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">5.6</text>
+<line x1="70" y1="74.8" x2="740" y2="74.8" stroke="#eee"/>
+<text x="62.0" y="78.8" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">7.8</text>
+<line x1="70" y1="16.0" x2="740" y2="16.0" stroke="#eee"/>
+<text x="62.0" y="20.0" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">10.0</text>
+<line x1="181.66666666666669" y1="285.5" x2="181.66666666666669" y2="40.5" stroke="#3B6D8C" stroke-width="1.4"/>
+<line x1="173.66666666666669" y1="285.5" x2="189.66666666666669" y2="285.5" stroke="#3B6D8C"/>
+<line x1="173.66666666666669" y1="40.5" x2="189.66666666666669" y2="40.5" stroke="#3B6D8C"/>
+<rect x="155.7" y="87.4" width="52.0" height="179.4" fill="#3B6D8C" fill-opacity="0.18" stroke="#3B6D8C"/>
+<line x1="155.7" y1="190.5" x2="207.7" y2="190.5" stroke="#222" stroke-width="1.8"/>
+<text x="181.7" y="328.0" font-size="12" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">原神</text>
+<text x="181.7" y="344.0" font-size="10" fill="#777" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">n=80</text>
+<line x1="405.0" y1="285.5" x2="405.0" y2="73.7" stroke="#6B8F71" stroke-width="1.4"/>
+<line x1="397.0" y1="285.5" x2="413.0" y2="285.5" stroke="#6B8F71"/>
+<line x1="397.0" y1="73.7" x2="413.0" y2="73.7" stroke="#6B8F71"/>
+<rect x="379.0" y="130.2" width="52.0" height="141.3" fill="#6B8F71" fill-opacity="0.18" stroke="#6B8F71"/>
+<line x1="379.0" y1="229.1" x2="431.0" y2="229.1" stroke="#222" stroke-width="1.8"/>
+<text x="405.0" y="328.0" font-size="12" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">鸣潮</text>
+<text x="405.0" y="344.0" font-size="10" fill="#777" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">n=80</text>
+<line x1="628.3333333333334" y1="285.5" x2="628.3333333333334" y2="64.8" stroke="#C47B5A" stroke-width="1.4"/>
+<line x1="620.3333333333334" y1="285.5" x2="636.3333333333334" y2="285.5" stroke="#C47B5A"/>
+<line x1="620.3333333333334" y1="64.8" x2="636.3333333333334" y2="64.8" stroke="#C47B5A"/>
+<rect x="602.3" y="112.6" width="52.0" height="172.9" fill="#C47B5A" fill-opacity="0.18" stroke="#C47B5A"/>
+<line x1="602.3" y1="201.8" x2="654.3" y2="201.8" stroke="#222" stroke-width="1.8"/>
+<text x="628.3" y="328.0" font-size="12" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">终末地</text>
+<text x="628.3" y="344.0" font-size="10" fill="#777" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">n=80</text>
+</svg></div><div class="tri"><article class="gcard" style="--g:#3B6D8C"><h3><i></i>原神<span>6.7 · 空月之歌·谐谑</span></h3><p>热门中位数 1606，最高 8896，三款里最容易堆赞。应援楼、名场面、版本梗都能迅速往上走。</p><p>最新中位数只有 1。盒子被这两层同时拉开：上沿是事件，下沿是刚发出的句子。</p></article><article class="gcard" style="--g:#6B8F71"><h3><i></i>鸣潮<span>3.5</span></h3><p>热门中位数 354，最高 2597，低于另外两款。角色讨论并不少，但单条更难变成全评区事件。</p><p>这不一定是口碑弱，更像是少有原神那种应援仪式，也少有终末地那种「带答案」的说明帖。</p></article><article class="gcard" style="--g:#C47B5A"><h3><i></i>终末地<span>寻遗散记</span></h3><p>热门中位数 633。高赞更多来自卡池、武器、机制说明。</p><p>最新中位数是 0。中间位置来自热门资讯帖，不是来自「大家普遍满意」。</p></article></div><p class="callout">点赞看的是传得开不开，不是爱得有多深。原神容易把情绪推成事件，终末地容易把信息推成事件。</p></section>
+<section class="panel" id="s5"><div class="hd"><div class="num">高赞和情绪</div><h2>高赞是不是就是好评</h2><p class='lead'>只含能打上标签的评论。正面 64 条，中性 105 条，负面 26 条，混合 3 条。</p></div><div class="fig"><svg xmlns="http://www.w3.org/2000/svg" width="760" height="380" viewBox="0 0 760 380" role="img">
+<rect width="760" height="380" fill="#fff"/>
+<text x="18.0" y="163.0" font-size="11" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" transform="rotate(-90 18.0 163.0)">ln(点赞+1)</text>
+<line x1="70" y1="310.0" x2="740" y2="310.0" stroke="#eee"/>
+<text x="62.0" y="314.0" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">-0.9</text>
+<line x1="70" y1="251.2" x2="740" y2="251.2" stroke="#eee"/>
+<text x="62.0" y="255.2" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">1.3</text>
+<line x1="70" y1="192.4" x2="740" y2="192.4" stroke="#eee"/>
+<text x="62.0" y="196.4" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">3.5</text>
+<line x1="70" y1="133.6" x2="740" y2="133.6" stroke="#eee"/>
+<text x="62.0" y="137.6" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">5.6</text>
+<line x1="70" y1="74.8" x2="740" y2="74.8" stroke="#eee"/>
+<text x="62.0" y="78.8" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">7.8</text>
+<line x1="70" y1="16.0" x2="740" y2="16.0" stroke="#eee"/>
+<text x="62.0" y="20.0" font-size="10" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">10.0</text>
+<line x1="153.75" y1="285.5" x2="153.75" y2="44.2" stroke="#5B8C5A" stroke-width="1.4"/>
+<line x1="145.75" y1="285.5" x2="161.75" y2="285.5" stroke="#5B8C5A"/>
+<line x1="145.75" y1="44.2" x2="161.75" y2="44.2" stroke="#5B8C5A"/>
+<rect x="127.8" y="99.7" width="52.0" height="144.0" fill="#5B8C5A" fill-opacity="0.18" stroke="#5B8C5A"/>
+<line x1="127.8" y1="127.7" x2="179.8" y2="127.7" stroke="#222" stroke-width="1.8"/>
+<text x="153.8" y="328.0" font-size="12" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">正面</text>
+<text x="153.8" y="344.0" font-size="10" fill="#777" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">n=64</text>
+<line x1="321.25" y1="285.5" x2="321.25" y2="40.5" stroke="#8A8F98" stroke-width="1.4"/>
+<line x1="313.25" y1="285.5" x2="329.25" y2="285.5" stroke="#8A8F98"/>
+<line x1="313.25" y1="40.5" x2="329.25" y2="40.5" stroke="#8A8F98"/>
+<rect x="295.2" y="105.8" width="52.0" height="150.1" fill="#8A8F98" fill-opacity="0.18" stroke="#8A8F98"/>
+<line x1="295.2" y1="139.6" x2="347.2" y2="139.6" stroke="#222" stroke-width="1.8"/>
+<text x="321.2" y="328.0" font-size="12" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">中性</text>
+<text x="321.2" y="344.0" font-size="10" fill="#777" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">n=105</text>
+<line x1="488.75" y1="285.5" x2="488.75" y2="218.6" stroke="#B85C4A" stroke-width="1.4"/>
+<line x1="480.75" y1="285.5" x2="496.75" y2="285.5" stroke="#B85C4A"/>
+<line x1="480.75" y1="218.6" x2="496.75" y2="218.6" stroke="#B85C4A"/>
+<rect x="462.8" y="258.6" width="52.0" height="26.9" fill="#B85C4A" fill-opacity="0.18" stroke="#B85C4A"/>
+<line x1="462.8" y1="276.2" x2="514.8" y2="276.2" stroke="#222" stroke-width="1.8"/>
+<circle cx="482.4" cy="207.6" r="2.4" fill="#B85C4A" fill-opacity="0.7"/>
+<circle cx="485.6" cy="153.7" r="2.4" fill="#B85C4A" fill-opacity="0.7"/>
+<circle cx="488.8" cy="117.7" r="2.4" fill="#B85C4A" fill-opacity="0.7"/>
+<circle cx="491.9" cy="104.0" r="2.4" fill="#B85C4A" fill-opacity="0.7"/>
+<text x="488.8" y="328.0" font-size="12" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">负面</text>
+<text x="488.8" y="344.0" font-size="10" fill="#777" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">n=26</text>
+<line x1="656.25" y1="255.9" x2="656.25" y2="91.1" stroke="#C4A35A" stroke-width="1.4"/>
+<line x1="648.25" y1="255.9" x2="664.25" y2="255.9" stroke="#C4A35A"/>
+<line x1="648.25" y1="91.1" x2="664.25" y2="91.1" stroke="#C4A35A"/>
+<rect x="630.2" y="113.4" width="52.0" height="82.4" fill="#C4A35A" fill-opacity="0.18" stroke="#C4A35A"/>
+<line x1="630.2" y1="135.7" x2="682.2" y2="135.7" stroke="#222" stroke-width="1.8"/>
+<text x="656.2" y="328.0" font-size="12" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">混合</text>
+<text x="656.2" y="344.0" font-size="10" fill="#777" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">n=3</text>
+</svg></div><div class="tri"><article class="gcard" style="--g:#3B6D8C"><h3><i></i>原神<span>6.7 · 空月之歌·谐谑</span></h3><p>正面里，热门 17 条、最新 12 条。应援和考据都容易被看见。</p><p>6 条负面全在最新。这份样本里，原神的批评还没有爬上热评。只看高赞，会把应援声量当成全体态度。</p></article><article class="gcard" style="--g:#6B8F71"><h3><i></i>鸣潮<span>3.5</span></h3><p>正面热门 16 条、最新 5 条。负面 9 条里有 8 条在最新，热门只有 1 条。</p><p>批评已经写进官方评区，但热门仍以夸角色和建模为主。</p></article><article class="gcard" style="--g:#C47B5A"><h3><i></i>终末地<span>寻遗散记</span></h3><p>正面热门只有 8 条。负面 11 条里 9 条在最新。热门仍以中性备战为主。</p><p>把卡池讲清楚的句子也可以上热门，不一定要比「好爱」更煽情。</p></article></div><p class="callout">正面点赞中位数 354，中性 224，负面 1。负面低，主要是因为 26 条负面里有 23 条在最新，不是热门里没人认同差评。</p></section>
+<section class="panel" id="s6"><div class="hd"><div class="num">点赞长什么样</div><h2>为什么不用平均数</h2><p class='lead'>左图：取对数之后，点赞还像不像钟形。右图：赞多的时候，回复会不会一起多。</p></div><div class="fig"><div class="pair"><svg xmlns="http://www.w3.org/2000/svg" width="520" height="400" viewBox="0 0 520 400" role="img">
+<rect width="520" height="400" fill="#fff"/>
+<text x="260.0" y="18.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="bold">点赞是否接近正态分布</text>
+<text x="260.0" y="386.0" font-size="11" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">理论分位数（正态）</text>
+<text x="16.0" y="186.0" font-size="11" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" transform="rotate(-90 16.0 186.0)">ln(点赞+1)</text>
+<rect x="72" y="28" width="430" height="316" fill="#fafafa" stroke="#e5e5e5"/>
+<line x1="198.5" y1="344.0" x2="417.8" y2="28.0" stroke="#bbb" stroke-dasharray="4 3"/>
+<circle cx="101.7" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="125.4" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="137.5" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="145.9" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="152.4" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="157.8" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="162.4" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="166.5" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="170.1" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="173.4" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="176.5" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="179.3" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="181.9" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="184.3" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="186.7" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="188.8" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="190.9" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="192.9" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="194.8" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="196.7" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="198.4" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="200.1" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="201.7" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="203.3" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="204.9" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="206.4" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="207.8" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="209.2" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="210.6" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="211.9" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="213.2" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="214.5" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="215.8" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="217.0" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="218.2" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="219.4" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="220.5" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="221.7" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="222.8" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="223.9" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="225.0" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="226.0" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="227.1" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="228.1" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="229.1" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="230.1" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="231.1" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="232.1" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="233.0" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="234.0" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="234.9" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="235.9" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="236.8" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="237.7" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="238.6" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="239.5" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="240.4" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="241.2" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="242.1" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="242.9" cy="322.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="243.8" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="244.6" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="245.5" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="246.3" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="247.1" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="247.9" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="248.7" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="249.5" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="250.3" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="251.1" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="251.9" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="252.7" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="253.5" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="254.2" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="255.0" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="255.8" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="256.5" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="257.3" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="258.0" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="258.8" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="259.5" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="260.2" cy="301.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="261.0" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="261.7" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="262.4" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="263.2" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="263.9" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="264.6" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="265.3" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="266.0" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="266.7" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="267.5" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="268.2" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="268.9" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="269.6" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="270.3" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="271.0" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="271.7" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="272.4" cy="289.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="273.0" cy="280.7" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="273.7" cy="280.7" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="274.4" cy="280.7" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="275.1" cy="274.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="275.8" cy="274.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="276.5" cy="274.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="277.2" cy="274.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="277.8" cy="274.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="278.5" cy="274.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="279.2" cy="274.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="279.9" cy="268.5" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="280.6" cy="268.5" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="281.2" cy="259.9" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="281.9" cy="259.9" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="282.6" cy="256.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="283.3" cy="256.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="284.0" cy="256.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="284.6" cy="256.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="285.3" cy="253.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="286.0" cy="250.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="286.7" cy="247.8" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="287.3" cy="235.6" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="288.0" cy="235.6" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="288.7" cy="205.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="289.4" cy="205.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="290.0" cy="202.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="290.7" cy="197.6" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="291.4" cy="196.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="292.1" cy="192.5" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="292.8" cy="189.8" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="293.4" cy="185.8" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="294.1" cy="185.8" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="294.8" cy="185.5" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="295.5" cy="183.7" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="296.2" cy="176.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="296.8" cy="175.7" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="297.5" cy="175.5" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="298.2" cy="173.7" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="298.9" cy="171.7" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="299.6" cy="169.1" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="300.3" cy="168.9" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="301.0" cy="167.5" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="301.6" cy="165.8" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="302.3" cy="164.6" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="303.0" cy="160.9" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="303.7" cy="160.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="304.4" cy="160.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="305.1" cy="157.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="305.8" cy="156.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="306.5" cy="156.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="307.3" cy="155.6" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="308.0" cy="155.1" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="308.7" cy="151.8" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="309.4" cy="151.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="310.1" cy="151.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="310.8" cy="150.6" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="311.6" cy="147.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="312.3" cy="146.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="313.0" cy="145.7" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="313.8" cy="145.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="314.5" cy="142.1" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="315.2" cy="141.8" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="316.0" cy="141.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="316.7" cy="141.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="317.5" cy="138.8" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="318.2" cy="138.7" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="319.0" cy="138.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="319.8" cy="138.1" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="320.5" cy="138.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="321.3" cy="136.5" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="322.1" cy="135.6" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="322.9" cy="134.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="323.7" cy="133.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="324.5" cy="132.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="325.3" cy="131.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="326.1" cy="130.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="326.9" cy="129.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="327.7" cy="128.9" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="328.5" cy="128.6" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="329.4" cy="128.5" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="330.2" cy="127.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="331.1" cy="126.9" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="331.9" cy="126.5" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="332.8" cy="125.6" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="333.6" cy="124.5" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="334.5" cy="124.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="335.4" cy="123.7" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="336.3" cy="122.6" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="337.2" cy="122.6" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="338.1" cy="122.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="339.1" cy="121.5" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="340.0" cy="120.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="341.0" cy="118.6" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="341.9" cy="118.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="342.9" cy="117.5" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="343.9" cy="116.9" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="344.9" cy="116.1" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="345.9" cy="114.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="346.9" cy="113.6" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="348.0" cy="112.1" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="349.0" cy="110.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="350.1" cy="110.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="351.2" cy="109.5" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="352.3" cy="107.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="353.5" cy="106.1" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="354.6" cy="105.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="355.8" cy="102.6" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="357.0" cy="102.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="358.2" cy="101.1" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="359.5" cy="101.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="360.8" cy="100.9" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="362.1" cy="100.8" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="363.4" cy="99.5" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="364.8" cy="99.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="366.2" cy="96.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="367.6" cy="94.6" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="369.1" cy="93.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="370.7" cy="93.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="372.3" cy="92.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="373.9" cy="91.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="375.6" cy="91.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="377.3" cy="90.6" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="379.2" cy="88.8" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="381.1" cy="88.2" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="383.1" cy="86.7" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="385.2" cy="86.4" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="387.3" cy="85.7" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="389.7" cy="85.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="392.1" cy="82.1" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="394.7" cy="82.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="397.5" cy="76.9" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="400.6" cy="76.3" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="403.9" cy="74.7" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="407.5" cy="71.7" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="411.6" cy="68.8" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="416.2" cy="68.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="421.6" cy="57.0" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="428.1" cy="56.8" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="436.5" cy="53.9" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="448.6" cy="53.1" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+<circle cx="472.3" cy="49.8" r="2.2" fill="#3B6D8C" fill-opacity="0.7"/>
+</svg><svg xmlns="http://www.w3.org/2000/svg" width="520" height="400" viewBox="0 0 520 400" role="img">
+<rect width="520" height="400" fill="#fff"/>
+<text x="260.0" y="18.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="bold">点赞高时，回复是否也高</text>
+<text x="260.0" y="364.0" font-size="11" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" font-weight="normal">ln(点赞+1)</text>
+<text x="16.0" y="186.0" font-size="11" fill="#666" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="middle" transform="rotate(-90 16.0 186.0)">ln(回复+1)</text>
+<rect x="72" y="28" width="430" height="316" fill="#fafafa" stroke="#e5e5e5"/>
+<circle cx="423.0" cy="162.4" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="442.3" cy="191.7" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="349.8" cy="257.6" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="408.4" cy="129.1" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="464.2" cy="159.3" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="459.9" cy="68.8" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="407.1" cy="221.6" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="313.2" cy="234.3" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="465.4" cy="129.1" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="376.3" cy="215.5" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="431.4" cy="191.7" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="271.4" cy="269.5" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="443.6" cy="193.9" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="351.0" cy="213.7" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="470.1" cy="129.5" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="395.2" cy="269.5" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="414.0" cy="134.9" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="381.5" cy="191.7" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="382.8" cy="202.6" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="373.3" cy="199.9" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="409.9" cy="164.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="433.7" cy="93.6" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="459.6" cy="51.4" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="265.5" cy="257.6" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="379.1" cy="217.4" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="300.6" cy="221.6" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="393.4" cy="204.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="387.8" cy="237.4" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="438.2" cy="134.4" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="254.1" cy="286.4" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="353.9" cy="169.2" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="363.8" cy="286.4" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="389.1" cy="237.4" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="418.2" cy="187.7" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="295.8" cy="252.7" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="423.0" cy="122.7" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="397.5" cy="162.9" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="397.8" cy="140.7" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="336.3" cy="277.1" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="361.0" cy="174.5" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="142.5" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="120.1" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="180.8" cy="315.2" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="132.7" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="168.2" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="120.1" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="120.1" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="120.1" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="168.2" cy="315.2" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="163.0" cy="315.2" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="168.2" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="168.2" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="198.6" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="120.1" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="142.5" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="120.1" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="163.0" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="142.5" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="72.0" cy="248.3" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="142.5" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#3B6D8C" fill-opacity="0.55"/>
+<circle cx="308.6" cy="211.9" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="243.3" cy="223.9" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="329.1" cy="263.1" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="330.6" cy="234.3" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="395.7" cy="155.6" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="322.7" cy="184.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="198.6" cy="315.2" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="256.1" cy="248.3" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="365.4" cy="184.8" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="402.3" cy="185.8" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="372.1" cy="147.1" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="285.5" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="364.0" cy="211.9" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="346.7" cy="186.7" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="309.1" cy="205.5" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="286.4" cy="315.2" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="298.1" cy="248.3" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="307.8" cy="252.7" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="261.6" cy="315.2" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="314.3" cy="219.5" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="393.0" cy="141.7" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="354.9" cy="129.8" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="377.0" cy="185.8" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="315.5" cy="145.3" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="247.5" cy="315.2" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="370.0" cy="257.6" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="416.3" cy="146.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="357.4" cy="179.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="296.1" cy="187.7" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="359.3" cy="164.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="271.8" cy="277.1" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="361.2" cy="263.1" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="321.7" cy="211.9" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="302.4" cy="228.7" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="274.5" cy="202.6" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="381.8" cy="152.2" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="341.2" cy="198.7" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="340.2" cy="269.5" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="344.7" cy="184.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="120.1" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="120.1" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="120.1" cy="298.3" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="142.5" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="120.1" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="102.3" cy="315.2" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="102.3" cy="315.2" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="150.5" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="177.0" cy="315.2" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="120.1" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="120.1" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="102.3" cy="315.2" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="102.3" cy="315.2" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="120.1" cy="298.3" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="315.2" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="120.1" cy="344.0" r="3" fill="#6B8F71" fill-opacity="0.55"/>
+<circle cx="243.3" cy="315.2" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="340.6" cy="252.7" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="430.6" cy="177.4" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="327.9" cy="315.2" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="416.6" cy="169.2" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="406.7" cy="184.8" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="369.5" cy="149.8" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="417.6" cy="196.2" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="348.0" cy="221.6" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="292.0" cy="269.5" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="289.0" cy="204.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="321.0" cy="263.1" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="371.1" cy="234.3" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="358.1" cy="231.4" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="271.4" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="356.9" cy="298.3" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="330.0" cy="84.3" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="314.4" cy="257.6" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="352.4" cy="211.9" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="321.6" cy="248.3" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="286.1" cy="176.7" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="366.9" cy="140.4" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="355.2" cy="234.3" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="409.5" cy="226.2" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="316.3" cy="286.4" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="335.7" cy="205.5" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="413.1" cy="193.9" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="336.4" cy="234.3" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="354.5" cy="195.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="395.2" cy="145.7" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="340.1" cy="219.5" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="386.1" cy="226.2" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="395.5" cy="221.6" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="404.7" cy="115.7" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="343.5" cy="257.6" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="341.0" cy="181.4" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="410.5" cy="153.8" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="335.3" cy="252.7" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="363.7" cy="169.8" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="362.1" cy="195.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="315.2" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="277.1" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="120.1" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="142.5" cy="315.2" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="150.5" cy="315.2" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="132.7" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="120.1" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="277.1" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="172.8" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="132.7" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="120.1" cy="315.2" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="102.3" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="142.5" cy="344.0" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="315.2" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="72.0" cy="315.2" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<circle cx="102.3" cy="315.2" r="3" fill="#C47B5A" fill-opacity="0.55"/>
+<rect x="72.0" y="377.0" width="9" height="9" fill="#3B6D8C"/>
+<text x="85.0" y="386.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">原神</text>
+<rect x="150.0" y="377.0" width="9" height="9" fill="#6B8F71"/>
+<text x="163.0" y="386.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">鸣潮</text>
+<rect x="228.0" y="377.0" width="9" height="9" fill="#C47B5A"/>
+<text x="241.0" y="386.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">终末地</text>
+</svg></div></div><div class="tri"><article class="gcard" style="--g:#3B6D8C"><h3><i></i>原神<span>6.7 · 空月之歌·谐谑</span></h3><p>高赞常常带高回复。「欢迎回家」楼是典型：既传得开，也有人接着聊。</p><p>也有梗图赞很多、回复一般，靠共鸣传，不一定靠讨论。</p></article><article class="gcard" style="--g:#6B8F71"><h3><i></i>鸣潮<span>3.5</span></h3><p>点多在中低赞。角色被点名不少，但少有原神那种应援楼，也少有终末地那种带答案的说明帖。</p><p>偶尔冒出的高赞，多半是单条角色或建模热评。</p></article><article class="gcard" style="--g:#C47B5A"><h3><i></i>终末地<span>寻遗散记</span></h3><p>有的高赞回复并不多。卡池、武器说明可以默默点赞，不必吵起来。</p><p>这和中性占比高是一件事：评区在收信息。</p></article></div><p class="callout">左图上端明显翘起，取了对数仍是长尾。比较点赞时用中位数，并分开看热门和最新。</p></section>
+<section class="panel" id="s7"><div class="hd"><div class="num">评区在叫什么</div><h2>高频词</h2><p class='lead'>词来自事先列出的研究用语，加上评论里反复出现的词。词频只说明大家怎么叫；主题仍以逐条阅读为准。</p></div><div class="fig"><svg xmlns="http://www.w3.org/2000/svg" width="920" height="160" viewBox="0 0 920 160" role="img">
+<rect width="920" height="160" fill="#fff"/>
+<rect x="20" y="16" rx="4" ry="4" width="70" height="26" fill="#6B8F71" fill-opacity="0.12" stroke="#6B8F71"/>
+<text x="30.0" y="34.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">秧秧</text>
+<text x="82.0" y="34.0" font-size="12" fill="#6B8F71" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">33</text>
+<rect x="100" y="16" rx="4" ry="4" width="70" height="26" fill="#6B8F71" fill-opacity="0.12" stroke="#6B8F71"/>
+<text x="110.0" y="34.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">穗穗</text>
+<text x="162.0" y="34.0" font-size="12" fill="#6B8F71" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">16</text>
+<rect x="180" y="16" rx="4" ry="4" width="70" height="26" fill="#6B8F71" fill-opacity="0.12" stroke="#6B8F71"/>
+<text x="190.0" y="34.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">剧情</text>
+<text x="242.0" y="34.0" font-size="12" fill="#6B8F71" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">13</text>
+<rect x="260" y="16" rx="4" ry="4" width="70" height="26" fill="#C47B5A" fill-opacity="0.12" stroke="#C47B5A"/>
+<text x="270.0" y="34.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">武器</text>
+<text x="322.0" y="34.0" font-size="12" fill="#C47B5A" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">13</text>
+<rect x="340" y="16" rx="4" ry="4" width="70" height="26" fill="#C47B5A" fill-opacity="0.12" stroke="#C47B5A"/>
+<text x="350.0" y="34.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">干员</text>
+<text x="402.0" y="34.0" font-size="12" fill="#C47B5A" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">13</text>
+<rect x="420" y="16" rx="4" ry="4" width="70" height="26" fill="#6B8F71" fill-opacity="0.12" stroke="#6B8F71"/>
+<text x="430.0" y="34.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">共鸣</text>
+<text x="482.0" y="34.0" font-size="12" fill="#6B8F71" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">11</text>
+<rect x="500" y="16" rx="4" ry="4" width="98" height="26" fill="#C47B5A" fill-opacity="0.12" stroke="#C47B5A"/>
+<text x="510.0" y="34.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">明日方舟</text>
+<text x="590.0" y="34.0" font-size="12" fill="#C47B5A" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">10</text>
+<rect x="608" y="16" rx="4" ry="4" width="70" height="26" fill="#C47B5A" fill-opacity="0.12" stroke="#C47B5A"/>
+<text x="618.0" y="34.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">卡缪</text>
+<text x="670.0" y="34.0" font-size="12" fill="#C47B5A" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">8</text>
+<rect x="688" y="16" rx="4" ry="4" width="70" height="26" fill="#C47B5A" fill-opacity="0.12" stroke="#C47B5A"/>
+<text x="698.0" y="34.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">卡池</text>
+<text x="750.0" y="34.0" font-size="12" fill="#C47B5A" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">8</text>
+<rect x="768" y="16" rx="4" ry="4" width="84" height="26" fill="#3B6D8C" fill-opacity="0.12" stroke="#3B6D8C"/>
+<text x="778.0" y="34.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">桑多涅</text>
+<text x="844.0" y="34.0" font-size="12" fill="#3B6D8C" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">7</text>
+<rect x="20" y="52" rx="4" ry="4" width="70" height="26" fill="#3B6D8C" fill-opacity="0.12" stroke="#3B6D8C"/>
+<text x="30.0" y="70.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">木偶</text>
+<text x="82.0" y="70.0" font-size="12" fill="#3B6D8C" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">7</text>
+<rect x="100" y="52" rx="4" ry="4" width="70" height="26" fill="#6B8F71" fill-opacity="0.12" stroke="#6B8F71"/>
+<text x="110.0" y="70.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">玄翎</text>
+<text x="162.0" y="70.0" font-size="12" fill="#6B8F71" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">7</text>
+<rect x="180" y="52" rx="4" ry="4" width="70" height="26" fill="#6B8F71" fill-opacity="0.12" stroke="#6B8F71"/>
+<text x="190.0" y="70.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">漂泊</text>
+<text x="242.0" y="70.0" font-size="12" fill="#6B8F71" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">6</text>
+<rect x="260" y="52" rx="4" ry="4" width="98" height="26" fill="#C47B5A" fill-opacity="0.12" stroke="#C47B5A"/>
+<text x="270.0" y="70.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">危机合约</text>
+<text x="350.0" y="70.0" font-size="12" fill="#C47B5A" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">6</text>
+<rect x="368" y="52" rx="4" ry="4" width="70" height="26" fill="#C47B5A" fill-opacity="0.12" stroke="#C47B5A"/>
+<text x="378.0" y="70.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">保底</text>
+<text x="430.0" y="70.0" font-size="12" fill="#C47B5A" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">5</text>
+<rect x="448" y="52" rx="4" ry="4" width="70" height="26" fill="#C47B5A" fill-opacity="0.12" stroke="#C47B5A"/>
+<text x="458.0" y="70.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">配音</text>
+<text x="510.0" y="70.0" font-size="12" fill="#C47B5A" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">5</text>
+<rect x="528" y="52" rx="4" ry="4" width="70" height="26" fill="#C47B5A" fill-opacity="0.12" stroke="#C47B5A"/>
+<text x="538.0" y="70.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">入坑</text>
+<text x="590.0" y="70.0" font-size="12" fill="#C47B5A" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">5</text>
+<rect x="608" y="52" rx="4" ry="4" width="70" height="26" fill="#6B8F71" fill-opacity="0.12" stroke="#6B8F71"/>
+<text x="618.0" y="70.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">前瞻</text>
+<text x="670.0" y="70.0" font-size="12" fill="#6B8F71" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">4</text>
+<rect x="688" y="52" rx="4" ry="4" width="98" height="26" fill="#6B8F71" fill-opacity="0.12" stroke="#6B8F71"/>
+<text x="698.0" y="70.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">Xbox</text>
+<text x="778.0" y="70.0" font-size="12" fill="#6B8F71" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">4</text>
+<rect x="796" y="52" rx="4" ry="4" width="70" height="26" fill="#6B8F71" fill-opacity="0.12" stroke="#6B8F71"/>
+<text x="806.0" y="70.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">建模</text>
+<text x="858.0" y="70.0" font-size="12" fill="#6B8F71" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">3</text>
+<rect x="20" y="88" rx="4" ry="4" width="56" height="26" fill="#3B6D8C" fill-opacity="0.12" stroke="#3B6D8C"/>
+<text x="30.0" y="106.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">肝</text>
+<text x="68.0" y="106.0" font-size="12" fill="#3B6D8C" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">3</text>
+<rect x="86" y="88" rx="4" ry="4" width="70" height="26" fill="#6B8F71" fill-opacity="0.12" stroke="#6B8F71"/>
+<text x="96.0" y="106.0" font-size="13" fill="#222" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">音乐</text>
+<text x="148.0" y="106.0" font-size="12" fill="#6B8F71" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">3</text>
+<rect x="20.0" y="137.0" width="9" height="9" fill="#3B6D8C"/>
+<text x="33.0" y="146.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">原神里更多</text>
+<rect x="170.0" y="137.0" width="9" height="9" fill="#6B8F71"/>
+<text x="183.0" y="146.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">鸣潮里更多</text>
+<rect x="320.0" y="137.0" width="9" height="9" fill="#C47B5A"/>
+<text x="333.0" y="146.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">终末地里更多</text>
+</svg><svg xmlns="http://www.w3.org/2000/svg" width="920" height="500" viewBox="0 0 920 500" role="img">
+<rect width="920" height="500" fill="#fff"/>
+<text x="110.0" y="35.9" font-size="12" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">秧秧</text>
+<rect x="120.0" y="24.9" width="616.4" height="14.0" fill="#6B8F71"/>
+<text x="744.4" y="35.9" font-size="11" fill="#555" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">33</text>
+<text x="110.0" y="67.6" font-size="12" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">穗穗</text>
+<rect x="120.0" y="56.6" width="298.9" height="14.0" fill="#6B8F71"/>
+<text x="426.9" y="67.6" font-size="11" fill="#555" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">16</text>
+<text x="110.0" y="99.3" font-size="12" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">剧情</text>
+<rect x="120.0" y="88.3" width="56.0" height="14.0" fill="#3B6D8C"/>
+<rect x="176.0" y="88.3" width="168.1" height="14.0" fill="#6B8F71"/>
+<rect x="344.1" y="88.3" width="18.7" height="14.0" fill="#C47B5A"/>
+<text x="370.8" y="99.3" font-size="11" fill="#555" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">13</text>
+<text x="110.0" y="131.0" font-size="12" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">武器</text>
+<rect x="120.0" y="120.0" width="37.4" height="14.0" fill="#3B6D8C"/>
+<rect x="157.4" y="120.0" width="18.7" height="14.0" fill="#6B8F71"/>
+<rect x="176.0" y="120.0" width="186.8" height="14.0" fill="#C47B5A"/>
+<text x="370.8" y="131.0" font-size="11" fill="#555" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">13</text>
+<text x="110.0" y="162.7" font-size="12" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">干员</text>
+<rect x="120.0" y="151.7" width="242.8" height="14.0" fill="#C47B5A"/>
+<text x="370.8" y="162.7" font-size="11" fill="#555" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">13</text>
+<text x="110.0" y="194.4" font-size="12" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">共鸣</text>
+<rect x="120.0" y="183.4" width="205.5" height="14.0" fill="#6B8F71"/>
+<text x="333.5" y="194.4" font-size="11" fill="#555" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">11</text>
+<text x="110.0" y="226.1" font-size="12" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">明日方舟</text>
+<rect x="120.0" y="215.1" width="186.8" height="14.0" fill="#C47B5A"/>
+<text x="314.8" y="226.1" font-size="11" fill="#555" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">10</text>
+<text x="110.0" y="257.9" font-size="12" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">卡缪</text>
+<rect x="120.0" y="246.9" width="149.4" height="14.0" fill="#C47B5A"/>
+<text x="277.4" y="257.9" font-size="11" fill="#555" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">8</text>
+<text x="110.0" y="289.6" font-size="12" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">卡池</text>
+<rect x="120.0" y="278.6" width="149.4" height="14.0" fill="#C47B5A"/>
+<text x="277.4" y="289.6" font-size="11" fill="#555" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">8</text>
+<text x="110.0" y="321.3" font-size="12" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">桑多涅</text>
+<rect x="120.0" y="310.3" width="130.8" height="14.0" fill="#3B6D8C"/>
+<text x="258.8" y="321.3" font-size="11" fill="#555" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">7</text>
+<text x="110.0" y="353.0" font-size="12" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">木偶</text>
+<rect x="120.0" y="342.0" width="130.8" height="14.0" fill="#3B6D8C"/>
+<text x="258.8" y="353.0" font-size="11" fill="#555" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">7</text>
+<text x="110.0" y="384.7" font-size="12" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">玄翎</text>
+<rect x="120.0" y="373.7" width="130.8" height="14.0" fill="#6B8F71"/>
+<text x="258.8" y="384.7" font-size="11" fill="#555" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">7</text>
+<text x="110.0" y="416.4" font-size="12" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">漂泊</text>
+<rect x="120.0" y="405.4" width="112.1" height="14.0" fill="#6B8F71"/>
+<text x="240.1" y="416.4" font-size="11" fill="#555" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">6</text>
+<text x="110.0" y="448.1" font-size="12" fill="#333" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="end" font-weight="normal">危机合约</text>
+<rect x="120.0" y="437.1" width="112.1" height="14.0" fill="#C47B5A"/>
+<text x="240.1" y="448.1" font-size="11" fill="#555" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">6</text>
+<rect x="120.0" y="477.0" width="9" height="9" fill="#3B6D8C"/>
+<text x="133.0" y="486.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">原神</text>
+<rect x="208.0" y="477.0" width="9" height="9" fill="#6B8F71"/>
+<text x="221.0" y="486.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">鸣潮</text>
+<rect x="296.0" y="477.0" width="9" height="9" fill="#C47B5A"/>
+<text x="309.0" y="486.0" font-size="11" fill="#444" font-family="Source Han Sans SC, Noto Sans SC, Microsoft YaHei, SimHei, sans-serif" text-anchor="start" font-weight="normal">终末地</text>
+</svg></div><div class="tri"><article class="gcard" style="--g:#3B6D8C"><h3><i></i>原神<span>6.7 · 空月之歌·谐谑</span></h3><p>常被叫到的是桑多涅、木偶、欢迎回家。人设回归被写成集体仪式。</p><p>考据经常直接喊角色名和情节，不一定出现「剧情」两个字。所以剧情主题可以很高，这个词本身不一定最多。</p></article><article class="gcard" style="--g:#6B8F71"><h3><i></i>鸣潮<span>3.5</span></h3><p>秧秧、穗穗、玄翎、共鸣、漂泊出现很多。Xbox、建模也在，和技术讨论能被标出来对得上。</p><p>评区记住的是具体角色和画面，而不是一句笼统的「这版本真好」。</p></article><article class="gcard" style="--g:#C47B5A"><h3><i></i>终末地<span>寻遗散记</span></h3><p>干员、卡缪、卡池、危机合约、武器、明日方舟、保底、入坑，很像一份入坑清单。</p><p>卡池被直接叫出来。评区仍把这款游戏当成要去玩的对象，而不只是看完就走的片子。</p></article></div><p class="callout">原神多叫人设，鸣潮多叫角色和视听，终末地多叫系统和卡池。同一个词可以走进不同主题，例如桑多涅既可以是剧情，也可以是美术。</p></section>
+
+    <section class="panel" id="portraits">
+      <div class="hd">
+        <div class="num">综合</div>
+        <h2>三款评区分别像什么</h2>
+        <p class="lead">下面根据主题、情绪、用词和热门传播来写，不是人口统计。短评里大多看不出是萌新还是老玩家，所以不按生命周期分层。对象始终是：看了该版本官方 B 站视频、并留下中文评论的人。</p>
+      </div>
+      <div class="tri portraits">
+        <article class="gcard" style="--g:#3B6D8C">
+          <h3><i></i>原神<span>6.7 空月之歌·谐谑</span></h3>
+          <p class="label">评区里的人</p>
+          <p>跟剧情、补设定的人，和给桑多涅应援的人叠在一起。他们会写冰神、至冬、空月，也会把「欢迎回家」写成集体仪式。短评很难判断肝度，因为句子多是「看懂了」「好爱」，很少写「我肝到哪了」。</p>
+          <p class="label">这个版本</p>
+          <p>官方片把评区变成了叙事现场。PV、过场、角色预告一起抬高了剧情声量。战斗、探索、养成几乎退到背景。评区很少谈抽卡，只说明这个窗口没把它当主话题，不说明抽卡压力不存在。</p>
+        </article>
+        <article class="gcard" style="--g:#6B8F71">
+          <h3><i></i>鸣潮<span>3.5</span></h3>
+          <p class="label">评区里的人</p>
+          <p>口头禅是具体角色名。有人盯建模和演出，也有人点名优化、Xbox，还有人谈抽卡节奏。评区比原神更接近「正在玩的游戏」，比终末地更接近「正在看的片子」。</p>
+          <p class="label">这个版本</p>
+          <p>处在视听仍能给好评、体验问题已经进场之间。热评传得不如原神远，最新层又最吵，完整讨论夹在表情包和少数长评中间。</p>
+        </article>
+        <article class="gcard" style="--g:#C47B5A">
+          <h3><i></i>终末地<span>寻遗散记</span></h3>
+          <p class="label">评区里的人</p>
+          <p>带着明日方舟说法的人不少：干员、危机合约。他们问入坑、卡池、武器，句子偏中性。系统细节写得清楚时，比另外两款更容易看出是在认真备战。</p>
+          <p class="label">这个版本</p>
+          <p>游戏被当成马上要动手的对象：战斗演示说明怎么打，卡池说明这期投入什么。剧情声量低，不一定是剧情差，而是这个窗口的片子没有把评区组织成观影现场。</p>
+        </article>
+      </div>
+      <p class="callout">三款不在同一件事上：原神 6.7 是长线作品的叙事评区，鸣潮 3.5 是已上线角色版本的评区，终末地是新内容窗口里的备战评区。横比只比「官方评区当时在干什么」，不比人数、流水或哪款更好。</p>
+    </section>
+    
+
+    <section class="panel" id="compare">
+      <div class="hd">
+        <div class="num">对照</div>
+        <h2>各自露出的长处和短板</h2>
+        <p class="lead">这里的优点和缺点，指这个版本官方评区里能看见的结构，不是实验室测评，也不是商店评分。评区没谈的，只能写「这份材料里没看到」，不能写成「没有问题」。</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>看什么</th>
+              <th>原神 6.7</th>
+              <th>鸣潮 3.5</th>
+              <th>终末地 寻遗散记</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>评区主轴</th>
+              <td>剧情、人设应援</td>
+              <td>角色视听，并开始问体验</td>
+              <td>战斗演示、卡池备战</td>
+            </tr>
+            <tr>
+              <th>情绪</th>
+              <td>正面最高（45.3%）</td>
+              <td>正面中等，负面已经可见</td>
+              <td>中性为主（65.8%）</td>
+            </tr>
+            <tr>
+              <th>热门点赞</th>
+              <td>最容易堆高（中位 1606）</td>
+              <td>最低（354）</td>
+              <td>中等，偏说明帖（633）</td>
+            </tr>
+            <tr>
+              <th>最新层噪音</th>
+              <td>较高（32.5%）</td>
+              <td>最高（40.0%）</td>
+              <td>两层都更干净</td>
+            </tr>
+            <tr>
+              <th>评区里能看见的长处</th>
+              <td>故事和人设能把人组织起来；考据密度高，说明世界观仍被认真对待；玩家自己建应援楼，和官方片咬合。</td>
+              <td>角色记忆点清楚，视听仍能给正面；讨论已经包含实机体验；优化问题被公开写出，后面版本可以对着改。</td>
+              <td>战斗可以讨论、可以执行；方舟玩家的说法活跃，说明核心玩法被认出来；评区信息效率高。</td>
+            </tr>
+            <tr>
+              <th>评区里能看见的风险</th>
+              <td>玩法几乎从评区消失；批评进不了热门，只看热评会偏乐观；抽卡声量低是没人谈，不是已经没事。</td>
+              <td>热评不容易变成事件，声音容易被表情盖住；负面和技术讨论已经进场；抽卡压力也已经写进来。</td>
+              <td>正面低、剧情声量低，缺一个情绪锚点；卡池是主话题之一，预期一旦对不上会立刻写在评区；如果中性备战迟迟不变成「打起来真爽」，热情可能停在清单阶段。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tri">
+        <article class="gcard" style="--g:#3B6D8C">
+          <h3><i></i>原神</h3>
+          <p>长处是把大版本做成共同叙事。短处是评区几乎不再检验玩法。6.7 看起来口碑好，好的是故事现场。</p>
+        </article>
+        <article class="gcard" style="--g:#6B8F71">
+          <h3><i></i>鸣潮</h3>
+          <p>比原神更接近真实游玩反馈，比终末地更依赖角色和画面。处在「能看」向「能玩」交接的位置，也最容易被噪音和优化槽点同时拖累。</p>
+        </article>
+        <article class="gcard" style="--g:#C47B5A">
+          <h3><i></i>终末地</h3>
+          <p>最像一份说明书加抽卡顾问。玩家带着明确框架来玩，框架也会变成考核表：打本、卡池、入坑，每一项都会被拿来对答案。</p>
+        </article>
+      </div>
+    </section>
+    
+
+    <section class="panel" id="methods">
+      <div class="hd">
+        <div class="num">范围</div>
+        <h2>这些图能说明什么、不能说明什么</h2>
+      </div>
+      <div class="methods">
+        <ul>
+          <li>样本是国服 B 站<strong>官方账号</strong>视频下的中文评论。窗口：原神 6.7、鸣潮 3.5、终末地「寻遗散记」。不是商店评分、抽卡流水或全体玩家。</li>
+          <li>共阅读 240 条：每款 80 条，热门和最新各 40 条。主题和情绪只用可编码的 198 条。其余评论未全部人工再标，也不进入本页结论。</li>
+          <li>规则见同目录《编码手册》。一条最多三个主题。国服样本中，「本地化」操作化为「语音与文本呈现」（配音、字幕）。</li>
+          <li>点赞和回复受排序、曝光、应援楼影响。箱线和散点描述的是传得开不开，不是喜爱有多强。</li>
+          <li>高频词只说明大家怎么叫。角色名可以同时走进剧情或美术。没出现的词，不代表玩家不关心。</li>
+          <li>不能外推到其他平台或沉默玩家，也不能评价这个时间窗之后的版本。横比的是「官方评区当时在干什么」，不是哪款更好。</li>
+        </ul>
+      </div>
+    </section>
+    
+</main>
+<footer class="site wrap">人工试编码 240 条。规则见《编码手册》，设计与发现见《研究方案》。请用浏览器直接打开本文件。</footer>
+</body>
+</html>
