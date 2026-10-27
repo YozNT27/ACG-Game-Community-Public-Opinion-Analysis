@@ -1,0 +1,4421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>内容分析工作台</title>
+  <style>
+:root {
+  --ink: #1c1915;
+  --muted: #6a6258;
+  --paper: #e8dfd2;
+  --card: #fbf7f0;
+  --line: #d6cbbd;
+  --navy: #1e2a38;
+  --accent: #3B6D8C;
+  --accent2: #c47b5a;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+aside {
+  background: var(--navy);
+  color: #f0ebe3;
+  padding: 22px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.brand { margin: 0 0 12px; font-weight: 650; letter-spacing: .04em; font-size: 14px; }
+#steps button {
+  display: block; width: 100%; text-align: left;
+  background: transparent; border: 0; color: #c9c2b6;
+  padding: 9px 10px; border-radius: 6px; cursor: pointer; font: inherit;
+}
+#steps button.on { background: rgba(255,255,255,.1); color: #fff; }
+#steps button[aria-current="step"] { background: rgba(255,255,255,.1); color: #fff; }
+#steps button .n { display: inline-block; width: 1.4em; opacity: .55; }
+.aside-note { margin-top: auto; font-size: 11px; color: #9a9286; }
+main { overflow: auto; padding: 22px 28px 48px; }
+.top { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 18px; }
+h1 { margin: 0 0 4px; font-size: 22px; font-weight: 650; }
+.lead { margin: 0; color: var(--muted); max-width: 52em; line-height: 1.65; }
+.study { font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+input, select, textarea {
+  font: inherit; color: var(--ink);
+  border: 1px solid var(--line); background: #fff; border-radius: 6px; padding: 7px 10px;
+}
+textarea { width: 100%; min-height: 70px; resize: vertical; }
+.card {
+  background: var(--card); border: 1px solid var(--line);
+  padding: 16px 18px; margin: 0 0 14px; border-radius: 8px;
+}
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.kpi { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+.kpi .cell { background: var(--card); border: 1px solid var(--line); padding: 12px 14px; border-radius: 8px; }
+.kpi b { display: block; font-size: 22px; }
+.kpi span { color: var(--muted); font-size: 12px; }
+button.btn {
+  background: var(--accent); color: #fff; border: 0; border-radius: 6px;
+  padding: 8px 14px; cursor: pointer; font: inherit;
+}
+button.btn.ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+button.btn.warn { background: var(--accent2); }
+button.btn.danger { background: #8a4540; }
+button.btn:disabled { opacity: .45; cursor: not-allowed; }
+button.btn:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.chip:focus-visible,
+#steps button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { border-bottom: 1px solid var(--line); padding: 7px 8px; text-align: left; vertical-align: top; }
+th { color: var(--muted); font-weight: 650; }
+td.clip { max-width: 420px; }
+.src-sec { margin: 0 0 22px; }
+.src-sec h2 { margin: 0 0 10px; font-size: 15px; font-weight: 650; }
+.fig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.figcard {
+  margin: 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px 10px;
+}
+.figcard.wide { grid-column: 1 / -1; }
+.figcard figcaption { margin: 0 0 8px; }
+.figcard figcaption strong { display: block; font-size: 13.5px; }
+.figcard figcaption .hint { display: block; margin-top: 2px; }
+.figbox { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.figbox .wide { grid-column: 1 / -1; }
+.fig-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.figcard .fig-scroll { border: 0; }
+.fig-scroll svg {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  background: #fff;
+}
+.figbox.report-figs {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: stretch;
+  max-width: 980px;
+  margin: 8px auto 0;
+}
+.figbox.report-figs .figcard {
+  width: 100%;
+  grid-column: auto;
+}
+.figbox.report-figs .fig-scroll {
+  display: flex;
+  justify-content: center;
+  background: #fff;
+}
+.figbox.report-figs .fig-scroll svg {
+  width: 100%;
+  max-width: 960px;
+  height: auto;
+  margin: 0 auto;
+}
+.figbox.report-figs .figcard.scroll .fig-scroll svg {
+  width: auto;
+  max-width: none;
+}
+.fig-scroll svg text,
+.figbox svg text { pointer-events: none; }
+.fig-scroll [data-tip],
+.figbox [data-tip] { cursor: pointer; }
+#chartTip {
+  position: fixed;
+  z-index: 30;
+  display: none;
+  background: #1e2a38;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  pointer-events: none;
+  max-width: 280px;
+  white-space: pre-wrap;
+  box-shadow: 0 4px 14px rgba(0,0,0,.18);
+}
+.fig-scroll.scroll svg,
+.figcard.scroll .fig-scroll svg {
+  max-width: none;
+}
+.drop {
+  border: 1.5px dashed #c4b8a8; border-radius: 10px; padding: 28px; text-align: center; background: #fff;
+  transition: border-color .15s ease, background .15s ease;
+}
+.drop.over { border-color: var(--accent); background: #eef4f8; }
+.map { display: grid; grid-template-columns: 200px 1fr; gap: 8px 12px; align-items: center; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--line); background: #fff; border-radius: 999px;
+  padding: 4px 10px; margin: 0 6px 6px 0; cursor: pointer; font-size: 13px;
+}
+.chip.on { border-color: var(--accent); background: #e8f0f5; color: var(--navy); }
+.filter-bar { margin: 0 0 10px; }
+.filter-bar .chip { font-size: 12.5px; }
+.theme-emo { display: flex; gap: 4px; margin-left: 6px; }
+.theme-emo button { border: 0; background: #eee; border-radius: 4px; padding: 2px 6px; cursor: pointer; font-size: 11px; }
+.theme-emo button.on { background: var(--accent); color: #fff; }
+.desk-head { margin-bottom: 8px; }
+.ops-fold {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.ops-fold summary { cursor: pointer; }
+.ops-fold .ops { margin: 8px 0 0; }
+.desk {
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1.1fr) minmax(280px, 0.95fr);
+  gap: 12px;
+  align-items: stretch;
+}
+.desk-rail { padding: 0; overflow: hidden; display: flex; flex-direction: column; min-height: 480px; max-height: calc(100vh - 220px); }
+.rail-head {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  padding: 12px 14px; border-bottom: 1px solid var(--line);
+}
+.rail-head strong { display: block; font-size: 13.5px; }
+.clist { overflow: auto; flex: 1; }
+.clist-item {
+  display: block; width: 100%; text-align: left;
+  background: transparent; border: 0; border-bottom: 1px solid var(--line);
+  border-left: 3px solid transparent;
+  padding: 10px 12px; cursor: pointer; font: inherit; color: inherit;
+}
+.clist-item:hover { background: #f3eee6; }
+.clist-item.on { background: #e8f0f5; border-left-color: var(--accent); }
+.clist-top { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 4px; }
+.clist-meta { color: var(--muted); font-size: 11.5px; }
+.clist-text { font-size: 13px; line-height: 1.45; color: var(--ink); }
+.clist-themes { margin-top: 4px; }
+.desk-quote .quote { max-height: 42vh; font-size: 15.5px; }
+.desk-form { min-width: 0; }
+.theme-hint { margin: 0 0 6px 8px; }
+.st {
+  display: inline-block;
+  font-size: 11px;
+  line-height: 1.3;
+  padding: 1px 7px;
+  border-radius: 99px;
+  background: #eee;
+  color: var(--ink);
+}
+.st-unlabeled { background: #eceae6; color: #5c574f; }
+.st-labeled { background: #e8f0f5; color: #2f4f5e; }
+.st-skipped { background: #f3ebde; color: #6a5340; }
+.st-uncodable { background: #e6e1d8; color: #5a5348; }
+.st-auto { background: var(--accent2); color: #fff; }
+.st-hand { background: #e8f0e8; color: #2f4f2e; }
+.st-emo { background: #fff; border: 1px solid var(--line); }
+.quote {
+  font-size: 16px; line-height: 1.7; white-space: pre-wrap;
+  max-height: 52vh; overflow: auto; padding-right: 4px;
+}
+.meta { color: var(--muted); font-size: 12.5px; margin-bottom: 8px; }
+.progress { height: 6px; background: #e4dcd0; border-radius: 99px; overflow: hidden; margin: 8px 0 12px; }
+.progress > i { display: block; height: 100%; background: var(--accent); }
+.hint { color: var(--muted); font-size: 12.5px; }
+.tag {
+  display: inline-block;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  padding: 1px 8px;
+  margin: 0 4px 0 2px;
+  font-size: 12px;
+  color: var(--ink);
+}
+.status {
+  background: #e8f0e8;
+  border: 1px solid #c5d6c4;
+  color: #2f4f2e;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+.status.warn {
+  background: #f3ebde;
+  border-color: #e0d0b8;
+  color: #6a5340;
+}
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 12px; }
+.ops {
+  margin: 0 0 14px;
+  padding: 12px 14px 12px 32px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.ops li { margin: 0 0 6px; }
+.ops li:last-child { margin-bottom: 0; }
+.kbd { margin: -6px 0 14px; }
+.frozen { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 99px; background: #e8f0e8; color: #3d6b3c; }
+.theme-ed { margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.theme-ed label { display: block; }
+.tag-auto {
+  display: inline-block;
+  font-size: 11px;
+  background: var(--accent2);
+  color: #fff;
+  padding: 1px 7px;
+  border-radius: 99px;
+  vertical-align: middle;
+}
+.draft { background: #f3ebde; color: #6a5340; }
+#toast {
+  position: fixed; bottom: 20px; right: 20px; background: var(--navy); color: #fff;
+  padding: 10px 14px; border-radius: 8px; z-index: 9;
+}
+.pager { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+code { font-size: 12px; background: #f0ece4; padding: 1px 5px; border-radius: 4px; }
+body.rpt-mode main {
+  overflow: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+body.rpt-mode .top {
+  margin: 0;
+  padding: 10px 28px 8px;
+  background: var(--card);
+  border-bottom: 0;
+  justify-content: flex-end;
+}
+body.rpt-mode #pageTitle,
+body.rpt-mode #pageLead { display: none; }
+body.rpt-mode #view {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.rpt-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 28px;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+}
+.rpt-bar .hint { max-width: 46em; }
+.rpt-frame {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  background: #e9e1d4;
+  min-height: 480px;
+}
+@media (max-width: 980px) {
+  body { grid-template-columns: 1fr; }
+  aside { flex-direction: row; flex-wrap: wrap; }
+  .bench, .figbox:not(.report-figs), .fig-grid, .grid2, .kpi, .grid3, .desk { grid-template-columns: 1fr; }
+  .desk-rail { max-height: 320px; min-height: 200px; }
+  body.rpt-mode main { overflow: auto; min-height: auto; }
+  .rpt-frame { min-height: 70vh; }
+}
+
+  </style>
+</head>
+<body>
+  <aside>
+    <p class="brand">内容分析工作台</p>
+    <nav id="steps" aria-label="研究步骤"></nav>
+    <p class="aside-note" id="asideStatus">本机离线 · 数据仅保存在此浏览器</p>
+  </aside>
+  <main>
+    <header class="top">
+      <div>
+        <h1 id="pageTitle">导入</h1>
+        <p class="lead" id="pageLead"></p>
+      </div>
+      <label class="study">研究名称
+        <input id="studyName" type="text" maxlength="80" placeholder="例如：某产品公开评论内容分析"/>
+      </label>
+    </header>
+    <div id="view"></div>
+  </main>
+  <div id="toast" hidden role="status" aria-live="polite"></div>
+  <script>
+/* 本机内容分析：不连网。数据存在本浏览器 IndexedDB / localStorage。 */
+(function (global) {
+  const KEY = "fxzp-workbench-v1";
+  const FONT = "Source Han Sans SC, Noto Sans SC, Microsoft YaHei, sans-serif";
+  const ACCENT = "#3B6D8C";
+  const PALETTE = ["#3B6D8C", "#6B8F71", "#C47B5A", "#7A6B9E", "#4A8B8C", "#B8874A", "#8A5A6A"];
+  const POS = "#5B8C5A", NEU = "#8A8F98", NEG = "#B85C4A", MIX = "#C4A35A";
+  const EMO_COLOR = { pos: POS, neu: NEU, neg: NEG, mix: MIX, na: "#c5c0b6" };
+  const EMO_LABEL = { pos: "正面", neu: "中性", neg: "负面", mix: "混合", na: "未标" };
+  const STRATUM_COLOR = { hot: "#3B6D8C", "热门": "#3B6D8C", newest: "#C47B5A", "最新": "#C47B5A", new: "#C47B5A" };
+  const STRATUM_LABEL = {
+    hot: "热门", newest: "最新", new: "最新", "热门": "热门", "最新": "最新",
+    "": "未分层", "未分层": "未分层", "(未分层)": "未分层",
+  };
+
+  const ALIASES = {
+    comment_text: ["comment_text", "评论", "内容", "正文", "text", "comment", "content", "message"],
+    comment_date: ["comment_date", "日期", "时间", "发布时间", "date", "time", "created", "created_at"],
+    like_count: ["like_count", "点赞", "赞", "likes", "like"],
+    reply_count: ["reply_count", "回复", "replies", "reply"],
+    source_id: ["source_id", "视频id", "bv", "bvid", "video_id", "avid"],
+    source_title: ["source_title", "标题", "视频标题", "title", "video_title"],
+    group: ["group", "game", "游戏", "分组", "品类", "品牌"],
+    version: ["version", "版本"],
+    stratum: ["stratum", "sample_stratum", "分层", "热门最新", "排序"],
+    comment_id: ["comment_id", "id", "评论id", "rpid"],
+    user_raw: ["user", "nickname", "用户", "昵称", "uname", "username", "author"],
+    user_hash: ["user_hash", "用户哈希"],
+  };
+
+  function defaultCodebook() {
+    return {
+      name: "公开评论（游戏/内容）",
+      version: 1,
+      frozen: false,
+      unit: "一条公开评论",
+      max_themes: 3,
+      uncodable_guide: "若评论仅为表情、打卡、求兑换码、寻找组队或系统提示，因而无法判断其所讨论的内容，请标为「无法编码」。短句只要表达观点（例如「她真好看」「又大保底」），仍须编码。",
+      emotions: [
+        { id: "pos", label: "正面" },
+        { id: "neu", label: "中性" },
+        { id: "neg", label: "负面" },
+        { id: "mix", label: "混合" },
+      ],
+      themes: [
+        { id: "T1", label: "角色与美术", hint: "外形、人设、建模、PV、音乐作为视听", keywords: "外形,人设,建模,立绘,画风,美型,好看,皮肤,服装,过场,PV,演出,角色" },
+        { id: "T2", label: "战斗", hint: "操作、打击感、技能、难度", keywords: "战斗,手感,打击感,技能,连招,副本,boss,难度,操作,开荒,伤害,输出,轴" },
+        { id: "T3", label: "剧情", hint: "主线、考据、叙事、关系解读", keywords: "剧情,主线,支线,叙事,考据,刀了,泪目,台词,故事,过场动画,剧情杀" },
+        { id: "T4", label: "探索", hint: "地图、跑图、传送、减负", keywords: "地图,跑图,传送,探索,采集,解谜,宝箱,锚点,减负,开图" },
+        { id: "T5", label: "养成", hint: "材料、体力、编队、肝度", keywords: "养成,材料,体力,树脂,肝,刷,突破,天赋,武器,圣遗物,声骸,等级,编队" },
+        { id: "T6", label: "商业化", hint: "抽卡、保底、卡池、价格", keywords: "抽卡,卡池,保底,氪,月卡,通行证,价格,零氪,课金,歪了,金,大保底" },
+        { id: "T7", label: "内容与长期体验", hint: "版本节奏、活动、长草、入坑", keywords: "版本,活动,长草,更新,内容量,重复,入坑,复刷,版本节奏" },
+        { id: "T8", label: "技术体验", hint: "优化、帧率、平台、BUG", keywords: "优化,帧率,卡顿,闪退,bug,BUG,延迟,画质,包体,加载,崩溃,掉帧" },
+        { id: "T9", label: "语音与文本", hint: "配音、CV、字幕", keywords: "配音,CV,字幕,语音,中配,日配,台词,文本" },
+        { id: "T10", label: "社区与运营", hint: "前瞻、评区氛围、应援楼、沟通", keywords: "官方,评区,前瞻,运营,客服,补偿,问卷,直播,维护" },
+      ],
+    };
+  }
+
+  function emptyDb() {
+    return {
+      meta: { step: "import", study_name: "未命名研究" },
+      source: [],
+      sample: [],
+      coding: {},
+      codebook: defaultCodebook(),
+      salt: randHex(32),
+      upload: null,
+    };
+  }
+
+  let db = emptyDb();
+  let readyResolve;
+  const ready = new Promise((r) => { readyResolve = r; });
+
+  function randHex(n) {
+    const a = new Uint8Array(n);
+    if (global.crypto && crypto.getRandomValues) crypto.getRandomValues(a);
+    else for (let i = 0; i < n; i++) a[i] = Math.floor(Math.random() * 256);
+    return [...a].map((b) => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  function hexBytes(u8) {
+    return [...u8].map((b) => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  function sha256Fallback(bytes) {
+    const K = [
+      0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+      0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+      0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+      0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+      0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+      0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+      0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+      0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
+    ];
+    function rotr(x, n) { return (x >>> n) | (x << (32 - n)); }
+    const extra = bytes.length % 64;
+    const padLen = extra < 56 ? 64 - extra : 128 - extra;
+    const buf = new Uint8Array(bytes.length + padLen);
+    buf.set(bytes);
+    buf[bytes.length] = 0x80;
+    const dv = new DataView(buf.buffer);
+    const bitLen = bytes.length * 8;
+    dv.setUint32(buf.length - 8, Math.floor(bitLen / 0x100000000));
+    dv.setUint32(buf.length - 4, bitLen >>> 0);
+    let h0 = 0x6a09e667, h1 = 0xbb67ae85, h2 = 0x3c6ef372, h3 = 0xa54ff53a;
+    let h4 = 0x510e527f, h5 = 0x9b05688c, h6 = 0x1f83d9ab, h7 = 0x5be0cd19;
+    const w = new Uint32Array(64);
+    for (let i = 0; i < buf.length; i += 64) {
+      for (let t = 0; t < 16; t++) w[t] = dv.getUint32(i + t * 4);
+      for (let t = 16; t < 64; t++) {
+        const s0 = rotr(w[t - 15], 7) ^ rotr(w[t - 15], 18) ^ (w[t - 15] >>> 3);
+        const s1 = rotr(w[t - 2], 17) ^ rotr(w[t - 2], 19) ^ (w[t - 2] >>> 10);
+        w[t] = (w[t - 16] + s0 + w[t - 7] + s1) >>> 0;
+      }
+      let a = h0, b = h1, c = h2, d = h3, e = h4, f = h5, g = h6, h = h7;
+      for (let t = 0; t < 64; t++) {
+        const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
+        const ch = (e & f) ^ (~e & g);
+        const t1 = (h + S1 + ch + K[t] + w[t]) >>> 0;
+        const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
+        const maj = (a & b) ^ (a & c) ^ (b & c);
+        const t2 = (S0 + maj) >>> 0;
+        h = g; g = f; f = e; e = (d + t1) >>> 0; d = c; c = b; b = a; a = (t1 + t2) >>> 0;
+      }
+      h0 = (h0 + a) >>> 0; h1 = (h1 + b) >>> 0; h2 = (h2 + c) >>> 0; h3 = (h3 + d) >>> 0;
+      h4 = (h4 + e) >>> 0; h5 = (h5 + f) >>> 0; h6 = (h6 + g) >>> 0; h7 = (h7 + h) >>> 0;
+    }
+    const out = new Uint8Array(32);
+    const od = new DataView(out.buffer);
+    od.setUint32(0, h0); od.setUint32(4, h1); od.setUint32(8, h2); od.setUint32(12, h3);
+    od.setUint32(16, h4); od.setUint32(20, h5); od.setUint32(24, h6); od.setUint32(28, h7);
+    return hexBytes(out);
+  }
+
+  async function sha256Hex(str) {
+    const data = new TextEncoder().encode(str);
+    if (global.crypto && crypto.subtle) {
+      try {
+        return hexBytes(new Uint8Array(await crypto.subtle.digest("SHA-256", data)));
+      } catch (_) { /* file:// 没有 subtle */ }
+    }
+    return sha256Fallback(data);
+  }
+
+  async function hashUser(raw) {
+    raw = String(raw || "").trim();
+    if (!raw) return "";
+    if (raw.startsWith("u_") && raw.length >= 10) return raw;
+    const hex = await sha256Hex(db.salt + "|" + raw);
+    return "u_" + hex.slice(0, 12);
+  }
+
+  function idbOpen() {
+    return new Promise((resolve, reject) => {
+      if (!global.indexedDB) return reject(new Error("no idb"));
+      const r = indexedDB.open("fxzp-workbench", 1);
+      r.onupgradeneeded = () => r.result.createObjectStore("kv");
+      r.onsuccess = () => resolve(r.result);
+      r.onerror = () => reject(r.error);
+    });
+  }
+
+  function idbGet() {
+    return idbOpen().then((d) => new Promise((resolve, reject) => {
+      const tx = d.transaction("kv", "readonly");
+      const g = tx.objectStore("kv").get("db");
+      g.onsuccess = () => resolve(g.result || null);
+      g.onerror = () => reject(g.error);
+    })).catch(() => null);
+  }
+
+  function idbPut(data) {
+    return idbOpen().then((d) => new Promise((resolve, reject) => {
+      const tx = d.transaction("kv", "readwrite");
+      tx.objectStore("kv").put(data, "db");
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    }));
+  }
+
+  function persist() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(db));
+    } catch (_) { /* 配额满时靠 IndexedDB */ }
+    idbPut(db).catch(() => {});
+  }
+
+  async function init() {
+    let loaded = null;
+    try { loaded = await idbGet(); } catch (_) {}
+    if (!loaded) {
+      try {
+        const raw = localStorage.getItem(KEY);
+        if (raw) loaded = JSON.parse(raw);
+      } catch (_) {}
+    }
+    if (loaded && typeof loaded === "object") {
+      db = Object.assign(emptyDb(), loaded);
+      if (!db.codebook) db.codebook = defaultCodebook();
+      if (!db.salt) db.salt = randHex(32);
+      if (!db.coding) db.coding = {};
+      if (!Array.isArray(db.source)) db.source = [];
+      if (!Array.isArray(db.sample)) db.sample = [];
+    }
+    persist();
+    readyResolve();
+  }
+
+  function esc(s) {
+    return String(s ?? "").replace(/[&<>"']/g, (c) => (
+      { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+    ));
+  }
+
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      let t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  function shuffle(arr, rng) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function parseCsv(text) {
+    text = String(text || "").replace(/^\uFEFF/, "").replace(/\x00/g, "");
+    const rows = [];
+    let row = [], cur = "", q = false;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (q) {
+        if (ch === '"') {
+          if (text[i + 1] === '"') { cur += '"'; i++; continue; }
+          q = false; continue;
+        }
+        cur += ch; continue;
+      }
+      if (ch === '"') { q = true; continue; }
+      if (ch === ",") { row.push(cur); cur = ""; continue; }
+      if (ch === "\r") continue;
+      if (ch === "\n") { row.push(cur); rows.push(row); row = []; cur = ""; continue; }
+      cur += ch;
+    }
+    if (cur.length || row.length) { row.push(cur); rows.push(row); }
+    if (!rows.length) return { headers: [], rows: [] };
+    const headers = rows[0].map((h, i) => (h || "").trim() || ("列" + (i + 1)));
+    const body = [];
+    for (let r = 1; r < rows.length; r++) {
+      if (rows[r].every((c) => !(c || "").trim())) continue;
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = rows[r][i] != null ? String(rows[r][i]) : ""; });
+      body.push(obj);
+    }
+    return { headers, rows: body };
+  }
+
+  function decodeBytes(buf) {
+    const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+    const tryEnc = ["utf-8", "gbk", "gb18030"];
+    for (const enc of tryEnc) {
+      try {
+        const t = new TextDecoder(enc, { fatal: enc.startsWith("utf") }).decode(u8);
+        if (enc === "utf-8" && t.includes("\uFFFD")) continue;
+        return t;
+      } catch (_) { /* next */ }
+    }
+    return new TextDecoder("utf-8", { fatal: false }).decode(u8);
+  }
+
+  function u16(v, i) { return v[i] | (v[i + 1] << 8); }
+  function u32(v, i) { return (v[i] | (v[i + 1] << 8) | (v[i + 2] << 16) | (v[i + 3] * 0x1000000)) >>> 0; }
+
+  async function inflateRaw(bytes) {
+    if (typeof DecompressionStream === "undefined") {
+      throw new Error("这个浏览器解压不了 xlsx，请把表格另存为 CSV 再导入。");
+    }
+    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  }
+
+  async function zipRead(buf) {
+    const v = new Uint8Array(buf);
+    let eocd = -1;
+    for (let i = v.length - 22; i >= 0 && i > v.length - 65557; i--) {
+      if (u32(v, i) === 0x06054b50) { eocd = i; break; }
+    }
+    if (eocd < 0) throw new Error("不是有效的 Excel 文件。");
+    const n = u16(v, eocd + 10);
+    let off = u32(v, eocd + 16);
+    const files = {};
+    for (let k = 0; k < n; k++) {
+      if (u32(v, off) !== 0x02014b50) break;
+      const method = u16(v, off + 10);
+      const csz = u32(v, off + 20);
+      const nlen = u16(v, off + 28);
+      const elen = u16(v, off + 30);
+      const clen = u16(v, off + 32);
+      const localOff = u32(v, off + 42);
+      const name = new TextDecoder().decode(v.slice(off + 46, off + 46 + nlen));
+      const localNlen = u16(v, localOff + 26);
+      const localElen = u16(v, localOff + 28);
+      const dataStart = localOff + 30 + localNlen + localElen;
+      const cdata = v.slice(dataStart, dataStart + csz);
+      let out;
+      if (method === 0) out = cdata;
+      else if (method === 8) out = await inflateRaw(cdata);
+      else throw new Error("Excel 压缩方式不支持，请另存为 CSV。");
+      files[name] = out;
+      off += 46 + nlen + elen + clen;
+    }
+    return files;
+  }
+
+  function xmlText(u8) {
+    return new TextDecoder("utf-8").decode(u8);
+  }
+
+  function byLocalName(root, name) {
+    if (!root || !root.getElementsByTagName) return [];
+    return [...root.getElementsByTagName("*")].filter((el) => (el.localName || "") === name);
+  }
+
+  function attr(el, ...names) {
+    if (!el) return "";
+    for (const n of names) {
+      const v = el.getAttribute(n);
+      if (v) return v;
+    }
+    if (el.getAttributeNS) {
+      const ns = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+      const v = el.getAttributeNS(ns, "id");
+      if (v) return v;
+    }
+    return "";
+  }
+
+  function colRow(ref) {
+    const m = String(ref).match(/^([A-Z]+)(\d+)$/i);
+    if (!m) return null;
+    let col = 0;
+    for (const ch of m[1].toUpperCase()) col = col * 26 + (ch.charCodeAt(0) - 64);
+    return [col - 1, parseInt(m[2], 10) - 1];
+  }
+
+  function excelSerialToIso(serial) {
+    const n = Number(serial);
+    if (!Number.isFinite(n) || n < 1 || n >= 2958466) return "";
+    const whole = Math.floor(n);
+    const frac = n - whole;
+    const utc = Date.UTC(1899, 11, 30) + whole * 86400000 + Math.round(frac * 86400000);
+    const d = new Date(utc);
+    if (Number.isNaN(d.getTime())) return "";
+    const p = (x) => String(x).padStart(2, "0");
+    return `${d.getUTCFullYear()}-${p(d.getUTCMonth() + 1)}-${p(d.getUTCDate())}`;
+  }
+
+  function parseDateStyleSet(xml) {
+    const dates = new Set([14, 15, 16, 17, 18, 19, 20, 21, 22, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 45, 46, 47, 50, 51, 52, 53, 54, 55, 56, 57, 58]);
+    const doc = new DOMParser().parseFromString(xml, "application/xml");
+    for (const nf of byLocalName(doc, "numFmt")) {
+      const id = Number(nf.getAttribute("numFmtId"));
+      const code = String(nf.getAttribute("formatCode") || "");
+      if (id && /[ymdhs年月日时分秒]/i.test(code)) dates.add(id);
+    }
+    const dateXf = new Set();
+    const cellXfs = byLocalName(doc, "cellXfs")[0];
+    const xfs = cellXfs
+      ? [...cellXfs.childNodes].filter((n) => n.localName === "xf")
+      : [];
+    xfs.forEach((xf, i) => {
+      const id = Number(xf.getAttribute("numFmtId") || 0);
+      if (dates.has(id)) dateXf.add(i);
+    });
+    return dateXf;
+  }
+
+  function parseSharedStrings(xml) {
+    const doc = new DOMParser().parseFromString(xml, "application/xml");
+    return byLocalName(doc, "si").map((si) =>
+      byLocalName(si, "t").filter((t) => {
+        let p = t.parentNode;
+        while (p && p !== si) {
+          if ((p.localName || "") === "rPh") return false;
+          p = p.parentNode;
+        }
+        return true;
+      }).map((t) => t.textContent || "").join("")
+    );
+  }
+
+  function cellText(c, sst, dateXf) {
+    const t = c.getAttribute("t") || "";
+    if (t === "inlineStr" || t === "str") {
+      return byLocalName(c, "t").map((x) => x.textContent || "").join("");
+    }
+    const vEl = byLocalName(c, "v")[0];
+    let val = vEl ? vEl.textContent || "" : "";
+    if (t === "s") return sst[Number(val)] || "";
+    if (t === "b") return val === "1" || val === "true" ? "TRUE" : "FALSE";
+    if (t === "e") return val;
+    const style = c.getAttribute("s");
+    if (style != null && style !== "" && dateXf && dateXf.has(Number(style)) && val !== "") {
+      return excelSerialToIso(val) || val;
+    }
+    return val;
+  }
+
+  function parseSheet(xml, sst, dateXf) {
+    const doc = new DOMParser().parseFromString(xml, "application/xml");
+    let maxR = 0, maxC = 0;
+    const map = new Map();
+    const put = (rr, cc, val) => {
+      maxR = Math.max(maxR, rr);
+      maxC = Math.max(maxC, cc);
+      map.set(rr + ":" + cc, val);
+    };
+    const rowEls = byLocalName(doc, "row");
+    if (rowEls.length) {
+      rowEls.forEach((rowEl, ri) => {
+        const rowAttr = parseInt(rowEl.getAttribute("r") || "", 10);
+        const rr = Number.isFinite(rowAttr) && rowAttr > 0 ? rowAttr - 1 : ri;
+        let nextC = 0;
+        for (const c of [...rowEl.childNodes].filter((n) => n.localName === "c")) {
+          const pos = colRow(c.getAttribute("r") || "");
+          let cc;
+          if (pos) {
+            cc = pos[0];
+            nextC = cc + 1;
+          } else {
+            cc = nextC++;
+          }
+          put(pos ? pos[1] : rr, cc, cellText(c, sst, dateXf));
+        }
+      });
+    } else {
+      byLocalName(doc, "c").forEach((c) => {
+        const pos = colRow(c.getAttribute("r") || "");
+        if (!pos) return;
+        put(pos[1], pos[0], cellText(c, sst, dateXf));
+      });
+    }
+    const grid = [];
+    for (let r = 0; r <= maxR; r++) {
+      const row = [];
+      for (let c = 0; c <= maxC; c++) row.push(map.get(r + ":" + c) || "");
+      grid.push(row);
+    }
+    return grid;
+  }
+
+  function resolveXlPath(target) {
+    let t = String(target || "").replace(/\\/g, "/");
+    if (t.startsWith("/")) t = t.slice(1);
+    t = t.replace(/^\.\//, "");
+    if (!t.startsWith("xl/")) t = "xl/" + t;
+    return t;
+  }
+
+  function worksheetPaths(files) {
+    const keys = Object.keys(files);
+    const findKey = (path) => {
+      const want = resolveXlPath(path).toLowerCase();
+      return keys.find((k) => k.replace(/\\/g, "/").toLowerCase() === want)
+        || keys.find((k) => k.replace(/\\/g, "/").toLowerCase().endsWith("/" + want.split("/").pop()));
+    };
+    const relName = keys.find((k) => /xl\/_rels\/workbook\.xml\.rels$/i.test(k));
+    const wbName = keys.find((k) => /xl\/workbook\.xml$/i.test(k) && !/_rels/i.test(k));
+    const rels = {};
+    if (relName) {
+      const doc = new DOMParser().parseFromString(xmlText(files[relName]), "application/xml");
+      for (const r of byLocalName(doc, "Relationship")) {
+        rels[r.getAttribute("Id") || ""] = r.getAttribute("Target") || "";
+      }
+    }
+    const ordered = [];
+    if (wbName) {
+      const doc = new DOMParser().parseFromString(xmlText(files[wbName]), "application/xml");
+      for (const sh of byLocalName(doc, "sheet")) {
+        const rid = attr(sh, "r:id", "r:Id", "id");
+        const key = findKey(rels[rid] || "");
+        if (key && !ordered.includes(key)) ordered.push(key);
+      }
+    }
+    keys.filter((k) => /xl\/worksheets\/[^/]+\.xml$/i.test(k)).sort().forEach((k) => {
+      if (!ordered.includes(k)) ordered.push(k);
+    });
+    return ordered;
+  }
+
+  function gridToTable(grid) {
+    if (!grid.length) return { headers: [], rows: [] };
+    const headers = grid[0].map((h, i) => String(h || "").trim() || ("列" + (i + 1)));
+    const rows = [];
+    for (let r = 1; r < grid.length; r++) {
+      if (grid[r].every((c) => !(c || "").trim())) continue;
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = grid[r][i] != null ? String(grid[r][i]) : ""; });
+      rows.push(obj);
+    }
+    return { headers, rows };
+  }
+
+  async function readXlsx(buf) {
+    const files = await zipRead(buf);
+    const sstName = Object.keys(files).find((k) => /xl\/sharedStrings\.xml$/i.test(k));
+    const sst = sstName ? parseSharedStrings(xmlText(files[sstName])) : [];
+    const stylesName = Object.keys(files).find((k) => /xl\/styles\.xml$/i.test(k));
+    const dateXf = stylesName ? parseDateStyleSet(xmlText(files[stylesName])) : new Set();
+    const sheets = worksheetPaths(files);
+    if (!sheets.length) throw new Error("Excel 里找不到工作表。");
+    let best = { headers: [], rows: [] };
+    let bestScore = -1;
+    for (const name of sheets) {
+      const table = gridToTable(parseSheet(xmlText(files[name]), sst, dateXf));
+      const score = table.rows.length * 10 + table.headers.filter((h) => !/^列\d+$/.test(h)).length;
+      if (score > bestScore) {
+        best = table;
+        bestScore = score;
+      }
+    }
+    if (bestScore < 0) throw new Error("Excel 里找不到工作表。");
+    return best;
+  }
+
+  function normHeader(s) {
+    return String(s || "").trim().toLowerCase().replace(/[\s_\-]+/g, "");
+  }
+
+  function guessMapping(headers) {
+    const mapped = {};
+    const used = new Set();
+    const headerN = {};
+    headers.forEach((h) => { headerN[normHeader(h)] = h; });
+    for (const [field, aliases] of Object.entries(ALIASES)) {
+      for (const a of aliases) {
+        const key = normHeader(a);
+        if (headerN[key] && !used.has(headerN[key])) {
+          mapped[field] = headerN[key];
+          used.add(headerN[key]);
+          break;
+        }
+      }
+    }
+    return mapped;
+  }
+
+  function dateOnly(s) {
+    s = String(s || "").trim().replace(/\//g, "-");
+    if (/^\d{4,6}(\.\d+)?$/.test(s)) {
+      const n = Number(s);
+      if (n >= 20000 && n < 80000) {
+        const iso = excelSerialToIso(n);
+        if (iso) return iso;
+      }
+    }
+    let m = s.match(/(\d{4}-\d{1,2}-\d{1,2})/);
+    if (m) {
+      const [y, mo, d] = m[1].split("-");
+      return `${String(y).padStart(4, "0")}-${String(+mo).padStart(2, "0")}-${String(+d).padStart(2, "0")}`;
+    }
+    m = s.match(/(\d{4})年(\d{1,2})月(\d{1,2})/);
+    if (m) {
+      return `${m[1]}-${String(+m[2]).padStart(2, "0")}-${String(+m[3]).padStart(2, "0")}`;
+    }
+    return s.slice(0, 10);
+  }
+
+  async function applyMapping(rows, mapping, importName) {
+    const out = [];
+    const seen = new Set();
+    for (let i = 0; i < rows.length; i++) {
+      const raw = rows[i];
+      const take = (field) => {
+        const col = mapping[field] || "";
+        if (!col) return "";
+        return String(raw[col] ?? "").trim();
+      };
+      const text = take("comment_text");
+      if (!text) continue;
+      const cid = take("comment_id") || `row_${importName}_${i + 1}`;
+      if (seen.has(cid)) continue;
+      seen.add(cid);
+      let likes = take("like_count") || "0";
+      let replies = take("reply_count") || "0";
+      likes = String(parseInt(Number(likes), 10) || 0);
+      replies = String(parseInt(Number(replies), 10) || 0);
+      let iw = String(raw.in_time_window || raw.in_window || "1").trim();
+      if (iw !== "0" && iw !== "1") iw = "1";
+      out.push({
+        comment_id: cid,
+        group: take("group") || "未分组",
+        version: take("version"),
+        source_id: take("source_id"),
+        source_title: take("source_title"),
+        comment_date: dateOnly(take("comment_date")),
+        comment_text: text,
+        like_count: likes,
+        reply_count: replies,
+        stratum: take("stratum") || "",
+        user_hash: take("user_hash") || await hashUser(take("user_raw")),
+        in_window: iw,
+        import_file: importName,
+      });
+    }
+    return out;
+  }
+
+  function parseDate(s) {
+    s = String(s || "").trim().replace(/\//g, "-").slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
+    const t = Date.parse(s + "T00:00:00");
+    return Number.isNaN(t) ? null : t;
+  }
+
+  function markWindow(rows, start, end) {
+    const ds = parseDate(start), de = parseDate(end);
+    return rows.map((r) => {
+      const d = parseDate(r.comment_date || "");
+      let ok = true;
+      if (ds != null && de != null && d != null) ok = d >= ds && d <= de;
+      else if (ds != null && d != null) ok = d >= ds;
+      else if (de != null && d != null) ok = d <= de;
+      return Object.assign({}, r, { in_window: ok ? "1" : "0" });
+    });
+  }
+
+  function drawSample(rows, seed, nPerCell, groupField, stratumField, windowOnly) {
+    const rng = mulberry32(Number(seed) || 1);
+    const pool = rows.filter((r) => !windowOnly || r.in_window !== "0");
+    const cells = new Map();
+    for (const r of pool) {
+      const g = String(r[groupField] || "未分组").trim() || "未分组";
+      const s = stratumField === "__none__"
+        ? ""
+        : (String(r[stratumField] || "").trim() || "(未分层)");
+      const key = g + "\0" + s;
+      if (!cells.has(key)) cells.set(key, []);
+      cells.get(key).push(r);
+    }
+    const picked = [];
+    const used = new Set();
+    for (const key of [...cells.keys()].sort()) {
+      const bucket = shuffle(cells.get(key), rng);
+      const takeN = Math.min(Number(nPerCell) || 0, bucket.length);
+      for (let i = 0; i < takeN; i++) {
+        const r = bucket[i];
+        const cid = r.comment_id;
+        if (used.has(cid)) continue;
+        picked.push(Object.assign({}, r));
+        used.add(cid);
+      }
+    }
+    picked.sort((a, b) =>
+      String(a.group || "").localeCompare(String(b.group || ""), "zh")
+      || String(a.stratum || "").localeCompare(String(b.stratum || ""), "zh")
+      || String(a.comment_id || "").localeCompare(String(b.comment_id || ""))
+    );
+    return picked;
+  }
+
+  function validateBook(data) {
+    const themes = data.themes || [];
+    if (!themes.length) throw new Error("至少保留一个主题，或使用空白模板前先添加。");
+    const ids = themes.map((t) => t.id);
+    if (new Set(ids).size !== ids.length) throw new Error("主题编号不能重复。");
+    for (const t of themes) {
+      if (!String(t.id || "").trim() || !String(t.label || "").trim()) {
+        throw new Error("每个主题都要有编号和名称。");
+      }
+    }
+  }
+
+  function countBy(rows, key) {
+    const m = {};
+    for (const r of rows) {
+      const k = r[key] || "";
+      m[k] = (m[k] || 0) + 1;
+    }
+    return m;
+  }
+
+  function mostCommon(obj) {
+    return Object.entries(obj).sort((a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0]), "zh"));
+  }
+
+  /* —— 图 —— */
+  function textW(s, size) {
+    size = size || 11;
+    return [...String(s)].reduce((n, c) => n + (c.codePointAt(0) < 128 ? 0.58 : 1.05), 0) * size;
+  }
+  function colorsFor(names) {
+    const seen = [];
+    for (const n of names) if (!seen.includes(n)) seen.push(n);
+    const m = {};
+    seen.forEach((n, i) => { m[n] = PALETTE[i % PALETTE.length]; });
+    return m;
+  }
+  function colorOf(name, i, cmap) {
+    if (cmap && cmap[name]) return cmap[name];
+    return PALETTE[i % PALETTE.length];
+  }
+  function stratumNorm(name) {
+    const t = String(name || "").trim();
+    if (!t || t === "未分层" || t === "(未分层)") return "";
+    if (t === "hot" || t === "热门") return "hot";
+    if (t === "newest" || t === "new" || t === "最新") return "newest";
+    return t;
+  }
+  function stratumColor(name) {
+    const key = stratumNorm(name);
+    return STRATUM_COLOR[key] || STRATUM_COLOR[String(name || "").trim()] || "#8A8F98";
+  }
+  function stratumLabel(name) {
+    const key = String(name || "").trim();
+    if (STRATUM_LABEL[key] != null) return STRATUM_LABEL[key];
+    const n = stratumNorm(key);
+    return STRATUM_LABEL[n] != null ? STRATUM_LABEL[n] : (key || "未分层");
+  }
+  function fill(name, i, mode, cmap) {
+    if (mode === "mono") return ACCENT;
+    if (mode === "stratum") return stratumColor(name);
+    if (cmap && cmap[name]) return cmap[name];
+    return PALETTE[i % PALETTE.length];
+  }
+  function wrap(w, h, body) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" fill="#fff" pointer-events="none"/>${body}</svg>`;
+  }
+  function tipAttr(text) {
+    return ` data-tip="${esc(text)}"`;
+  }
+  function markRect(x, y, w, h, color, tip, opt) {
+    opt = opt || {};
+    const minH = opt.minH != null ? opt.minH : 8;
+    const minW = opt.minW != null ? opt.minW : 0;
+    const rawW = Math.max(0, Number(w) || 0);
+    const rawH = Math.max(0, Number(h) || 0);
+    const ww = Math.max(rawW, minW);
+    const hh = Math.max(rawH, minH);
+    const xx = Number(x) || 0;
+    let yy = Number(y) || 0;
+    if (hh > rawH) yy = yy + rawH - hh;
+    const faint = opt.fillOpacity != null
+      ? ` fill-opacity="${opt.fillOpacity}"`
+      : (rawH < 0.5 && rawW < 0.5 ? ' fill-opacity="0.2"' : (rawH < 0.5 ? ' fill-opacity="0.22"' : ""));
+    const stroke = opt.stroke ? ` stroke="${opt.stroke}"` : "";
+    const slice = opt.slice ? ` data-slice="${esc(JSON.stringify(opt.slice))}"` : "";
+    return `<rect class="cbar" x="${xx.toFixed(1)}" y="${yy.toFixed(1)}" width="${ww.toFixed(1)}" height="${hh.toFixed(1)}" fill="${color}"${faint}${stroke}${tipAttr(tip)}${slice}/>`;
+  }
+  function fmtNum(val, pct) {
+    if (pct) return (Math.abs(val - Math.round(val)) < 0.05 ? val.toFixed(0) : val.toFixed(1)) + "%";
+    return Math.abs(val - Math.round(val)) < 0.05 ? String(Math.round(val)) : val.toFixed(1);
+  }
+  function t(x, y, s, size, fillC, anchor, weight, rotate) {
+    size = size || 12; fillC = fillC || "#222"; anchor = anchor || "start"; weight = weight || "normal";
+    const extra = rotate != null ? ` transform="rotate(${rotate} ${x.toFixed(1)} ${y.toFixed(1)})"` : "";
+    return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="${size}" fill="${fillC}" font-family="${FONT}" text-anchor="${anchor}" font-weight="${weight}" pointer-events="none"${extra}>${esc(s)}</text>`;
+  }
+  function legend(items, x, y, gap, maxX) {
+    const parts = [];
+    let cx = x, cy = y;
+    const limit = maxX != null ? maxX : x + 900;
+    gap = gap || 92;
+    for (const [lab, col] of items) {
+      const need = 22 + Math.min(String(lab).length * 12, 160);
+      if (cx > x && cx + need > limit) { cx = x; cy += 18; }
+      parts.push(`<rect x="${cx.toFixed(1)}" y="${cy - 9}" width="9" height="9" fill="${col}" pointer-events="none"/>`);
+      parts.push(t(cx + 13, cy, lab, 11, "#444"));
+      cx += Math.max(gap, need);
+    }
+    return parts;
+  }
+  function legendHeight(items, maxW, gap) {
+    gap = gap || 92;
+    maxW = Math.max(Number(maxW) || 400, 120);
+    let cx = 0, rows = 1;
+    for (const [lab] of items || []) {
+      const need = 22 + Math.min(String(lab).length * 12, 160);
+      if (cx > 0 && cx + need > maxW) { cx = 0; rows += 1; }
+      cx += Math.max(gap, need);
+    }
+    return rows * 18 + 6;
+  }
+  function clipLabel(s, max) {
+    s = String(s || "");
+    max = Math.max(2, max || 8);
+    return s.length <= max ? s : s.slice(0, max - 1) + "…";
+  }
+  function labelIndices(n, slot, rotate) {
+    const minPx = rotate ? 54 : 56;
+    const step = Math.max(1, Math.ceil(minPx / Math.max(slot, 1)));
+    const out = [];
+    for (let i = 0; i < n; i += step) out.push(i);
+    if (n > 1) {
+      const last = n - 1;
+      const prev = out[out.length - 1];
+      if (last - prev >= Math.max(1, Math.ceil(step * 0.7))) out.push(last);
+    }
+    return out;
+  }
+  function fitWidth(n, slot, left, right, minW, maxW) {
+    slot = slot || 64; left = left || 70; right = right || 28; minW = minW || 420; maxW = maxW || 1040;
+    return Math.min(maxW, Math.max(minW, left + right + Math.max(n, 1) * slot));
+  }
+  function niceYmax(vals, pct) {
+    const m = vals.length ? Math.max(...vals) : 0;
+    if (pct) {
+      if (m <= 0) return 100;
+      for (const top of [20, 25, 40, 50, 60, 80, 100]) if (m <= top * 0.95) return top;
+      return 100;
+    }
+    if (m <= 0) return 4;
+    return m * 1.18;
+  }
+  function tickText(val, ymax, pct) {
+    if (pct || ymax >= 8 || Math.abs(val - Math.round(val)) < 0.05) return String(Math.round(val));
+    return val.toFixed(1);
+  }
+  function bars(title, pairs, opt) {
+    opt = opt || {};
+    let w = opt.w, h = opt.h || 360, ylab = opt.ylab || "条数", xlab = opt.xlab || "";
+    let colorMode = opt.color_mode || "group", showLegend = opt.show_legend;
+    const mono = opt.mono, colors = opt.colors, yMax = opt.y_max, pct = !!opt.pct;
+    if (!pairs.length) {
+      const ww = w || 480;
+      return wrap(ww, h, t(ww / 2, h / 2, "暂无数据", 14, "#999", "middle"));
+    }
+    if (mono) colorMode = "mono";
+    if (pct && ylab === "条数") ylab = "占比（%）";
+    const n = pairs.length;
+    if (w == null) {
+      const slotPx = n >= 22 ? 40 : n >= 12 ? 52 : n >= 6 ? 72 : n <= 2 ? 140 : 96;
+      w = fitWidth(n, slotPx, 72, 32, n <= 2 ? 680 : 760, 1040);
+    }
+    if (showLegend == null) showLegend = (colorMode === "group" || colorMode === "stratum") && n >= 6;
+    const left = 72, right = 28, top = 18;
+    const slotGuess = (w - left - right) / n;
+    const rotate = slotGuess < 58 || n >= 8;
+    const legendItems = showLegend ? pairs.map(([name], i) => [name, fill(name, i, colorMode, colors)]) : [];
+    const legH = showLegend ? legendHeight(legendItems, w - left - 16, 96) : 0;
+    let bottom = rotate ? 108 : 56;
+    if (xlab) bottom += 18;
+    bottom += legH;
+    h = Math.max(h, top + 240 + bottom);
+    const pw = w - left - right, ph = h - top - bottom;
+    let ymax = yMax != null ? Number(yMax) : niceYmax(pairs.map((p) => p[1]), pct);
+    ymax = ymax || 1;
+    const slot = pw / n;
+    const bw = Math.min(n <= 3 ? 72 : 52, Math.max(7, slot * (n <= 8 ? 0.58 : n > 20 ? 0.7 : 0.52)));
+    const showIx = new Set(labelIndices(n, slot, rotate));
+    const showVals = slot >= 36 && n <= 12;
+    const parts = [];
+    if (ylab) parts.push(t(16, top + ph / 2, ylab, 11, "#666", "middle", "normal", -90));
+    for (let i = 0; i < 5; i++) {
+      const val = ymax * i / 4;
+      const y = top + ph * (1 - i / 4);
+      parts.push(`<line x1="${left}" y1="${y.toFixed(1)}" x2="${w - right}" y2="${y.toFixed(1)}" stroke="#eee"/>`);
+      parts.push(t(left - 8, y + 4, tickText(val, ymax, pct), 10, "#888", "end"));
+    }
+    pairs.forEach(([name, val, customTip, slice], i) => {
+      const cx = left + slot * (i + 0.5);
+      const bh = ymax ? ph * val / ymax : 0;
+      const col = fill(name, i, colorMode, colors);
+      const tip = customTip || `${name}：${fmtNum(val, pct)}${pct ? "" : (ylab && ylab !== "条数" ? "（" + ylab + "）" : " 条")}`;
+      parts.push(markRect(cx - bw / 2, top + ph - bh, bw, bh, col, tip, { slice }));
+      const labN = pct ? `${val.toFixed(0)}%` : val.toFixed(0);
+      if (showVals && val > 0) {
+        const vy = top + ph - bh - 6;
+        if (vy >= top + 14) parts.push(t(cx, vy, labN, 10, "#333", "middle"));
+      }
+      if (!showIx.has(i)) return;
+      const maxCh = rotate ? 8 : Math.max(2, Math.floor(slot / 13));
+      const label = clipLabel(name, maxCh);
+      if (rotate) parts.push(t(cx + 2, top + ph + 10, label, 10, "#333", "end", "normal", -50));
+      else parts.push(t(cx, top + ph + 18, label, 11, "#333", "middle"));
+    });
+    const xlabY = h - (legH ? legH + 6 : 10);
+    if (xlab) parts.push(t(left + pw / 2, xlabY - (rotate ? 2 : 0), xlab, 11, "#666", "middle"));
+    if (showLegend) parts.push(...legend(legendItems, left, h - legH + 8, 96, w - 16));
+    return wrap(w, h, parts.join(""));
+  }
+
+  function hbars(title, pairs, w, h) {
+    w = w || 880; h = h || 360;
+    if (!pairs.length) return wrap(w, h, t(w / 2, h / 2, "暂无数据", 14, "#999", "middle"));
+    const labelW = Math.max(...pairs.map(([name]) => textW(clipLabel(name, 16), 12)), 80);
+    const left = Math.max(labelW + 18, 120);
+    const right = 64, top = 20, bottom = 36;
+    w = Math.max(w, left + 480);
+    h = Math.max(h, 48 + pairs.length * 28);
+    const pw = w - left - right, ph = h - top - bottom;
+    const n = pairs.length;
+    const slot = ph / n;
+    const xmax = Math.max(...pairs.map((p) => p[1])) * 1.15 || 1;
+    const parts = [];
+    parts.push(t(left + pw / 2, h - 12, "条数", 11, "#666", "middle"));
+    pairs.forEach(([name, val], i) => {
+      const cy = top + slot * (i + 0.5);
+      const bw = pw * val / xmax;
+      parts.push(t(left - 10, cy + 4, clipLabel(name, 16), 12, "#333", "end"));
+      parts.push(markRect(left, cy - 8, bw, 16, ACCENT, `${name}：${fmtNum(val, false)} 条`, { minH: 16, minW: val ? 0 : 8 }));
+      parts.push(t(left + bw + 8, cy + 4, val.toFixed(0), 12, "#555"));
+    });
+    return wrap(w, h, parts.join(""));
+  }
+
+  function stacked(title, groups, series, w, h) {
+    h = h || 360;
+    if (!groups.length) {
+      const ww = w || 480;
+      return wrap(ww, h, t(ww / 2, h / 2, "暂无数据", 14, "#999", "middle"));
+    }
+    const n = groups.length;
+    if (w == null) w = fitWidth(n, n <= 2 ? 200 : n <= 4 ? 140 : 96, 72, 32, 760, 1040);
+    const left = 72, right = 24, top = 18;
+    const legendItems = series.map((s) => [s[0], s[1]]);
+    const legH = legendHeight(legendItems, w - left - 16, 86);
+    const slotGuess = (w - left - right) / n;
+    const rotate = n >= 4 || slotGuess < 72;
+    const bottom = (rotate ? 96 : 48) + legH;
+    h = Math.max(h, top + 240 + bottom);
+    const pw = w - left - right, ph = h - top - bottom;
+    const slot = pw / n;
+    const bw = Math.min(n === 1 ? 88 : n === 2 ? 70 : 52, slot * (n <= 2 ? 0.5 : 0.4));
+    const parts = [];
+    parts.push(t(16, top + ph / 2, "占比", 11, "#666", "middle", "normal", -90));
+    const showPct = slot >= 40;
+    groups.forEach((g, i) => {
+      const cx = left + slot * (i + 0.5);
+      let y = top + ph;
+      for (const [sname, col, vals, eid] of series) {
+        const val = vals[i] || 0;
+        const bh = ph * val / 100;
+        y -= bh;
+        parts.push(markRect(cx - bw / 2, y, bw, Math.max(bh, 0), col, `${g} · ${sname}：${fmtNum(val, true)}`, {
+          minH: val > 0 ? 3 : 0,
+          slice: eid ? { kind: "emo", id: eid, group: g } : undefined,
+        }));
+        if (showPct && val >= 18) parts.push(t(cx, y + bh / 2 + 4, `${val.toFixed(0)}%`, 10, "#fff", "middle"));
+      }
+      const gLab = clipLabel(g, rotate ? 8 : Math.max(3, Math.floor(slot / 13)));
+      if (rotate) parts.push(t(cx + 2, top + ph + 10, gLab, 10, "#333", "end", "normal", -50));
+      else parts.push(t(cx, top + ph + 18, gLab, 12, "#333", "middle"));
+    });
+    parts.push(...legend(legendItems, left, h - legH + 8, 86, w - 16));
+    return wrap(w, h, parts.join(""));
+  }
+
+  function donut(title, pairs, w, h) {
+    w = w || 760; h = h || 460;
+    pairs = pairs.filter((p) => p[1] > 0);
+    const total = pairs.reduce((n, p) => n + p[1], 0);
+    if (total <= 0) return wrap(w, h, t(w / 2, h / 2, "暂无数据", 14, "#999", "middle"));
+    const cx = w / 2, cy = 200, r = 124, ri = 70;
+    const parts = [];
+    let ang = -Math.PI / 2;
+    const xy = (a, rad) => [cx + rad * Math.cos(a), cy + rad * Math.sin(a)];
+    for (const [name, val, col, eid] of pairs) {
+      const frac = val / total;
+      const tip = `${name}：${fmtNum(val, false)}（${fmtNum(100 * frac, true)}）`;
+      const slice = eid ? ` data-slice="${esc(JSON.stringify({ kind: "emo", id: eid }))}"` : "";
+      if (frac >= 0.999) {
+        parts.push(`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" fill="${col}"${tipAttr(tip)}${slice}/>`);
+        parts.push(`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${ri}" fill="#fff" pointer-events="none"/>`);
+        continue;
+      }
+      const sweep = 2 * Math.PI * frac;
+      const a1 = ang + sweep;
+      const large = sweep > Math.PI ? 1 : 0;
+      const [x0, y0] = xy(ang, r), [x1, y1] = xy(a1, r);
+      const [xi0, yi0] = xy(ang, ri), [xi1, yi1] = xy(a1, ri);
+      parts.push(`<path d="M ${x0.toFixed(1)} ${y0.toFixed(1)} A ${r} ${r} 0 ${large} 1 ${x1.toFixed(1)} ${y1.toFixed(1)} L ${xi1.toFixed(1)} ${yi1.toFixed(1)} A ${ri} ${ri} 0 ${large} 0 ${xi0.toFixed(1)} ${yi0.toFixed(1)} Z" fill="${col}"${tipAttr(tip)}${slice}/>`);
+      ang = a1;
+    }
+    parts.push(t(cx, cy + 5, String(Math.round(total)), 18, "#222", "middle", "bold"));
+    parts.push(t(cx, cy + 22, "可编码", 11, "#888", "middle"));
+    const legendItems = pairs.map(([name, val, col]) => [`${name} ${val.toFixed(0)}`, col]);
+    const legH = legendHeight(legendItems, w - 32, 110);
+    h = Math.max(h, cy + r + 28 + legH);
+    parts.push(...legend(legendItems, 24, h - legH + 8, 110, w - 16));
+    return wrap(w, h, parts.join(""));
+  }
+
+  function hist(title, values, h) {
+    h = h || 260;
+    if (!values.length) return wrap(360, h, t(180, h / 2, "暂无数据", 14, "#999", "middle"));
+    let lo = Math.min(...values), hi = Math.max(...values);
+    if (hi === lo) hi = lo + 1;
+    const bins = 12;
+    const width = (hi - lo) / bins;
+    const counts = Array(bins).fill(0);
+    for (const v of values) counts[Math.min(Math.floor((v - lo) / width), bins - 1)] += 1;
+    const pairs = counts.map((c, i) => {
+      const a = lo + width * i;
+      const b = lo + width * (i + 1);
+      const lab = a.toFixed(1);
+      return [lab, c, `点赞对数 ${a.toFixed(2)}～${b.toFixed(2)}：${c} 条`];
+    });
+    return bars(title, pairs, { h: Math.max(h, 360), ylab: "条数", xlab: "点赞（对数，左低右高）", color_mode: "mono", show_legend: false });
+  }
+
+  function quantile(s, q) {
+    const n = s.length;
+    const pos = (n - 1) * q;
+    const lo = Math.floor(pos), hi = Math.ceil(pos);
+    if (lo === hi) return s[lo];
+    return s[lo] * (hi - pos) + s[hi] * (pos - lo);
+  }
+
+  function boxplot(title, groups, ylab) {
+    const allv = groups.flatMap((g) => g[1]);
+    if (!allv.length) return wrap(480, 360, t(240, 180, "暂无数据", 14, "#999", "middle"));
+    const n = Math.max(groups.length, 1);
+    const w = fitWidth(n, n <= 2 ? 160 : 110, 72, 28, 720, 1040);
+    const left = 72, right = 24, top = 18;
+    const rotate = n >= 5;
+    const legendItems = groups.filter((g) => g[1].length).map((g) => [g[0], g[2]]);
+    const legH = n >= 2 ? legendHeight(legendItems, w - left - 16, 96) : 0;
+    const bottom = (rotate ? 100 : 52) + legH;
+    const h = Math.max(380, top + 260 + bottom);
+    const pw = w - left - right, ph = h - top - bottom;
+    let ymin = Math.min(...allv), ymax = Math.max(...allv);
+    const pad = (ymax - ymin) * 0.1 || 0.5;
+    ymin -= pad; ymax += pad;
+    const parts = [];
+    parts.push(t(16, top + ph / 2, ylab || "ln(点赞+1)", 11, "#666", "middle", "normal", -90));
+    const ymap = (v) => top + ph * (1 - (v - ymin) / (ymax - ymin));
+    for (let i = 0; i < 5; i++) {
+      const val = ymin + (ymax - ymin) * i / 4;
+      const y = ymap(val);
+      parts.push(`<line x1="${left}" y1="${y.toFixed(1)}" x2="${w - right}" y2="${y.toFixed(1)}" stroke="#eee"/>`);
+      parts.push(t(left - 8, y + 4, val.toFixed(1), 10, "#888", "end"));
+    }
+    const slot = pw / n;
+    const bw = Math.min(n <= 2 ? 72 : 52, slot * 0.42);
+    const showIx = new Set(labelIndices(n, slot, rotate));
+    groups.forEach(([name, vs, col], i) => {
+      if (!vs.length) return;
+      const s = vs.slice().sort((a, b) => a - b);
+      const q1 = quantile(s, 0.25), med = quantile(s, 0.5), q3 = quantile(s, 0.75);
+      const iqr = q3 - q1;
+      const loF = q1 - 1.5 * iqr, hiF = q3 + 1.5 * iqr;
+      const above = s.filter((v) => v >= loF);
+      const below = s.filter((v) => v <= hiF);
+      const whiskLo = above.length ? Math.min(...above) : s[0];
+      const whiskHi = below.length ? Math.max(...below) : s[s.length - 1];
+      const cx = left + slot * (i + 0.5);
+      const y1 = ymap(q1), y2 = ymap(q3), ym = ymap(med);
+      const yl = ymap(whiskLo), yh = ymap(whiskHi);
+      const tip = `${name}：n=${s.length}；中位数 ${med.toFixed(2)}；四分位 ${q1.toFixed(2)}～${q3.toFixed(2)}；须 ${whiskLo.toFixed(2)}～${whiskHi.toFixed(2)}`;
+      parts.push(`<line x1="${cx}" y1="${yl.toFixed(1)}" x2="${cx}" y2="${yh.toFixed(1)}" stroke="${col}" pointer-events="none"/>`);
+      parts.push(markRect(cx - bw / 2, Math.min(y1, y2), bw, Math.max(Math.abs(y1 - y2), 1), col, tip, { minH: 12, fillOpacity: 0.35, stroke: col }));
+      parts.push(`<line x1="${(cx - bw / 2).toFixed(1)}" y1="${ym.toFixed(1)}" x2="${(cx + bw / 2).toFixed(1)}" y2="${ym.toFixed(1)}" stroke="#222" stroke-width="1.6" pointer-events="none"/>`);
+      if (!showIx.has(i)) return;
+      const label = clipLabel(name, rotate ? 8 : Math.max(3, Math.floor(slot / 13)));
+      if (rotate) parts.push(t(cx + 2, top + ph + 10, label, 10, "#333", "end", "normal", -50));
+      else parts.push(t(cx, top + ph + 18, label, 11, "#333", "middle"));
+    });
+    if (n >= 2) parts.push(...legend(legendItems, left, h - legH + 8, 96, w - 16));
+    return wrap(w, h, parts.join(""));
+  }
+
+  function sourceStats(rows) {
+    const dates = rows.map((r) => r.comment_date || "").filter((d) => d && d !== "未知");
+    const gcount = countBy(rows, "group");
+    if (!Object.keys(gcount).length && rows.length) gcount["未分组"] = rows.length;
+    const fixed = {};
+    for (const r of rows) {
+      const g = r.group || "未分组";
+      fixed[g] = (fixed[g] || 0) + 1;
+    }
+    const sources = new Set(rows.map((r) => (r.source_title || r.source_id || "").trim()).filter(Boolean));
+    const names = mostCommon(fixed).map((x) => x[0]);
+    return {
+      n: rows.length,
+      groups: names.length,
+      group_names: names,
+      layout: names.length <= 1 ? "single" : "multi",
+      sources: sources.size,
+      date_min: dates.length ? dates.reduce((a, b) => (a < b ? a : b)) : "",
+      date_max: dates.length ? dates.reduce((a, b) => (a > b ? a : b)) : "",
+    };
+  }
+
+  function sourceCharts(rows) {
+    const groups = {};
+    for (const r of rows) {
+      const g = r.group || "未分组";
+      groups[g] = (groups[g] || 0) + 1;
+    }
+    const gPairs = mostCommon(groups);
+    const dates = {};
+    for (const r of rows) {
+      const d = r.comment_date || "未知";
+      dates[d] = (dates[d] || 0) + 1;
+    }
+    const known = Object.entries(dates).filter(([d]) => d && d !== "未知").sort((a, b) => a[0].localeCompare(b[0]));
+    const unk = dates["未知"] || 0;
+    const datePairs = known.concat(unk ? [["未知", unk]] : []);
+    const dateFmt = datePairs.map(([a, b]) => [a.length >= 10 ? a.slice(5) : a, b]);
+    const likes = [];
+    for (const r of rows) {
+      const n = Number(r.like_count);
+      if (!Number.isNaN(n)) likes.push(Math.log1p(n));
+    }
+    const strata = {};
+    for (const r of rows) {
+      const s = r.stratum || "未分层";
+      strata[s] = (strata[s] || 0) + 1;
+    }
+    const sources = {};
+    for (const r of rows) {
+      const s = (r.source_title || r.source_id || "未标来源").trim() || "未标来源";
+      sources[s] = (sources[s] || 0) + 1;
+    }
+    const cmap = colorsFor(gPairs.map((x) => x[0]));
+    const byGS = {};
+    for (const r of rows) {
+      const g = r.group || "未分组";
+      const s = r.stratum || "未分层";
+      if (!byGS[g]) byGS[g] = {};
+      byGS[g][s] = (byGS[g][s] || 0) + 1;
+    }
+    const gnames = gPairs.slice(0, 8).map((x) => x[0]);
+    const stratumKeys = [...new Set(Object.values(byGS).flatMap((c) => Object.keys(c)))].sort(
+      (a, b) => stratumLabel(a).localeCompare(stratumLabel(b), "zh") || a.localeCompare(b)
+    );
+    const series = [];
+    for (const st of stratumKeys.slice(0, 6)) {
+      const vals = gnames.map((g) => {
+        const tot = Object.values(byGS[g] || {}).reduce((n, x) => n + x, 0) || 1;
+        return 100 * ((byGS[g] || {})[st] || 0) / tot;
+      });
+      series.push([stratumLabel(st), stratumColor(st), vals]);
+    }
+    const stratumPairs = mostCommon(strata).map(([a, b]) => [stratumLabel(a), b]);
+    const multi = gPairs.length >= 2;
+    const nDates = dateFmt.length;
+    const dateW = fitWidth(nDates, nDates > 18 ? 36 : 56, 72, 32, 760, 1040);
+    const out = [];
+    if (multi) {
+      out.push({
+        id: "g", section: "mix", wide: false, title: "各分组有多少条",
+        caption: "柱色按导入时的分组自动分配，底栏色块为图例。",
+        svg: bars("各分组有多少条", gPairs.map(([a, b]) => [a, b]), { color_mode: "group", show_legend: true, ylab: "条数", colors: cmap }),
+      });
+    } else {
+      const gname = gPairs[0] ? gPairs[0][0] : "未分组";
+      const n0 = gPairs[0] ? gPairs[0][1] : 0;
+      out.push({
+        id: "g", section: "mix", wide: false, title: "导入了多少条",
+        caption: `当前只有「${gname}」一组，共 ${n0} 条。`,
+        svg: bars("导入了多少条", [[gname, n0]], { color_mode: "group", show_legend: false, ylab: "条数", colors: cmap }),
+      });
+    }
+    out.push({
+      id: "s", section: "mix", wide: false, title: "热门和最新",
+      caption: "蓝色表示热门，橙色表示最新。",
+      svg: bars("热门和最新", stratumPairs, { color_mode: "stratum", show_legend: true, ylab: "条数" }),
+    });
+    if (multi && gnames.length && series.length) {
+      out.push({
+        id: "gs", section: "mix", wide: gnames.length >= 3,
+        title: "各组内部：热门和最新各占多少",
+        caption: "配色与「热门和最新」一致：蓝为热门，橙为最新。柱内数字为该组内部占比。",
+        svg: stacked("各组内部构成", gnames, series),
+      });
+    }
+    out.push({
+      id: "d", section: "time", wide: nDates > 8, scroll: nDates > 16,
+      title: "每天有多少条",
+      caption: "各日期均使用同一颜色。日期较多时可左右滑动查看；将鼠标移至柱上可查看当天条数。",
+      svg: bars("每天有多少条", dateFmt, { w: dateW, h: 360, color_mode: "mono", show_legend: false, ylab: "条数", xlab: "评论日期" }),
+    });
+    const nSrc = Math.min(12, Object.keys(sources).length);
+    out.push({
+      id: "src", section: "src", wide: true, title: "评论最多的来源",
+      caption: "来源名称较长时可左右滑动查看全称。",
+      svg: hbars("评论最多的来源", mostCommon(sources).slice(0, 12).map(([a, b]) => [a, b]), 880, Math.max(200, 56 + nSrc * 30)),
+    });
+    out.push({
+      id: "l", section: "like", wide: false, title: "点赞高低",
+      caption: "横轴为 ln(点赞+1)；越靠右表示点赞越高。",
+      svg: hist("点赞高低（对数）", likes, 300),
+    });
+    if (multi) {
+      const likeGroups = [];
+      for (const [g] of gPairs.slice(0, 6)) {
+        const vs = [];
+        for (const r of rows) {
+          if ((r.group || "未分组") !== g) continue;
+          const n = Number(r.like_count);
+          if (!Number.isNaN(n)) vs.push(Math.log1p(n));
+        }
+        if (vs.length) likeGroups.push([g, vs, cmap[g] || PALETTE[0]]);
+      }
+      if (likeGroups.length) {
+        out.push({
+          id: "box", section: "like", wide: likeGroups.length >= 3,
+          title: "各组点赞对比",
+          caption: "配色与分组图一致。箱体位置越高，表示该组高赞评论越多。",
+          svg: boxplot("各组点赞（对数）", likeGroups, "ln(点赞+1)"),
+        });
+      }
+    }
+    return out;
+  }
+
+  function cellDenom(denom, g, tid) {
+    const d = denom[g];
+    if (d && typeof d === "object") return Number(d[tid]) || 0;
+    return Number(d) || 0;
+  }
+
+  function themeGrouped(groups, counts, denom, themes, tlabel, cmap, opt) {
+    opt = opt || {};
+    const themeIds = themes.map((th) => th.id);
+    const n = Math.max(themeIds.length, 1);
+    const nG = Math.max(groups.length, 1);
+    const w = fitWidth(n, Math.max(64, 24 * nG + 32), 72, 24, 760, 1040);
+    const perTheme = groups.some((g) => denom[g] && typeof denom[g] === "object");
+    const legendItems = groups.map((g, j) => {
+      const d = denom[g];
+      const nLab = !perTheme && d != null ? ` ${d}条` : "";
+      return [`${g}${nLab}`, colorOf(g, j, cmap)];
+    });
+    const left = 72, right = 24, top = 18;
+    const rotate = n >= 5 || w / n < 90;
+    const legH = legendHeight(legendItems, w - left - 16, 120);
+    const bottom = (rotate ? 108 : 56) + legH;
+    const h = Math.max(400, top + 260 + bottom);
+    const pw = w - left - right, ph = h - top - bottom;
+    const slot = pw / n;
+    const bw = Math.min(22, Math.max(7, slot * 0.72 / nG));
+    const ymax = 100;
+    const showIx = new Set(labelIndices(n, slot, rotate));
+    const parts = [];
+    parts.push(t(16, top + ph / 2, opt.ylab || "提及率（%）", 11, "#666", "middle", "normal", -90));
+    for (let tick = 0; tick <= 100; tick += 20) {
+      const y = top + ph * (1 - tick / ymax);
+      parts.push(`<line x1="${left}" y1="${y.toFixed(1)}" x2="${w - right}" y2="${y.toFixed(1)}" stroke="#eee"/>`);
+      parts.push(t(left - 8, y + 4, String(tick), 10, "#888", "end"));
+    }
+    themeIds.forEach((tid, i) => {
+      const cx = left + slot * (i + 0.5);
+      groups.forEach((g, j) => {
+        const nHit = (counts[g] && counts[g][tid]) || 0;
+        const d = cellDenom(denom, g, tid);
+        const val = d ? 100 * nHit / d : 0;
+        const bh = ph * val / ymax;
+        const x = cx - nG * bw / 2 + j * bw;
+        const lab0 = tlabel[tid] || tid;
+        parts.push(markRect(x, top + ph - bh, Math.max(bw - 1, 2), bh, colorOf(g, j, cmap), `${g} · ${lab0}：${fmtNum(val, true)}（${nHit}/${d}）`, {
+          minH: val > 0 ? 6 : 0,
+          slice: { kind: "theme", id: tid, group: g },
+        }));
+      });
+      if (!showIx.has(i)) return;
+      const lab = clipLabel(tlabel[tid] || tid, rotate ? 8 : Math.max(2, Math.floor(slot / 13)));
+      if (rotate) parts.push(t(cx + 2, top + ph + 10, lab, 10, "#333", "end", "normal", -50));
+      else parts.push(t(cx, top + ph + 18, lab, 11, "#333", "middle"));
+    });
+    parts.push(...legend(legendItems, left, h - legH + 8, 120, w - 16));
+    return wrap(w, h, parts.join(""));
+  }
+
+  function codingCharts(sample, coding, book) {
+    const themes = book.themes || [];
+    const tlabel = {};
+    themes.forEach((t) => { tlabel[t.id] = t.label; });
+    const groups = [];
+    for (const r of sample) {
+      const g = r.group || "未分组";
+      if (!groups.includes(g)) groups.push(g);
+    }
+    const coded = [];
+    for (const r of sample) {
+      const c = coding[r.comment_id];
+      if (c && !c.skipped) coded.push([r, c]);
+    }
+    if (!coded.length) return [];
+    const cmap = colorsFor(groups);
+    const multi = groups.length >= 2;
+    const codable = coded.filter(([, c]) => !c.uncodable);
+    const denom = {};
+    groups.forEach((g) => {
+      denom[g] = Math.max(codable.filter(([r]) => (r.group || "未分组") === g).length, 1);
+    });
+    const counts = {};
+    groups.forEach((g) => { counts[g] = {}; });
+    for (const [r, c] of codable) {
+      const g = r.group || "未分组";
+      for (const th of c.themes || []) counts[g][th.id] = (counts[g][th.id] || 0) + 1;
+    }
+    const themeIds = themes.map((t) => t.id);
+    let themeSvg;
+    if (!multi) {
+      const g = groups[0] || "未分组";
+      const themePairs = themeIds.map((tid) => {
+        const nHit = counts[g][tid] || 0;
+        const pct = 100 * nHit / (denom[g] || 1);
+        const lab = tlabel[tid] || tid;
+        return [lab, pct, `${lab}：${fmtNum(pct, true)}（${nHit}/${denom[g] || 0}）`, { kind: "theme", id: tid, group: g }];
+      });
+      themeSvg = bars(`主题提及率 · ${g}（${denom[g] || 0}条）`, themePairs, {
+        ylab: "提及率（%）", pct: true, y_max: 100, color_mode: "mono", show_legend: false,
+      });
+    } else {
+      themeSvg = themeGrouped(groups, counts, denom, themes, tlabel, cmap);
+    }
+    const order = ["pos", "neu", "neg", "mix"];
+    const series = order.map((eid) => {
+      const vals = groups.map((g) => {
+        const sub = codable.filter(([r]) => (r.group || "未分组") === g).map((x) => x[1]);
+        const d = Math.max(sub.length, 1);
+        return 100 * sub.filter((c) => c.overall_emotion === eid).length / d;
+      });
+      return [EMO_LABEL[eid], EMO_COLOR[eid], vals, eid];
+    });
+    const emoSvg = stacked("整句情绪构成", groups, series);
+    const byStratum = new Map();
+    for (const [r, c] of coded) {
+      const g = r.group || "未分组";
+      const st = stratumNorm(r.stratum);
+      const key = g + "\0" + st;
+      if (!byStratum.has(key)) byStratum.set(key, []);
+      byStratum.get(key).push(c);
+    }
+    const hotNew = [];
+    for (const [key, sub] of [...byStratum.entries()].sort((a, b) => a[0].localeCompare(b[0], "zh"))) {
+      const [g, st] = key.split("\0");
+      const lab = stratumLabel(st);
+      const rate = 100 * sub.filter((c) => c.uncodable).length / sub.length;
+      const label = multi ? `${g} · ${lab}` : lab;
+      hotNew.push([label, rate, cmap[g] || PALETTE[0], { kind: "unc", group: g, stratum: st }]);
+    }
+    const uncSvg = hotNew.length ? bars("无法编码占比", hotNew.map((x) => [x[0], x[1], `${x[0]}：${fmtNum(x[1], true)}`, x[3]]), {
+      h: 280, pct: true, y_max: 100, ylab: "占比（%）",
+      colors: Object.fromEntries(hotNew.map((x) => [x[0], x[2]])),
+      show_legend: hotNew.length >= 2,
+    }) : "";
+    const likeEmo = [];
+    for (const eid of order) {
+      const vs = [];
+      for (const [r, c] of codable) {
+        if (c.overall_emotion !== eid) continue;
+        const n = Number(r.like_count);
+        if (!Number.isNaN(n)) vs.push(Math.log1p(n));
+      }
+      if (vs.length) likeEmo.push([EMO_LABEL[eid], vs, EMO_COLOR[eid]]);
+    }
+    const boxSvg = likeEmo.length ? boxplot("不同情绪的点赞（对数）", likeEmo) : "";
+    let gbox = "";
+    if (multi) {
+      const likeG = [];
+      groups.forEach((g, i) => {
+        const vs = [];
+        for (const [r] of coded) {
+          if ((r.group || "未分组") !== g) continue;
+          const n = Number(r.like_count);
+          if (!Number.isNaN(n)) vs.push(Math.log1p(n));
+        }
+        if (vs.length) likeG.push([g, vs, colorOf(g, i, cmap)]);
+      });
+      if (likeG.length) gbox = boxplot("样本点赞（对数）", likeG);
+    }
+    const emoCounts = {};
+    for (const [, c] of codable) {
+      const k = c.overall_emotion || "na";
+      emoCounts[k] = (emoCounts[k] || 0) + 1;
+    }
+    const donutSvg = donut("可编码评论的情绪", Object.entries(emoCounts).map(([k, v]) => [EMO_LABEL[k] || k, v, EMO_COLOR[k] || "#aaa", k]));
+
+    const negByG = {};
+    const nCodableG = {};
+    groups.forEach((g) => { negByG[g] = []; nCodableG[g] = 0; });
+    for (const [r, c] of codable) {
+      const g = r.group || "未分组";
+      nCodableG[g] += 1;
+      if (c.overall_emotion === "neg") negByG[g].push([r, c]);
+    }
+    const negRatePairs = groups.map((g) => {
+      const d = nCodableG[g] || 0;
+      const n = negByG[g].length;
+      const pct = d ? 100 * n / d : 0;
+      return [g, pct, `${g}：整句情绪为负面 ${n} / ${d}（${fmtNum(pct, true)}）`, { kind: "emo", id: "neg", group: g }];
+    });
+    const negColors = {};
+    groups.forEach((g, i) => { negColors[g] = colorOf(g, i, cmap); });
+    const negRateSvg = groups.length ? bars("各分组负面评论占比", negRatePairs, {
+      pct: true, y_max: 100, ylab: "负面占比（%）",
+      color_mode: "group", colors: negColors, show_legend: groups.length >= 6,
+    }) : "";
+    const gNeg = groups.filter((g) => negByG[g].length > 0);
+    let negThemeSvg = "";
+    if (gNeg.length === 1) {
+      const g = gNeg[0];
+      const d = negByG[g].length;
+      const hit = {};
+      for (const [, c] of negByG[g]) {
+        for (const th of c.themes || []) hit[th.id] = (hit[th.id] || 0) + 1;
+      }
+      const pairs = themes.map((th) => {
+        const nHit = hit[th.id] || 0;
+        const pct = d ? 100 * nHit / d : 0;
+        const lab = tlabel[th.id] || th.id;
+        return [lab, pct, `${lab}：${fmtNum(pct, true)}（${nHit}/${d}）`, { kind: "theme", id: th.id, group: g }];
+      });
+      const themeCols = {};
+      pairs.forEach(([lab]) => { themeCols[lab] = NEG; });
+      negThemeSvg = bars(`负面评论的主题构成 · ${g}`, pairs, {
+        pct: true, y_max: 100, ylab: "提及率（%）", color_mode: "group", colors: themeCols, show_legend: false,
+      });
+    } else if (gNeg.length > 1) {
+      const nDenom = {};
+      const nCounts = {};
+      gNeg.forEach((g) => { nDenom[g] = negByG[g].length; nCounts[g] = {}; });
+      for (const g of gNeg) {
+        for (const [, c] of negByG[g]) {
+          for (const th of c.themes || []) nCounts[g][th.id] = (nCounts[g][th.id] || 0) + 1;
+        }
+      }
+      negThemeSvg = themeGrouped(gNeg, nCounts, nDenom, themes, tlabel, cmap, { ylab: "提及率（%）" });
+    }
+    const mentionD = {};
+    const mentionNeg = {};
+    groups.forEach((g) => { mentionD[g] = {}; mentionNeg[g] = {}; });
+    let hasThemeNeg = false;
+    for (const [r, c] of codable) {
+      const g = r.group || "未分组";
+      for (const th of c.themes || []) {
+        if (!th || !th.id) continue;
+        mentionD[g][th.id] = (mentionD[g][th.id] || 0) + 1;
+        if (th.emotion === "neg") {
+          mentionNeg[g][th.id] = (mentionNeg[g][th.id] || 0) + 1;
+          hasThemeNeg = true;
+        }
+      }
+    }
+    let negAspectSvg = "";
+    if (hasThemeNeg && themes.length) {
+      if (groups.length === 1) {
+        const g = groups[0];
+        const pairs = themes.map((th) => {
+          const d = mentionD[g][th.id] || 0;
+          const nHit = mentionNeg[g][th.id] || 0;
+          const pct = d ? 100 * nHit / d : 0;
+          const lab = tlabel[th.id] || th.id;
+          return [lab, pct, `${lab}：主题情绪为负面 ${nHit} / ${d}（${fmtNum(pct, true)}）`, { kind: "theme", id: th.id, group: g }];
+        });
+        const themeCols = {};
+        pairs.forEach(([lab]) => { themeCols[lab] = NEG; });
+        negAspectSvg = bars("各主题的负面标注占比", pairs, {
+          pct: true, y_max: 100, ylab: "负面占比（%）", color_mode: "group", colors: themeCols, show_legend: false,
+        });
+      } else {
+        negAspectSvg = themeGrouped(groups, mentionNeg, mentionD, themes, tlabel, cmap, { ylab: "负面占比（%）" });
+      }
+    }
+
+    const out = [
+      { id: "theme", title: "主题提及率", caption: "纵轴为该主题在各组可编码评论中的提及率。将鼠标移至柱上可查看具体数值。", svg: themeSvg, wide: true },
+      { id: "emo", title: "整句情绪构成", caption: "各组可编码评论中，整句情绪为正、中、负、混的占比，合计为 100%。", svg: emoSvg, wide: true },
+      { id: "donut", title: "可编码评论的整句情绪", caption: "全部可编码评论的整句情绪合计，不按分组拆分。圆心数字为可编码条数。", svg: donutSvg, wide: true },
+    ];
+    if (negRateSvg) {
+      out.push({
+        id: "negrate",
+        title: "各分组负面评论占比",
+        caption: "分母为该组可编码评论。分子为整句情绪标为「负面」的条数。混合情绪不计入本图。",
+        svg: negRateSvg,
+        wide: true,
+      });
+    }
+    if (negThemeSvg) {
+      out.push({
+        id: "negtheme",
+        title: "负面评论的主题构成",
+        caption: "分母为该组整句情绪为「负面」的可编码评论。一条负面评论可同时计入多个主题，故合计可超过 100%。",
+        svg: negThemeSvg,
+        wide: true,
+      });
+    }
+    if (negAspectSvg) {
+      out.push({
+        id: "negaspect",
+        title: "各主题的负面标注占比",
+        caption: "分母为该组可编码评论中提及该主题的条数。分子为该主题情绪被标为「负面」的条数。本图反映谈及某主题时的态度，而非负面评论在讨论哪些主题。",
+        svg: negAspectSvg,
+        wide: true,
+      });
+    }
+    if (uncSvg) out.push({ id: "unc", title: "无法编码占比", caption: "无法编码评论占该组、该层已标注评论的比例。", svg: uncSvg, wide: true });
+    if (boxSvg) out.push({ id: "ebox", title: "不同情绪的点赞", caption: "纵轴为点赞数的对数变换 ln(点赞+1)。箱体位置越高，表示该情绪下高赞评论越多。", svg: boxSvg, wide: true });
+    if (gbox) out.push({ id: "gbox", title: "各组点赞对比", caption: "各组已标注评论的点赞分布。纵轴为 ln(点赞+1)。", svg: gbox, wide: true });
+    return out;
+  }
+
+  function themeTable(sample, coding, book) {
+    const themes = book.themes || [];
+    const groups = [];
+    for (const r of sample) {
+      const g = r.group || "未分组";
+      if (!groups.includes(g)) groups.push(g);
+    }
+    const codable = [];
+    for (const r of sample) {
+      const c = coding[r.comment_id];
+      if (c && !c.skipped && !c.uncodable) codable.push([r, c]);
+    }
+    if (!codable.length) return "<p class='empty'>尚无可编码评论，无法计算主题提及率。</p>";
+    const head = "<tr><th scope='col'>主题</th>" + groups.map((g) => `<th scope='col'>${esc(g)}</th>`).join("") + "</tr>";
+    const body = themes.map((t) => {
+      const cells = [`<th scope='row'>${esc(t.label)}</th>`];
+      for (const g of groups) {
+        const sub = codable.filter(([r]) => (r.group || "未分组") === g).map((x) => x[1]);
+        const d = sub.length;
+        const n = sub.filter((c) => (c.themes || []).some((x) => x.id === t.id)).length;
+        const pct = d ? (100 * n / d).toFixed(1) : "—";
+        cells.push(`<td class="num"><span class="pct">${d ? pct + "%" : "—"}</span><span class="frac">${n} / ${d}</span></td>`);
+      }
+      return "<tr>" + cells.join("") + "</tr>";
+    }).join("");
+    return `<div class="table-wrap"><table class="data">
+      <caption>主题提及率：分母为各组可编码评论。一条评论可同时计入多个主题，故同一列内合计可超过 100%。</caption>
+      <thead>${head}</thead><tbody>${body}</tbody>
+    </table></div>`;
+  }
+
+  function emotionTable(sample, coding) {
+    const groups = [];
+    for (const r of sample) {
+      const g = r.group || "未分组";
+      if (!groups.includes(g)) groups.push(g);
+    }
+    const order = ["pos", "neu", "neg", "mix"];
+    const rows = [];
+    for (const r of sample) {
+      const c = coding[r.comment_id];
+      if (c && !c.skipped && !c.uncodable) rows.push([r, c]);
+    }
+    if (!rows.length) return "<p class='empty'>尚无可编码评论，无法统计整句情绪。</p>";
+    const head = "<tr><th scope='col'>整句情绪</th>" + groups.map((g) => `<th scope='col'>${esc(g)}</th>`).join("") + "<th scope='col'>合计</th></tr>";
+    const body = order.map((eid) => {
+      const cells = [`<th scope='row'>${EMO_LABEL[eid]}</th>`];
+      let totN = 0, totD = 0;
+      for (const g of groups) {
+        const sub = rows.filter(([r]) => (r.group || "未分组") === g).map((x) => x[1]);
+        const n = sub.filter((c) => c.overall_emotion === eid).length;
+        totN += n;
+        totD += sub.length;
+        const pct = sub.length ? (100 * n / sub.length).toFixed(1) : "—";
+        cells.push(`<td class="num"><span class="pct">${sub.length ? pct + "%" : "—"}</span><span class="frac">${n} / ${sub.length}</span></td>`);
+      }
+      cells.push(`<td class="num"><span class="pct">${totD ? (100 * totN / totD).toFixed(1) + "%" : "—"}</span><span class="frac">${totN} / ${totD}</span></td>`);
+      return "<tr>" + cells.join("") + "</tr>";
+    }).join("");
+    return `<div class="table-wrap"><table class="data">
+      <caption>整句情绪构成：分母为各组可编码评论。每条评论只计入一种整句情绪，故同一列内合计为 100%。</caption>
+      <thead>${head}</thead><tbody>${body}</tbody>
+    </table></div>`;
+  }
+
+  function negativeTables(sample, coding, book) {
+    const themes = book.themes || [];
+    const groups = [];
+    for (const r of sample) {
+      const g = r.group || "未分组";
+      if (!groups.includes(g)) groups.push(g);
+    }
+    const rows = [];
+    for (const r of sample) {
+      const c = coding[r.comment_id];
+      if (c && !c.skipped && !c.uncodable) rows.push([r, c]);
+    }
+    if (!rows.length) return "<p class='empty'>尚无可编码评论，无法统计负面评论。</p>";
+    const byG = {};
+    groups.forEach((g) => { byG[g] = []; });
+    for (const pair of rows) {
+      const g = pair[0].group || "未分组";
+      (byG[g] || (byG[g] = [])).push(pair);
+    }
+    const scaleHead = "<tr><th scope='col'>分组</th><th class='num' scope='col'>可编码</th><th class='num' scope='col'>整句负面</th><th class='num' scope='col'>负面占比</th></tr>";
+    const scaleBody = groups.map((g) => {
+      const sub = byG[g] || [];
+      const d = sub.length;
+      const n = sub.filter(([, c]) => c.overall_emotion === "neg").length;
+      const pct = d ? (100 * n / d).toFixed(1) + "%" : "—";
+      return `<tr><th scope="row">${esc(g)}</th><td class="num">${d}</td><td class="num">${n}</td><td class="num"><span class="pct">${pct}</span><span class="frac">${n} / ${d}</span></td></tr>`;
+    }).join("");
+    const totD = rows.length;
+    const totN = rows.filter(([, c]) => c.overall_emotion === "neg").length;
+    const totRow = `<tr><th scope="row">合计</th><td class="num">${totD}</td><td class="num">${totN}</td><td class="num"><span class="pct">${totD ? (100 * totN / totD).toFixed(1) + "%" : "—"}</span><span class="frac">${totN} / ${totD}</span></td></tr>`;
+    const scale = `<div class="table-wrap"><table class="data">
+      <caption>各组整句情绪为「负面」的规模。占比的分母为该组可编码评论。混合情绪不计入本表。</caption>
+      <thead>${scaleHead}</thead><tbody>${scaleBody}${totRow}</tbody>
+    </table></div>`;
+    if (!totN) {
+      return scale + "<p class='empty'>当前没有整句情绪为负面的可编码评论，故无法展示负面评论的主题构成。</p>";
+    }
+    const themeHead = "<tr><th scope='col'>主题</th>" + groups.map((g) => `<th class='num' scope='col'>${esc(g)}</th>`).join("") + "</tr>";
+    const themeBody = themes.map((th) => {
+      const cells = [`<th scope="row">${esc(th.label)}</th>`];
+      for (const g of groups) {
+        const neg = (byG[g] || []).filter(([, c]) => c.overall_emotion === "neg").map((x) => x[1]);
+        const d = neg.length;
+        if (!d) {
+          cells.push(`<td class="num">—</td>`);
+          continue;
+        }
+        const n = neg.filter((c) => (c.themes || []).some((x) => x.id === th.id)).length;
+        cells.push(`<td class="num"><span class="pct">${(100 * n / d).toFixed(1)}%</span><span class="frac">${n} / ${d}</span></td>`);
+      }
+      return "<tr>" + cells.join("") + "</tr>";
+    }).join("");
+    const themeTbl = `<div class="table-wrap" style="margin-top:16px"><table class="data">
+      <caption>负面评论中的主题提及率。分母为该组整句情绪为负面的可编码评论。一条评论可计入多个主题。无负面评论的组别以「—」表示。</caption>
+      <thead>${themeHead}</thead><tbody>${themeBody}</tbody>
+    </table></div>`;
+    return scale + themeTbl;
+  }
+
+  function composeTable(sample) {
+    const gcount = {};
+    const scount = {};
+    for (const r of sample) {
+      const g = r.group || "未分组";
+      const s = stratumLabel(r.stratum);
+      gcount[g] = (gcount[g] || 0) + 1;
+      scount[s] = (scount[s] || 0) + 1;
+    }
+    const n = sample.length || 1;
+    const gRows = mostCommon(gcount).map(([g, c]) =>
+      `<tr><th scope="row">${esc(g)}</th><td class="num">${c}</td><td class="num">${(100 * c / n).toFixed(1)}%</td></tr>`
+    ).join("");
+    const sRows = mostCommon(scount).map(([s, c]) =>
+      `<tr><th scope="row">${esc(s || "未分层")}</th><td class="num">${c}</td><td class="num">${(100 * c / n).toFixed(1)}%</td></tr>`
+    ).join("");
+    return `<div class="split">
+      <div class="table-wrap"><table class="data">
+        <caption>按分组（产品 / 频道 / 账号）</caption>
+        <thead><tr><th>分组</th><th class="num">条数</th><th class="num">占比</th></tr></thead>
+        <tbody>${gRows}</tbody>
+      </table></div>
+      <div class="table-wrap"><table class="data">
+        <caption>按分层（如热门、最新）</caption>
+        <thead><tr><th>分层</th><th class="num">条数</th><th class="num">占比</th></tr></thead>
+        <tbody>${sRows}</tbody>
+      </table></div>
+    </div>`;
+  }
+
+  function reportFig(f) {
+    if (!f || !f.svg) return "";
+    return `<div class="fig">${f.svg}</div>`;
+  }
+
+  function triCards(items) {
+    if (!items || !items.length) return "";
+    const cols = items.length === 1 ? 1 : items.length === 2 ? 2 : 3;
+    return `<div class="tri cols-${cols}">${items.map((it) =>
+      `<article class="gcard" style="--g:${it.color || "#3B6D8C"}"><h3><i></i>${esc(it.name)}${it.note ? `<span>${esc(it.note)}</span>` : ""}</h3>${it.body}</article>`
+    ).join("")}</div>`;
+  }
+
+  function collectReport(sample, coding, book) {
+    const themes = book.themes || [];
+    const groups = [];
+    for (const r of sample) {
+      const g = r.group || "未分组";
+      if (!groups.includes(g)) groups.push(g);
+    }
+    const cmap = colorsFor(groups);
+    const byG = groups.map((name, i) => {
+      const rows = sample.filter((r) => (r.group || "未分组") === name);
+      let labeled = 0, skipped = 0, unlabeled = 0, unc = 0;
+      const codable = [];
+      const labeledPairs = [];
+      for (const r of rows) {
+        const c = coding[r.comment_id];
+        if (!c) unlabeled += 1;
+        else if (c.skipped) skipped += 1;
+        else {
+          labeled += 1;
+          labeledPairs.push([r, c]);
+          if (c.uncodable) unc += 1;
+          else codable.push([r, c]);
+        }
+      }
+      const themeHits = themes.map((t) => {
+        const n = codable.filter(([, c]) => (c.themes || []).some((x) => x.id === t.id)).length;
+        return { id: t.id, label: t.label, n, pct: codable.length ? 100 * n / codable.length : 0 };
+      }).sort((a, b) => b.pct - a.pct || String(a.label).localeCompare(String(b.label), "zh"));
+      const emo = { pos: 0, neu: 0, neg: 0, mix: 0 };
+      for (const [, c] of codable) {
+        if (emo[c.overall_emotion] != null) emo[c.overall_emotion] += 1;
+      }
+      const emoPct = {};
+      ["pos", "neu", "neg", "mix"].forEach((k) => {
+        emoPct[k] = codable.length ? 100 * emo[k] / codable.length : 0;
+      });
+      const negRows = codable.filter(([, c]) => c.overall_emotion === "neg");
+      const negThemes = themes.map((t) => {
+        const n = negRows.filter(([, c]) => (c.themes || []).some((x) => x.id === t.id)).length;
+        return { id: t.id, label: t.label, n, pct: negRows.length ? 100 * n / negRows.length : 0 };
+      }).sort((a, b) => b.pct - a.pct);
+      const bySt = { hot: { labeled: 0, unc: 0 }, newest: { labeled: 0, unc: 0 } };
+      for (const [r, c] of labeledPairs) {
+        const st = stratumNorm(r.stratum);
+        if (st === "hot") {
+          bySt.hot.labeled += 1;
+          if (c.uncodable) bySt.hot.unc += 1;
+        } else if (st === "newest") {
+          bySt.newest.labeled += 1;
+          if (c.uncodable) bySt.newest.unc += 1;
+        }
+      }
+      const top = themeHits.filter((t) => t.n > 0).slice(0, 3);
+      return {
+        name, color: colorOf(name, i, cmap), n: rows.length,
+        labeled, skipped, unlabeled, unc, nCodable: codable.length,
+        themes: themeHits, top, emo, emoPct,
+        negN: negRows.length,
+        negPct: codable.length ? 100 * negRows.length / codable.length : 0,
+        negThemes, bySt,
+      };
+    });
+    const sum = (fn) => byG.reduce((n, g) => n + fn(g), 0);
+    const nCodable = sum((g) => g.nCodable);
+    const nUnc = sum((g) => g.unc);
+    const nNeg = sum((g) => g.negN);
+    const hot = { labeled: sum((g) => g.bySt.hot.labeled), unc: sum((g) => g.bySt.hot.unc) };
+    const newest = { labeled: sum((g) => g.bySt.newest.labeled), unc: sum((g) => g.bySt.newest.unc) };
+    return { groups: byG, themes, nCodable, nUnc, nNeg, hot, newest, hasStrata: hot.labeled + newest.labeled > 0 };
+  }
+
+  function themeBody(g) {
+    if (!g.nCodable) return "<p>本组尚无可编码评论，主题提及率暂缺。</p>";
+    const top = g.top;
+    if (!top.length) return `<p>可编码 ${g.nCodable} 条，尚未标出主题。</p>`;
+    const p1 = top.map((t) => `${esc(t.label)}占 ${fmtNum(t.pct, true)}`).join("，") + "。";
+    let p2;
+    if (top.length >= 2 && top[0].pct - top[1].pct < 8) {
+      p2 = `${esc(top[0].label)}与${esc(top[1].label)}大体相当，尚未形成单一主轴。`;
+    } else if (top[0].pct >= 40) p2 = `${esc(top[0].label)}明显高于其余主题，讨论相对集中。`;
+    else if (top[0].pct < 22) p2 = "各主题提及率均不高，议题较为分散。";
+    else p2 = `讨论主轴偏向${esc(top[0].label)}。`;
+    const rest = g.themes.filter((t) => t.n > 0).slice(3, 5);
+    if (rest.length) p2 += ` 其后是${rest.map((t) => esc(t.label)).join("、")}。`;
+    return `<p>${p1}</p><p>${p2}</p>`;
+  }
+
+  function themeCallout(stats) {
+    const axes = stats.groups.filter((g) => g.nCodable && g.top[0]);
+    if (!axes.length) return "主题比例仅来自可编码评论。一条评论可计入多个主题，列内合计可以超过 100%。";
+    if (axes.length === 1) {
+      return `可编码评论最常谈到「${esc(axes[0].top[0].label)}」（${fmtNum(axes[0].top[0].pct, true)}）。一条评论可计入多个主题，故各主题合计可以超过 100%。公开评论不能代表全体用户。`;
+    }
+    const ids = [...new Set(axes.map((g) => g.top[0].id))];
+    if (ids.length === 1) {
+      return `各组最常提及的主题同为「${esc(axes[0].top[0].label)}」，但占比并不相同。结构接近，不等于口碑接近，也不宜据此判断哪一组更好。`;
+    }
+    return axes.map((g) => `${esc(g.name)}偏向${esc(g.top[0].label)}`).join("，") + "。差异来自分组对象与样本窗口，横比的是公开评区当时在谈什么，不是哪一边更好。";
+  }
+
+  function emoLeadEmo(g) {
+    const e = g.emoPct;
+    return [["neu", "中性", e.neu], ["pos", "正面", e.pos], ["neg", "负面", e.neg], ["mix", "混合", e.mix]]
+      .sort((a, b) => b[2] - a[2])[0];
+  }
+
+  function emoBody(g) {
+    if (!g.nCodable) return "<p>本组尚无可编码评论。</p>";
+    const e = g.emoPct;
+    const p1 = `正面 ${fmtNum(e.pos, true)}，中性 ${fmtNum(e.neu, true)}，负面 ${fmtNum(e.neg, true)}，混合 ${fmtNum(e.mix, true)}。`;
+    const lead = emoLeadEmo(g);
+    const second = [["neu", "中性", e.neu], ["pos", "正面", e.pos], ["neg", "负面", e.neg], ["mix", "混合", e.mix]]
+      .sort((a, b) => b[2] - a[2])[1];
+    let p2;
+    if (second && lead[2] - second[2] < 6 && second[2] > 0) {
+      p2 = `${lead[1]}与${second[1]}大体相当。宜并读，不宜只看其中一种态度。`;
+    } else if (lead[0] === "neu") p2 = "中性占比最高。中性句常见于说明、提问或考据，不等于口碑低迷，也不等于讨论冷清。";
+    else if (lead[0] === "pos") p2 = "正面占比最高。正面高，不等于所有人都满意；仍须同时阅读中性与负面。";
+    else if (lead[0] === "neg") p2 = "负面占比最高。这只说明本窗口可编码评论中批评更集中，不能外推到未发言的用户。";
+    else p2 = "混合情绪相对突出，不少评论同时包含肯定与不满。";
+    if (e.neg >= 12 && lead[0] !== "neg" && !(second && second[0] === "neg" && lead[2] - second[2] < 6)) {
+      p2 += ` 负面已达 ${fmtNum(e.neg, true)}，宜对照其主题构成。`;
+    }
+    return `<p>${p1}</p><p>${p2}</p>`;
+  }
+
+  function emoCallout(stats) {
+    const live = stats.groups.filter((g) => g.nCodable);
+    if (!live.length) return "整句情绪每条只记一种态度。混合情绪计入构成，但不并入负面评论分析。";
+    if (live.length === 1) {
+      const lead = emoLeadEmo(live[0]);
+      return `本样本以「${lead[1]}」为主（${fmtNum(lead[2], true)}）。中性高不等于口碑差，正面高也不等于批评不存在。`;
+    }
+    return "中性占比高，不等于口碑差；正面占比高，也不等于批评不存在。整句情绪按一条评论只记一种态度，不能加总各主题情绪。";
+  }
+
+  function noiseBody(g) {
+    if (!g.labeled) return "<p>本组尚无已标注评论。</p>";
+    const rate = 100 * g.unc / g.labeled;
+    const p1 = `已标注 ${g.labeled} 条，其中无法编码 ${g.unc} 条（${fmtNum(rate, true)}）。`;
+    const h = g.bySt.hot, n = g.bySt.newest;
+    let p2;
+    if (h.labeled && n.labeled) {
+      const hp = 100 * h.unc / h.labeled, np = 100 * n.unc / n.labeled;
+      p2 = `热门层 ${fmtNum(hp, true)}（${h.unc}/${h.labeled}），最新层 ${fmtNum(np, true)}（${n.unc}/${n.labeled}）。`;
+      if (np > hp + 8) p2 += " 最新层明显更吵。若把最新层原样计入主题比例，有效讨论会被冲淡。";
+      else if (hp > np + 8) p2 += " 热门层无法编码比例更高，需核对该层是否混入跟风短句。";
+      else p2 += " 两层噪音差距不大。";
+    } else p2 = "无法编码计入已标注，但不进入主题与情绪的分母。";
+    return `<p>${p1}</p><p>${p2}</p>`;
+  }
+
+  function noiseCallout(stats) {
+    const { hot, newest } = stats;
+    if (hot.labeled && newest.labeled) {
+      const hp = 100 * hot.unc / hot.labeled, np = 100 * newest.unc / newest.labeled;
+      if (np > hp + 8) return `最新层无法编码 ${fmtNum(np, true)}，高于热门层的 ${fmtNum(hp, true)}。主题和情绪只用可编码评论；全部样本只用来观察噪音分布。`;
+      return `无法编码不进入主题与情绪比例。热门层 ${fmtNum(hp, true)}，最新层 ${fmtNum(np, true)}。`;
+    }
+    return "无法编码计入已标注，但不进入主题、情绪与负面评论统计的分母。";
+  }
+
+  function negBody(g) {
+    if (!g.nCodable) return "<p>本组尚无可编码评论。</p>";
+    if (!g.negN) {
+      return `<p>可编码 ${g.nCodable} 条中，没有整句情绪为负面的评论。</p><p>这不表示没有批评，只表示按整句口径，本窗口未标出负面。</p>`;
+    }
+    const top = g.negThemes.filter((t) => t.n > 0).slice(0, 3);
+    const p1 = `整句负面 ${g.negN} / ${g.nCodable}（${fmtNum(g.negPct, true)}）。`;
+    const p2 = top.length
+      ? `这些负面评论主要谈到${top.map((t) => `${esc(t.label)}（${fmtNum(t.pct, true)}）`).join("、")}。一条负面评论可计入多个主题。`
+      : "负面评论尚未标出主题。";
+    return `<p>${p1}</p><p>${p2}</p>`;
+  }
+
+  function negCallout(stats) {
+    const live = stats.groups.filter((g) => g.negN);
+    if (!live.length) return "混合情绪计入整句情绪构成，但不并入本部分。";
+    if (live.length === 1) {
+      const g = live[0];
+      const top = g.negThemes.find((t) => t.n > 0);
+      return `整句负面集中在「${esc(g.name)}」${top ? `，并较多谈到${esc(top.label)}` : ""}。点赞高低描述的是传得开不开，不能直接当作态度强度。`;
+    }
+    const ranked = live.slice().sort((a, b) => b.negPct - a.negPct);
+    return `${esc(ranked[0].name)}的整句负面占比最高（${fmtNum(ranked[0].negPct, true)}）。混合情绪不计入本部分。横比的是批评在评区里有多可见，不是产品孰优孰劣。`;
+  }
+
+  function emoOneLine(g) {
+    if (!g.nCodable) return "—";
+    const lead = emoLeadEmo(g);
+    return `${lead[1]}为主（${fmtNum(lead[2], true)}）`;
+  }
+
+  function compareRow(label, cells) {
+    return `<tr><th>${label}</th>${cells.map((c) => `<td>${c}</td>`).join("")}</tr>`;
+  }
+
+  function compareSection(stats) {
+    if (stats.groups.length < 2 || !stats.nCodable) return "";
+    const gs = stats.groups;
+    const head = `<tr><th>看什么</th>${gs.map((g) => `<th>${esc(g.name)}</th>`).join("")}</tr>`;
+    const body = [
+      compareRow("讨论主轴", gs.map((g) => g.nCodable && g.top[0] ? `${esc(g.top[0].label)}（${fmtNum(g.top[0].pct, true)}）` : "—")),
+      compareRow("情绪结构", gs.map(emoOneLine)),
+      compareRow("无法编码", gs.map((g) => g.labeled ? `${g.unc} / ${g.labeled}（${fmtNum(100 * g.unc / g.labeled, true)}）` : "—")),
+      compareRow("整句负面", gs.map((g) => g.nCodable ? `${fmtNum(g.negPct, true)}（${g.negN}/${g.nCodable}）` : "—")),
+    ].join("");
+    const cards = gs.map((g) => {
+      let bodyHtml;
+      if (!g.nCodable) bodyHtml = "<p>本组尚无可编码评论，暂不概括。</p>";
+      else {
+        const axis = g.top[0] ? g.top[0].label : "尚未形成主题";
+        bodyHtml = `<p>主轴是${esc(axis)}，情绪${emoOneLine(g)}。这是该分组在本窗口公开评区中的结构，不是产品优劣结论。</p>`;
+      }
+      return { name: g.name, color: g.color, note: `可编码 ${g.nCodable} 条`, body: bodyHtml };
+    });
+    return `<section class="panel" id="compare">
+  <div class="hd">
+    <div class="num">对照</div>
+    <h2>各组在本窗口中的位置</h2>
+    <p class="lead">下表只概括已经画过的图，便于横读。比较的是公开评区当时在做什么，不是哪一边更好。</p>
+  </div>
+  <div class="table-wrap"><table class="data"><thead>${head}</thead><tbody>${body}</tbody></table></div>
+  ${triCards(cards)}
+  <p class="callout">不能外推到其他平台或沉默用户，也不能评价这个时间窗之后的变化。</p>
+</section>`;
+  }
+
+  function readingCards(stats, kind) {
+    return stats.groups.map((g) => ({
+      name: g.name,
+      color: g.color,
+      note: kind === "noise" ? `已标注 ${g.labeled} 条` : `可编码 ${g.nCodable} 条`,
+      body: kind === "theme" ? themeBody(g)
+        : kind === "emo" ? emoBody(g)
+        : kind === "noise" ? noiseBody(g)
+        : negBody(g),
+    }));
+  }
+
+  function localStamp() {
+    const d = new Date();
+    const p = (n) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+  }
+
+  function buildReport() {
+    const sample = db.sample;
+    const coding = db.coding;
+    const book = db.codebook;
+    const meta = db.meta;
+    const src = db.source;
+    const codedN = labeledCount(sample, coding);
+    const unc = sample.filter((r) => {
+      const c = coding[r.comment_id];
+      return c && c.uncodable && !c.skipped;
+    }).length;
+    const codable = codedN - unc;
+    const skipped = sample.filter((r) => !!(coding[r.comment_id] || {}).skipped).length;
+    const unlabeled = Math.max(0, sample.length - codedN - skipped);
+    const pending = unlabeled + skipped;
+    const stats = collectReport(sample, coding, book);
+    const figs = codingCharts(sample, coding, book);
+    const figBy = {};
+    figs.forEach((f) => { figBy[f.id] = f; });
+    const showTheme = stats.nCodable > 0;
+    const showEmo = stats.nCodable > 0;
+    const showNoise = stats.nUnc > 0;
+    const showNeg = stats.nNeg > 0;
+    const showCompare = stats.groups.length >= 2 && stats.nCodable > 0;
+    const frozen = book.frozen ? "已冻结" : "草稿（未冻结）";
+    const when = localStamp();
+    const name = meta.study_name || "未命名研究";
+    const chips = [
+      `<span class="chip">${esc(when)}</span>`,
+      `<span class="chip">编码表${frozen}</span>`,
+      `<span class="chip">${sample.length} 条已读</span>`,
+      `<span class="chip">可编码 ${codable} 条</span>`,
+    ].concat(stats.groups.slice(0, 6).map((g) => `<span class="chip">${esc(g.name)}</span>`)).join("");
+    const toc = [`<a href="#brief">读法</a>`];
+    if (showTheme) toc.push(`<a href="#themes">主题</a>`);
+    if (showEmo) toc.push(`<a href="#emotion">情绪</a>`);
+    if (showNoise) toc.push(`<a href="#noise">噪音</a>`);
+    if (showNeg) toc.push(`<a href="#negative">负面</a>`);
+    if (showCompare) toc.push(`<a href="#compare">对照</a>`);
+    toc.push(`<a href="#method">范围</a>`);
+    const legend = stats.groups.map((g) =>
+      `<span><i style="background:${g.color}"></i>${esc(g.name)}</span>`
+    ).join("");
+    const legendHtml = legend || `<span>源数据 ${src.length} 条</span>`;
+    const useStratumKpi = stats.hasStrata;
+    const kpi = useStratumKpi
+      ? `<div class="kpi">
+    <div class="cell"><b>${sample.length}</b><span>进入编码台的样本</span></div>
+    <div class="cell"><b>${codable}</b><span>可编码（${sample.length ? fmtNum(100 * codable / sample.length, true) : "—"}）</span></div>
+    <div class="cell"><b>${stats.hot.unc}</b><span>热门里无法编码（${stats.hot.unc}/${stats.hot.labeled || 0}）</span></div>
+    <div class="cell"><b>${stats.newest.unc}</b><span>最新里无法编码（${stats.newest.unc}/${stats.newest.labeled || 0}）</span></div>
+  </div>`
+      : `<div class="kpi">
+    <div class="cell"><b>${sample.length}</b><span>进入编码台的样本</span></div>
+    <div class="cell"><b>${codable}</b><span>可编码（${sample.length ? fmtNum(100 * codable / sample.length, true) : "—"}）</span></div>
+    <div class="cell"><b>${unc}</b><span>无法编码</span></div>
+    <div class="cell"><b>${pending}</b><span>待完成（未标注 ${unlabeled} · 已跳过 ${skipped}）</span></div>
+  </div>`;
+    const themeList = (book.themes || []).map((t) => esc(t.label)).filter(Boolean).join("、") || "未定义";
+    const css = `
+:root{--ink:#1c1915;--muted:#6a6258;--paper:#e9e1d4;--card:#fbf6ee;--line:#d8ccbc;--navy:#1e2a38;--navy-2:#2a3b4f;--accent:#3B6D8C;--accent2:#c47b5a;}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;color:var(--ink);background:radial-gradient(900px 420px at 0% -8%,rgba(59,109,140,.11),transparent 55%),radial-gradient(800px 380px at 100% 0%,rgba(196,123,90,.10),transparent 50%),var(--paper);font:15px/1.65 "Source Han Sans SC","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;}
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px;}
+.hero{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 100%);color:#f4efe6;padding:36px 0 28px;border-bottom:4px solid var(--accent2);}
+.hero .kicker{font-size:13px;color:#c9c0b3;margin:0 0 10px;}
+.hero h1{margin:0 0 12px;font-size:28px;font-weight:650;line-height:1.3;}
+.hero .sub{margin:0 0 18px;color:#d5cbbd;max-width:46em;font-size:14.5px;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{font-size:12px;padding:5px 11px;border:1px solid rgba(244,239,230,.22);border-radius:999px;color:#f4efe6;}
+nav.toc{position:sticky;top:0;z-index:8;background:rgba(251,246,238,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+nav.toc .wrap{display:flex;flex-wrap:wrap;gap:4px 18px;padding:10px 28px;}
+nav.toc a{color:var(--accent);text-decoration:none;font-size:13px;}
+nav.toc a:hover{text-decoration:underline;}
+main.wrap{padding-top:28px;padding-bottom:72px;}
+.panel{background:var(--card);border:1px solid var(--line);margin:0 0 22px;}
+.hd{padding:22px 26px 14px;}
+.hd .num{font-size:12px;color:var(--muted);}
+.hd h2{margin:4px 0 8px;font-size:20px;font-weight:650;}
+.lead{margin:0;color:var(--muted);font-size:14px;max-width:52em;}
+.fig{padding:4px 18px 10px;}
+.fig svg{display:block;max-width:100%;height:auto;margin:0 auto;background:#fff;border:1px solid var(--line);}
+.tri{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--line);}
+.tri.cols-1{grid-template-columns:1fr;}
+.tri.cols-2{grid-template-columns:1fr 1fr;}
+.gcard{padding:18px 20px 20px;border-right:1px solid var(--line);min-width:0;}
+.tri.cols-3 .gcard:nth-child(3n),.tri.cols-2 .gcard:nth-child(2n),.gcard:last-child{border-right:none;}
+.tri.cols-3 .gcard:nth-child(n+4),.tri.cols-2 .gcard:nth-child(n+3){border-top:1px solid var(--line);}
+.gcard h3{display:flex;align-items:baseline;gap:8px;margin:0 0 10px;font-size:14px;}
+.gcard h3 i{width:8px;height:8px;background:var(--g);display:inline-block;border-radius:50%;flex:none;}
+.gcard h3 span{font-weight:400;color:var(--muted);font-size:12px;}
+.gcard p{margin:0 0 8px;font-size:14px;}
+.gcard p:last-child{margin-bottom:0;}
+.callout{margin:0;padding:14px 26px 16px;font-size:14px;color:#4f493f;background:#f3ebde;border-top:1px solid var(--line);}
+.callout.warn{color:#6a5340;}
+.glossary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid var(--line);}
+.glossary>div{padding:16px 20px 18px;border-right:1px solid var(--line);}
+.glossary>div:last-child{border-right:none;}
+.glossary b{display:block;margin-bottom:6px;font-size:13px;}
+.glossary p{margin:0;font-size:13.5px;color:#4f493f;}
+.kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border-top:1px solid var(--line);}
+.cell{background:var(--card);padding:18px 20px 16px;}
+.cell b{display:block;font-size:28px;font-variant-numeric:tabular-nums;line-height:1.1;}
+.cell span{color:var(--muted);font-size:12.5px;}
+.legend-row{display:flex;flex-wrap:wrap;gap:18px;padding:12px 26px 16px;font-size:13px;color:var(--muted);}
+.legend-row i{width:9px;height:9px;display:inline-block;border-radius:50%;margin-right:6px;vertical-align:middle;}
+.table-wrap{overflow-x:auto;border-top:1px solid var(--line);}
+table.data{width:100%;border-collapse:collapse;font-size:13.5px;}
+table.data th,table.data td{border-bottom:1px solid var(--line);padding:12px 14px;vertical-align:top;text-align:left;}
+table.data thead th{background:#f3ebde;font-size:13px;}
+table.data tbody th{width:8em;color:var(--muted);font-weight:650;background:#f8f2e8;}
+.empty{color:var(--muted);padding:8px 26px 18px;}
+.methods{padding:0 26px 18px;}
+.methods ul{margin:0;padding:0 0 0 1.15em;color:#3f3a33;}
+.methods li{margin:0 0 8px;font-size:14px;}
+footer.site{color:var(--muted);font-size:12.5px;padding:8px 0 24px;}
+footer.site p{margin:0 0 6px;max-width:52em;}
+svg text{pointer-events:none;}
+[data-tip]{cursor:pointer;}
+#chartTip{position:fixed;z-index:20;display:none;background:var(--navy);color:#fff;padding:7px 10px;border-radius:6px;font-size:12.5px;pointer-events:none;max-width:280px;line-height:1.45;box-shadow:0 6px 18px rgba(28,25,22,.18);}
+@media(max-width:900px){
+  .kpi,.glossary,.tri{grid-template-columns:1fr;}
+  .glossary>div,.gcard{border-right:none;border-bottom:1px solid var(--line);}
+  .hero h1{font-size:22px;}
+}
+@media print{
+  @page{size:A4;margin:12mm;}
+  nav.toc,.no-print,#chartTip{display:none !important;}
+  .hero{background:#fff;color:#111;border-bottom:2px solid #111;}
+  .hero .sub,.chip,.hero .kicker{color:#333;}
+  .chip{border-color:#ccc;}
+  .panel{break-inside:avoid;}
+  body{background:#fff;}
+  .hero,.panel{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+`.replace(/\n/g, "");
+    return `<!DOCTYPE html><html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>${esc(name)} · 内容分析报告</title>
+<style>${css}</style>
+</head><body>
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">内容分析工作台 · 编码报告</p>
+    <h1>${esc(name)}</h1>
+    <p class="sub">建议顺序：主题 → 情绪 → 噪音 → 对照。比例只用可编码评论；未标注与已跳过不进入发现。词典初标须经人工复核。公开评论不能代表全体用户。</p>
+    <div class="chips">${chips}</div>
+  </div>
+</header>
+<nav class="toc" aria-label="目录"><div class="wrap">${toc.join("")}</div></nav>
+<main class="wrap">
+<section class="panel" id="brief">
+  <div class="hd">
+    <div class="num">读法</div>
+    <h2>怎么看这份材料</h2>
+    <p class="lead">先分分组看图，再读图下的说明，最后到对照。比例来自逐条标注，没有用关键词扫完全部源数据。</p>
+  </div>
+  <div class="glossary">
+    <div>
+      <b>可编码</b>
+      <p>已标注，且既非跳过、亦非无法编码。主题、情绪与负面分析均以此为分母，共 ${codable} 条。</p>
+    </div>
+    <div>
+      <b>无法编码</b>
+      <p>已阅读，但无法判断讨论对象。计入已标注，共 ${unc} 条，不进入主题与情绪比例。</p>
+    </div>
+    <div>
+      <b>未标注 / 跳过</b>
+      <p>尚未完成，或本轮暂不处理。未标注 ${unlabeled} 条，已跳过 ${skipped} 条，二者均不得写入结论。</p>
+    </div>
+  </div>
+  ${kpi}
+  <div class="legend-row">${legendHtml}<span>编码表「${esc(book.name || "未命名")}」· ${frozen}</span><span>分析单位：一条公开评论</span></div>
+  ${pending ? `<div class="callout warn" role="status"><strong>编码尚未完成。</strong>未标注 ${unlabeled} 条，已跳过 ${skipped} 条。下列发现仅基于已完成标注的部分，请勿当作全样本结论。</div>` : ""}
+</section>
+${showTheme ? `<section class="panel" id="themes">
+  <div class="hd">
+    <div class="num">主题</div>
+    <h2>评区在谈什么</h2>
+    <p class="lead">一条评论最多可计入 ${book.max_themes || 3} 个主题，故各列合计可以超过 100%。分母为该组可编码评论。</p>
+  </div>
+  ${reportFig(figBy.theme)}
+  ${triCards(readingCards(stats, "theme"))}
+  <p class="callout">${themeCallout(stats)}</p>
+</section>` : ""}
+${showEmo ? `<section class="panel" id="emotion">
+  <div class="hd">
+    <div class="num">情绪</div>
+    <h2>夸、说明，还是在批评</h2>
+    <p class="lead">按整句标注。同一句里又夸又骂记成混合。看不出褒贬的说明、提问记成中性。分母为可编码评论，合计为 100%。</p>
+  </div>
+  ${reportFig(figBy.emo)}
+  ${triCards(readingCards(stats, "emo"))}
+  <p class="callout">${emoCallout(stats)}</p>
+</section>` : ""}
+${showNoise ? `<section class="panel" id="noise">
+  <div class="hd">
+    <div class="num">噪音</div>
+    <h2>哪些没算进比例</h2>
+    <p class="lead">无法判断讨论对象的评论计入已标注，但不进入上面的主题与情绪比例。若样本含热门、最新两层，可对照哪一层更吵。</p>
+  </div>
+  ${reportFig(figBy.unc)}
+  ${triCards(readingCards(stats, "noise"))}
+  <p class="callout">${noiseCallout(stats)}</p>
+</section>` : ""}
+${showNeg ? `<section class="panel" id="negative">
+  <div class="hd">
+    <div class="num">负面</div>
+    <h2>批评在谈什么</h2>
+    <p class="lead">只统计整句情绪为「负面」的可编码评论。混合情绪不纳入。图为各组负面占比；图下说明这些批评主要落在哪些主题。</p>
+  </div>
+  ${reportFig(figBy.negrate)}
+  ${triCards(readingCards(stats, "neg"))}
+  <p class="callout">${negCallout(stats)}</p>
+</section>` : ""}
+${showCompare ? compareSection(stats) : ""}
+<section class="panel" id="method">
+  <div class="hd">
+    <div class="num">范围</div>
+    <h2>这些图能说明什么、不能说明什么</h2>
+  </div>
+  <div class="methods">
+    <ul>
+      <li>分析单位为一条公开评论。主题提及率与整句情绪的分母均为可编码评论，本报告共 ${codable} 条。源数据 ${src.length} 条，抽出样本 ${sample.length} 条。</li>
+      <li>一条最多计入 ${book.max_themes || 3} 个主题，故主题提及率合计可以超过 100%。整句情绪每条只计一种。</li>
+      <li>无法编码计入已标注，不进入主题、情绪与负面统计。未标注与跳过不纳入发现。词典初标须经人工复核。</li>
+      <li>现行主题：${themeList}。编码表${frozen}。解冻后若改类目，已有标注可能无法对齐。</li>
+      <li>不能外推到其他平台或沉默用户，也不能评价本窗口之后的变化。横比的是公开评区当时在做什么，不是哪一边更好。</li>
+    </ul>
+  </div>
+</section>
+<footer class="site">
+  <p>本报告由内容分析工作台在本机生成。将指针移至柱上可查看数值。导出时请选择「另存为 PDF」。</p>
+  <p>请勿将未标注或已跳过的条目纳入结论。公开评论不能代表全体用户。</p>
+</footer>
+</main>
+<div id="chartTip"></div>
+<script>
+(function(){
+  var t=document.getElementById("chartTip");
+  document.addEventListener("mousemove",function(e){
+    var n=e.target&&e.target.closest?e.target.closest("[data-tip]"):null;
+    if(!n){t.style.display="none";return;}
+    t.textContent=n.getAttribute("data-tip")||"";
+    t.style.display="block";
+    var x=e.clientX+12,y=e.clientY+16;
+    if(x+t.offsetWidth>innerWidth-8)x=e.clientX-t.offsetWidth-12;
+    if(y+t.offsetHeight>innerHeight-8)y=e.clientY-t.offsetHeight-10;
+    t.style.left=x+"px";t.style.top=y+"px";
+  });
+})();
+<\/script>
+</body></html>`;
+  }
+
+  function isLabeled(c) {
+    return !!(c && !c.skipped);
+  }
+
+  function labeledCount(sample, coding) {
+    return sample.filter((r) => isLabeled(coding[r.comment_id])).length;
+  }
+
+  function matchCodingFilter(c, filter) {
+    if (!filter || filter === "all") return true;
+    if (filter === "unlabeled") return !c;
+    if (filter === "labeled") return isLabeled(c);
+    if (filter === "skipped") return !!(c && c.skipped);
+    if (filter === "uncodable") return !!(c && c.uncodable && !c.skipped);
+    if (filter === "auto") return !!(c && c.auto && !c.skipped);
+    if (filter === "hand") return !!(c && !c.auto && !c.skipped);
+    return true;
+  }
+
+  function codingCounts(sample, coding) {
+    const counts = { all: sample.length, unlabeled: 0, labeled: 0, skipped: 0, uncodable: 0, auto: 0, hand: 0 };
+    for (const r of sample) {
+      const c = coding[r.comment_id];
+      if (!c) counts.unlabeled += 1;
+      else if (c.skipped) counts.skipped += 1;
+      else {
+        counts.labeled += 1;
+        if (c.uncodable) counts.uncodable += 1;
+        if (c.auto) counts.auto += 1;
+        else counts.hand += 1;
+      }
+    }
+    return counts;
+  }
+
+  const STATUS_META = {
+    unlabeled: { label: "未标注", color: "#8A8F98" },
+    labeled: { label: "已标注", color: "#3B6D8C" },
+    skipped: { label: "已跳过", color: "#C4A35A" },
+    uncodable: { label: "无法编码", color: "#A89888" },
+    auto: { label: "词典初标", color: "#C47B5A" },
+    hand: { label: "人工标注", color: "#6B8F71" },
+  };
+
+  function codingStatus(c) {
+    if (!c) return { id: "unlabeled", label: STATUS_META.unlabeled.label };
+    if (c.skipped) return { id: "skipped", label: STATUS_META.skipped.label };
+    if (c.uncodable) return { id: "uncodable", label: STATUS_META.uncodable.label };
+    if (c.auto) return { id: "auto", label: STATUS_META.auto.label };
+    return { id: "hand", label: STATUS_META.hand.label };
+  }
+
+  function matchSlice(row, c, slice) {
+    if (!slice || !slice.kind) return true;
+    const kind = slice.kind;
+    if (kind === "status") {
+      if (slice.id === "labeled") return isLabeled(c);
+      return codingStatus(c).id === slice.id;
+    }
+    if (kind === "theme") {
+      if (!c || c.skipped || c.uncodable) return false;
+      if (slice.group && (row.group || "未分组") !== slice.group) return false;
+      return (c.themes || []).some((t) => t.id === slice.id);
+    }
+    if (kind === "emo") {
+      if (!c || c.skipped || c.uncodable) return false;
+      if (slice.group && (row.group || "未分组") !== slice.group) return false;
+      return c.overall_emotion === slice.id;
+    }
+    if (kind === "unc") {
+      if (!c || c.skipped || !c.uncodable) return false;
+      if (slice.group && (row.group || "未分组") !== slice.group) return false;
+      if (slice.stratum != null && slice.stratum !== "" && stratumNorm(row.stratum) !== slice.stratum) return false;
+      return true;
+    }
+    if (kind === "group") return (row.group || "未分组") === slice.id;
+    return true;
+  }
+
+  function sliceTitle(slice, book) {
+    if (!slice || !slice.kind) return "";
+    if (slice.kind === "status") return (STATUS_META[slice.id] || {}).label || slice.id;
+    if (slice.kind === "theme") {
+      const t = ((book && book.themes) || []).find((x) => x.id === slice.id);
+      const g = slice.group ? slice.group + " · " : "";
+      return g + "主题 · " + (t ? t.label : slice.id);
+    }
+    if (slice.kind === "emo") {
+      const g = slice.group ? slice.group + " · " : "";
+      return g + "整句情绪 · " + (EMO_LABEL[slice.id] || slice.id);
+    }
+    if (slice.kind === "unc") {
+      const g = slice.group ? slice.group + " · " : "";
+      const s = slice.stratum != null && slice.stratum !== "" ? stratumLabel(slice.stratum) + " · " : "";
+      return g + s + "无法编码";
+    }
+    if (slice.kind === "group") return "分组 · " + slice.id;
+    return "";
+  }
+
+  function listCoding(filter, slice) {
+    const rows = db.sample;
+    const book = db.codebook;
+    const tmap = {};
+    (book.themes || []).forEach((t) => { tmap[t.id] = t.label; });
+    const items = [];
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const c = db.coding[row.comment_id];
+      if (!matchCodingFilter(c, filter || "all")) continue;
+      if (!matchSlice(row, c, slice)) continue;
+      const st = codingStatus(c);
+      items.push({
+        index: i,
+        comment_id: row.comment_id,
+        text: String(row.comment_text || "").replace(/\s+/g, " ").trim(),
+        group: row.group || "未分组",
+        stratum: row.stratum || "",
+        date: row.comment_date || "",
+        likes: row.like_count,
+        status: st.id,
+        status_label: st.label,
+        theme_labels: ((c && c.themes) || []).map((t) => tmap[t.id] || t.id),
+        emotion: (c && c.overall_emotion) || "",
+        emotion_label: EMO_LABEL[(c && c.overall_emotion) || ""] || "",
+      });
+    }
+    const filtLab = ({
+      all: "全部", unlabeled: "未标注", labeled: "已标注", skipped: "已跳过",
+      uncodable: "无法编码", auto: "词典初标", hand: "人工标注",
+    })[filter || "all"] || filter;
+    const sliceLab = sliceTitle(slice, book);
+    return {
+      total: items.length,
+      items,
+      filter: filter || "all",
+      slice: slice || null,
+      title: sliceLab ? `${filtLab === "全部" ? sliceLab : filtLab + " · " + sliceLab}` : filtLab,
+    };
+  }
+
+  function deskCharts(sample, coding, book) {
+    const counts = codingCounts(sample, coding);
+    const statusIds = ["unlabeled", "labeled", "skipped", "uncodable", "auto", "hand"];
+    const statusPairs = statusIds.map((id) => {
+      const meta = STATUS_META[id];
+      const n = counts[id] || 0;
+      return [meta.label, n, `${meta.label}：${n} 条`, { kind: "status", id }];
+    });
+    const statusColors = {};
+    statusIds.forEach((id) => { statusColors[STATUS_META[id].label] = STATUS_META[id].color; });
+    const out = [{
+      id: "status",
+      title: "标注状态",
+      caption: "点击柱子，左侧列出该状态的全部评论。",
+      svg: bars("标注状态", statusPairs, {
+        h: 210, color_mode: "group", colors: statusColors, show_legend: false, ylab: "条数",
+      }),
+    }];
+    const more = codingCharts(sample, coding, book).filter((c) => c.id === "theme" || c.id === "emo" || c.id === "donut" || c.id === "unc");
+    more.forEach((c) => {
+      if (c.id === "theme") c.caption = "点击柱子，列出标了该主题的评论。";
+      if (c.id === "emo") c.caption = "点击色块，列出该整句情绪的评论。";
+      if (c.id === "donut") c.caption = "点击扇区，列出该整句情绪的评论。";
+      if (c.id === "unc") c.caption = "点击柱子，列出无法编码的评论。";
+      out.push(c);
+    });
+    if (out.length === 1) out[0].wide = true;
+    return out;
+  }
+
+  function filteredIndices(sample, coding, filter) {
+    const out = [];
+    for (let i = 0; i < sample.length; i++) {
+      if (matchCodingFilter(coding[sample[i].comment_id], filter)) out.push(i);
+    }
+    return out;
+  }
+
+  function pickFilteredIndex(indices, requested) {
+    if (!indices.length) return -1;
+    const req = Math.max(0, Number(requested) || 0);
+    if (indices.indexOf(req) >= 0) return req;
+    const next = indices.find((i) => i >= req);
+    return next != null ? next : indices[0];
+  }
+
+  function getCodingItem(index, filter) {
+    const rows = db.sample;
+    if (!rows.length) throw new Error("尚未抽取样本。请先完成抽样。");
+    const filt = filter || "all";
+    const indices = filteredIndices(rows, db.coding, filt);
+    const counts = codingCounts(rows, db.coding);
+    const codedN = labeledCount(rows, db.coding);
+    const base = {
+      filter: filt,
+      counts,
+      total: rows.length,
+      filtered_total: indices.length,
+      coded_n: codedN,
+      codebook: db.codebook,
+    };
+    if (!indices.length) {
+      return Object.assign(base, { empty: true, index: 0, pos: 0, row: null, coding: null });
+    }
+    const idx = pickFilteredIndex(indices, index);
+    const at = indices.indexOf(idx);
+    return Object.assign(base, {
+      empty: false,
+      index: idx,
+      pos: at + 1,
+      prev_index: at > 0 ? indices[at - 1] : null,
+      next_index: at < indices.length - 1 ? indices[at + 1] : null,
+      row: rows[idx],
+      coding: db.coding[rows[idx].comment_id],
+    });
+  }
+
+  function saveCoding(body) {
+    const id = body && body.comment_id;
+    if (!id) throw new Error("缺少评论编号。");
+    if (!db.sample.some((r) => r.comment_id === id)) {
+      throw new Error("这条不在当前样本中。请重新抽样后再标注。");
+    }
+    let rec;
+    if (body.skip) {
+      rec = {
+        skipped: true,
+        uncodable: false,
+        themes: [],
+        overall_emotion: "na",
+        memo: body.memo || "",
+        auto: false,
+      };
+    } else if (body.uncodable) {
+      rec = { uncodable: true, themes: [], overall_emotion: "na", memo: body.memo || "", auto: false, skipped: false };
+    } else {
+      const maxT = Number(db.codebook.max_themes || 3);
+      const themes = (body.themes || []).slice(0, maxT);
+      const allowed = new Set((db.codebook.themes || []).map((t) => t.id));
+      const clean = themes.filter((t) => t && allowed.has(t.id));
+      if (!clean.length) throw new Error("请至少选择一个主题，或勾选「无法编码」。");
+      const emo = body.overall_emotion || "";
+      if (!["pos", "neu", "neg", "mix"].includes(emo)) {
+        throw new Error("请选择整句情绪后再保存。");
+      }
+      rec = {
+        uncodable: false,
+        skipped: false,
+        themes: clean,
+        overall_emotion: emo,
+        memo: body.memo || "",
+        auto: false,
+      };
+    }
+    db.coding[id] = rec;
+    persist();
+    return { ok: true, coded_n: labeledCount(db.sample, db.coding) };
+  }
+
+  function clearCoding() {
+    const n = Object.keys(db.coding || {}).length;
+    db.coding = {};
+    persist();
+    return { ok: true, cleared: n, coded_n: 0 };
+  }
+
+  function state() {
+    const src = db.source, samp = db.sample, coding = db.coding;
+    const counts = codingCounts(samp, coding);
+    return {
+      meta: db.meta,
+      source_n: src.length,
+      sample_n: samp.length,
+      coded_n: counts.labeled,
+      skipped_n: counts.skipped,
+      unlabeled_n: counts.unlabeled,
+      counts,
+      codebook: db.codebook,
+      has_source: !!src.length,
+      has_sample: !!samp.length,
+    };
+  }
+
+  async function readFile(file) {
+    const name = file.name || "upload.csv";
+    const buf = await file.arrayBuffer();
+    const lower = name.toLowerCase();
+    if (lower.endsWith(".xlsx") || lower.endsWith(".xlsm")) return Object.assign({ name }, await readXlsx(buf));
+    return Object.assign({ name }, parseCsv(decodeBytes(buf)));
+  }
+
+  async function handleUpload(files, append) {
+    if (!files || !files.length) throw new Error("请先选择表格。");
+    const incoming = [];
+    for (const f of files) {
+      const { name, headers: hdrs, rows } = await readFile(f);
+      incoming.push({
+        file: { name, rows: rows.length, headers: hdrs },
+        packed: { name, headers: hdrs, rows },
+      });
+    }
+    const canAppend = append && db.upload && (db.upload.packed || []).length;
+    let packed = [];
+    let saved = [];
+    if (canAppend) {
+      packed = db.upload.packed.slice();
+      saved = (db.upload.files || []).slice();
+      const idxByName = new Map(packed.map((p, i) => [p.name, i]));
+      for (const item of incoming) {
+        const i = idxByName.get(item.packed.name);
+        if (i == null) {
+          idxByName.set(item.packed.name, packed.length);
+          packed.push(item.packed);
+          saved.push(item.file);
+        } else {
+          packed[i] = item.packed;
+          saved[i] = item.file;
+        }
+      }
+    } else {
+      packed = incoming.map((x) => x.packed);
+      saved = incoming.map((x) => x.file);
+    }
+    const headers = [];
+    const seenH = new Set();
+    for (const p of packed) {
+      for (const h of p.headers || []) {
+        if (!h || seenH.has(h)) continue;
+        seenH.add(h);
+        headers.push(h);
+      }
+    }
+    const prevMap = canAppend ? (db.upload.mapping || {}) : {};
+    const guessed = guessMapping(headers);
+    const mapping = Object.assign({}, guessed, prevMap);
+    const preview = (packed[0] && packed[0].rows ? packed[0].rows.slice(0, 8) : []);
+    db.upload = {
+      files: saved,
+      packed,
+      headers,
+      preview,
+      mapping,
+      committed: false,
+      files_ready: true,
+    };
+    persist();
+    return {
+      files: saved,
+      headers,
+      preview,
+      mapping,
+      committed: false,
+      files_ready: true,
+      appended: !!canAppend,
+    };
+  }
+
+  function importSession() {
+    const src = db.source;
+    const session = db.upload;
+    if (session && (session.files || []).length) {
+      return Object.assign({}, session, {
+        files_ready: true,
+        source_n: src.length,
+        committed: !!src.length,
+        packed: undefined,
+      });
+    }
+    if (src.length) {
+      const counts = countBy(src, "import_file");
+      return {
+        files: mostCommon(counts).map(([name, n]) => ({ name: name || "source.csv", rows: n, headers: [] })),
+        headers: [],
+        preview: src.slice(0, 8),
+        mapping: db.meta.mapping || {},
+        files_ready: false,
+        source_n: src.length,
+        committed: true,
+        from_source: true,
+      };
+    }
+    return { files: [], headers: [], preview: [], mapping: {}, files_ready: false, source_n: 0, committed: false };
+  }
+
+  async function commitImport(mapping, studyName) {
+    if (!db.upload || !(db.upload.packed || []).length) throw new Error("请先上传表格。");
+    if (!mapping || !mapping.comment_text) throw new Error("必须指定「评论正文」对应哪一列。");
+    const merged = [];
+    const seen = new Set();
+    for (const part of db.upload.packed) {
+      const rows = await applyMapping(part.rows, mapping, part.name);
+      for (const r of rows) {
+        if (seen.has(r.comment_id)) continue;
+        seen.add(r.comment_id);
+        merged.push(r);
+      }
+    }
+    if (!merged.length) throw new Error("映射之后没有可用评论。请确认正文列选对了。");
+    db.source = merged;
+    db.meta.study_name = studyName || "未命名研究";
+    db.meta.step = "source";
+    db.meta.mapping = mapping;
+    db.meta.imported = merged.length;
+    db.upload.mapping = mapping;
+    db.upload.committed = true;
+    db.upload.source_n = merged.length;
+    persist();
+    return { n: merged.length, groups: countBy(merged, "group") };
+  }
+
+  function resetStudy() {
+    const salt = db.salt;
+    const codebook = db.codebook;
+    db = emptyDb();
+    db.salt = salt;
+    db.codebook = codebook;
+    persist();
+    return { ok: true, source_n: 0, sample_n: 0, coded_n: 0 };
+  }
+
+  const FALLBACK_THEME_KW = {
+    T1: ["外形", "人设", "建模", "立绘", "画风", "美型", "好看", "皮肤", "服装", "过场", "PV", "演出", "角色"],
+    T2: ["战斗", "手感", "打击感", "技能", "连招", "副本", "boss", "难度", "操作", "开荒", "伤害", "输出"],
+    T3: ["剧情", "主线", "支线", "叙事", "考据", "刀了", "泪目", "台词", "故事", "过场动画", "剧情杀"],
+    T4: ["地图", "跑图", "传送", "探索", "采集", "解谜", "宝箱", "锚点", "减负", "开图"],
+    T5: ["养成", "材料", "体力", "树脂", "肝度", "突破", "天赋", "武器", "圣遗物", "声骸", "等级", "编队"],
+    T6: ["抽卡", "卡池", "保底", "氪金", "月卡", "通行证", "价格", "零氪", "课金", "歪了", "大保底"],
+    T7: ["版本", "活动", "长草", "更新", "内容量", "重复", "入坑", "复刷", "版本节奏"],
+    T8: ["优化", "帧率", "卡顿", "闪退", "bug", "BUG", "延迟", "画质", "包体", "加载", "崩溃", "掉帧"],
+    T9: ["配音", "CV", "字幕", "语音", "中配", "日配", "台词", "文本"],
+    T10: ["官方", "评区", "前瞻", "运营", "客服", "补偿", "问卷", "直播", "维护"],
+  };
+
+  const POS_WORDS = "好看 好听 好玩 喜欢 爱了 绝了 神作 精品 优秀 精美 流畅 良心 期待 支持 推荐 满意 惊喜 牛逼 好评 不错 过瘾 上头 沉浸 感动 泪目 强势 给力 用心 细节 质量".split(" ");
+  const NEG_WORDS = "难看 难听 不好玩 讨厌 垃圾 拉胯 拉了 差评 失望 劝退 退坑 无聊 枯燥 肝爆 肝疼 氪金 割韭菜 圈钱 抄袭 套皮 卡顿 闪退 掉帧 发热 优化差 有病 离谱 无语 恶心 智商税 敷衍 缩水 背刺 骗钱".split(" ");
+  const UNC_PHRASES = ["前排", "沙发", "打卡", "路过", "占楼", "冒泡", "签到", "留名", "来了", "来啦", "好耶", "冲冲冲", "awsl", "yyds"];
+
+  function splitKw(s) {
+    return String(s || "")
+      .split(/[\s,，、；;\/\|]+/)
+      .map((x) => x.trim())
+      .filter((x) => x.length >= 2);
+  }
+
+  function themeKeywords(th) {
+    const extra = splitKw(th.keywords);
+    if (extra.length) return extra;
+    const fromLabel = splitKw(th.label).concat(splitKw(th.hint));
+    const fb = FALLBACK_THEME_KW[th.id] || [];
+    const seen = new Set();
+    const out = [];
+    for (const w of extra.concat(fromLabel).concat(fb)) {
+      if (w.length < 2 || seen.has(w)) continue;
+      seen.add(w);
+      out.push(w);
+    }
+    return out;
+  }
+
+  function countHits(text, words) {
+    let n = 0;
+    const hits = [];
+    for (const w of words) {
+      if (!w || w.length < 2) continue;
+      if (text.includes(w)) {
+        n += Math.min(3, w.length);
+        hits.push(w);
+      }
+    }
+    return { n, hits };
+  }
+
+  function stripNoise(text) {
+    return String(text || "")
+      .replace(/\[[^\]]{1,24}\]/g, " ")
+      .replace(/https?:\/\/\S+/gi, " ")
+      .replace(/www\.\S+/gi, " ")
+      .replace(/@[\w\u4e00-\u9fff.\-]{1,32}/g, " ")
+      .replace(/[^\u4e00-\u9fffA-Za-z0-9]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function looksUncodable(raw, cleaned) {
+    const t = String(raw || "").trim();
+    if (t.length < 4) return true;
+    if (!cleaned || cleaned.length < 2) return true;
+    const compact = cleaned.replace(/\s/g, "");
+    if (compact.length <= 4 && UNC_PHRASES.some((p) => t.includes(p) || compact.includes(p))) return true;
+    if (/^(哈哈+|hhh+|www+|233+|666+|111+|草+|冲+|来了+|好耶+)$/i.test(compact)) return true;
+    const cjk = (cleaned.match(/[\u4e00-\u9fff]/g) || []).length;
+    const lat = (cleaned.match(/[A-Za-z]/g) || []).length;
+    if (cjk + lat < 2) return true;
+    return false;
+  }
+
+  function guessEmotion(text) {
+    const pos = countHits(text, POS_WORDS).n;
+    const neg = countHits(text, NEG_WORDS).n;
+    if (pos > 0 && neg > 0) return "mix";
+    if (pos > 0) return "pos";
+    if (neg > 0) return "neg";
+    return "neu";
+  }
+
+  function autoCodeOne(row, codebook) {
+    const raw = String(row.comment_text || row.text || "");
+    const cleaned = stripNoise(raw);
+    const maxT = Math.max(1, Number(codebook.max_themes || 3));
+    const scored = [];
+    for (const th of codebook.themes || []) {
+      const kws = themeKeywords(th);
+      const { n, hits } = countHits(raw, kws);
+      if (n > 0) scored.push({ th, n, hits });
+    }
+    scored.sort((a, b) => b.n - a.n);
+    const top = scored.slice(0, maxT);
+    const themes = [];
+    for (const s of top) {
+      if (s.n < 2 && top[0] && top[0].n >= 4 && s !== top[0]) continue;
+      themes.push({ id: s.th.id, emotion: guessEmotion(raw) });
+    }
+    if (!themes.length) {
+      if (looksUncodable(raw, cleaned)) {
+        return {
+          uncodable: true,
+          skipped: false,
+          themes: [],
+          overall_emotion: "na",
+          memo: "词典初标：判定为无法编码",
+          auto: true,
+        };
+      }
+      return null;
+    }
+    const emos = themes.map((x) => x.emotion);
+    let overall = "neu";
+    if (emos.includes("mix") || (emos.includes("pos") && emos.includes("neg"))) overall = "mix";
+    else if (emos.every((e) => e === "pos")) overall = "pos";
+    else if (emos.every((e) => e === "neg")) overall = "neg";
+    else if (emos.includes("pos") && !emos.includes("neg")) overall = "pos";
+    else if (emos.includes("neg") && !emos.includes("pos")) overall = "neg";
+    return {
+      uncodable: false,
+      skipped: false,
+      themes,
+      overall_emotion: overall,
+      memo: "词典初标（本机关键词匹配），请人工复核",
+      auto: true,
+    };
+  }
+
+  function runAutoCode(overwriteAuto) {
+    const codebook = db.codebook && db.codebook.themes ? db.codebook : defaultCodebook();
+    let n = 0;
+    let skipped = 0;
+    let uncodableN = 0;
+    let noHit = 0;
+    for (const row of db.sample || []) {
+      const cid = row.comment_id;
+      const prev = db.coding[cid];
+      if (prev) {
+        if (!overwriteAuto) {
+          skipped += 1;
+          continue;
+        }
+        if (prev.auto !== true) {
+          skipped += 1;
+          continue;
+        }
+      }
+      const coded = autoCodeOne(row, codebook);
+      if (!coded) {
+        noHit += 1;
+        continue;
+      }
+      db.coding[cid] = coded;
+      n += 1;
+      if (coded.uncodable) uncodableN += 1;
+    }
+    persist();
+    return { n, skipped, uncodable_n: uncodableN, no_hit: noHit };
+  }
+
+  async function request(path, opts) {
+    opts = opts || {};
+    const method = (opts.method || "GET").toUpperCase();
+    const url = new URL(path, "https://local.fxzp/");
+    const p = url.pathname;
+    const q = Object.fromEntries(url.searchParams.entries());
+    const body = opts.json || {};
+    try {
+      if (p === "/api/state") return state();
+      if (p === "/api/meta" && method === "POST") {
+        if (body.study_name != null) db.meta.study_name = String(body.study_name).trim().slice(0, 80) || "未命名研究";
+        if (body.step && ["import", "source", "sample", "codebook", "coding", "report"].includes(body.step)) {
+          db.meta.step = body.step;
+        }
+        persist();
+        return state();
+      }
+      if (p === "/api/reset" && method === "POST") return resetStudy();
+      if (p === "/api/import/upload" && method === "POST") {
+        return await handleUpload(opts.files, q.append === "1" || q.append === "true");
+      }
+      if (p === "/api/import/session" && method === "GET") return importSession();
+      if (p === "/api/import/session" && method === "PUT") {
+        if (!db.upload || !(db.upload.files || []).length) throw new Error("尚无待写入的上传稿。请先选择表格。");
+        db.upload.mapping = body.mapping || {};
+        if (body.study_name) db.meta.study_name = body.study_name;
+        persist();
+        return db.upload;
+      }
+      if (p === "/api/import/commit" && method === "POST") {
+        return await commitImport(body.mapping, body.study_name);
+      }
+      if (p === "/api/source") {
+        let rows = db.source;
+        const ql = (q.q || "").toLowerCase();
+        if (ql) {
+          rows = rows.filter((r) =>
+            (r.comment_text || "").toLowerCase().includes(ql)
+            || (r.group || "").toLowerCase().includes(ql)
+            || (r.source_title || "").toLowerCase().includes(ql)
+          );
+        }
+        const offset = Number(q.offset || 0), limit = Number(q.limit || 40);
+        return { total: rows.length, rows: rows.slice(offset, offset + limit) };
+      }
+      if (p === "/api/source/charts") {
+        return { charts: sourceCharts(db.source), stats: sourceStats(db.source) };
+      }
+      if (p === "/api/sample" && method === "POST") {
+        if (!db.source.length) throw new Error("尚无源数据。请先导入表格并写入。");
+        const start = body.window_start || "";
+        const end = body.window_end || "";
+        if (start && end && start > end) throw new Error("起始日期不能晚于结束日期。");
+        const nCell = Math.floor(Number(body.n_per_cell));
+        if (!nCell || nCell < 1) throw new Error("每组每层抽取条数须为正整数。");
+        const marked = markWindow(db.source, start, end);
+        db.source = marked;
+        const stratumField = body.stratum_field === "__none__" ? "__none__" : (body.stratum_field || "stratum");
+        const picked = drawSample(
+          marked, body.seed, nCell, body.group_field || "group",
+          stratumField, body.window_only !== false
+        );
+        if (!picked.length) throw new Error("当前日期范围或分层条件下抽不到评论。");
+        const keep = new Set(picked.map((r) => r.comment_id));
+        const nextCoding = {};
+        let kept = 0;
+        for (const cid of Object.keys(db.coding || {})) {
+          if (keep.has(cid)) {
+            nextCoding[cid] = db.coding[cid];
+            kept += 1;
+          }
+        }
+        db.sample = picked;
+        db.coding = nextCoding;
+        db.meta.step = "sample";
+        db.meta.sample = body;
+        db.meta.sample_n = picked.length;
+        db.meta.window_n = marked.filter((r) => r.in_window !== "0").length;
+        persist();
+        return {
+          n: picked.length,
+          window_n: db.meta.window_n,
+          kept_coding: kept,
+          groups: countBy(picked, "group"),
+          strata: countBy(picked, "stratum"),
+        };
+      }
+      if (p === "/api/sample") {
+        const offset = Number(q.offset || 0), limit = Number(q.limit || 40);
+        return { total: db.sample.length, rows: db.sample.slice(offset, offset + limit) };
+      }
+      if (p === "/api/codebook" && method === "GET") return db.codebook;
+      if (p === "/api/codebook" && method === "POST") {
+        if (db.codebook.frozen) throw new Error("编码表已冻结。如需改主题，先解冻草稿。");
+        const data = Object.assign({}, body.data);
+        data.frozen = false;
+        data.version = Number(db.codebook.version || 1);
+        validateBook(data);
+        db.codebook = data;
+        persist();
+        return data;
+      }
+      if (p === "/api/codebook/template" && method === "POST") {
+        if (db.codebook.frozen) throw new Error("已冻结，不能重置模板。先解冻。");
+        db.codebook = defaultCodebook();
+        persist();
+        return db.codebook;
+      }
+      if (p === "/api/codebook/empty" && method === "POST") {
+        if (db.codebook.frozen) throw new Error("已冻结。");
+        const data = defaultCodebook();
+        data.themes = [{ id: "T1", label: "新主题", hint: "", keywords: "" }];
+        db.codebook = data;
+        persist();
+        return data;
+      }
+      if (p === "/api/codebook/freeze" && method === "POST") {
+        validateBook(db.codebook);
+        db.codebook.frozen = true;
+        db.codebook.version = Number(db.codebook.version || 1);
+        persist();
+        return db.codebook;
+      }
+      if (p === "/api/codebook/unfreeze" && method === "POST") {
+        db.codebook.frozen = false;
+        persist();
+        return db.codebook;
+      }
+      if (p === "/api/coding/item") {
+        return getCodingItem(q.index, q.filter);
+      }
+      if (p === "/api/coding/save" && method === "POST") {
+        return saveCoding(body);
+      }
+      if (p === "/api/coding/auto" && method === "POST") {
+        return runAutoCode(!!body.overwrite_auto);
+      }
+      if (p === "/api/coding/clear" && method === "POST") {
+        return clearCoding();
+      }
+      if (p === "/api/coding/list") {
+        let slice = null;
+        if (q.slice) {
+          try { slice = JSON.parse(q.slice); } catch (_) { slice = null; }
+        }
+        return listCoding(q.filter, slice);
+      }
+      if (p === "/api/coding/desk-charts") {
+        return { charts: deskCharts(db.sample, db.coding, db.codebook) };
+      }
+      if (p === "/api/coding/charts") {
+        return { charts: codingCharts(db.sample, db.coding, db.codebook) };
+      }
+      if (p === "/api/report.html") return buildReport();
+      throw new Error("未知接口 " + p);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  function exportStudy() {
+    return JSON.stringify({
+      kind: "fxzp-study",
+      version: 1,
+      saved_at: new Date().toISOString(),
+      data: db,
+    }, null, 2);
+  }
+
+  function importStudy(obj) {
+    const data = obj && obj.data ? obj.data : obj;
+    if (!data || typeof data !== "object") throw new Error("不是有效的研究文件。");
+    db = Object.assign(emptyDb(), data);
+    if (!db.codebook) db.codebook = defaultCodebook();
+    persist();
+    return state();
+  }
+
+  global.Engine = {
+    ready,
+    init,
+    request,
+    exportStudy,
+    importStudy,
+    buildReport,
+  };
+  init();
+})(window);
+
+  </script>
+  <script>
+const STEPS = [
+  ["import", "导入"],
+  ["source", "源数据"],
+  ["sample", "抽样"],
+  ["codebook", "编码表"],
+  ["coding", "编码台"],
+  ["report", "报告"],
+];
+
+const FIELDS = [
+  ["comment_text", "评论正文（必选）"],
+  ["comment_date", "发布日期"],
+  ["like_count", "点赞数"],
+  ["reply_count", "回复数"],
+  ["group", "分组（产品 / 频道 / 账号）"],
+  ["version", "版本"],
+  ["source_id", "来源编号"],
+  ["source_title", "来源标题"],
+  ["stratum", "分层（热门 / 最新）"],
+  ["comment_id", "评论编号"],
+  ["user_raw", "昵称（导入后哈希，不保存原文）"],
+  ["user_hash", "已有用户哈希"],
+];
+
+const EMO = [
+  ["pos", "正面"],
+  ["neu", "中性"],
+  ["neg", "负面"],
+  ["mix", "混合"],
+];
+
+let state = { step: "import", codebook: { themes: [], frozen: false }, source_n: 0, sample_n: 0, coded_n: 0 };
+let mapping = {};
+let codingIndex = 0;
+let codingFilter = "all";
+let currentItem = null;
+let restoredStep = false;
+let toastTimer = null;
+let codingKeyHandler = null;
+
+const CODING_FILTERS = [
+  ["all", "全部"],
+  ["unlabeled", "未标注"],
+  ["labeled", "已标注"],
+  ["skipped", "已跳过"],
+  ["uncodable", "无法编码"],
+  ["auto", "词典初标"],
+  ["hand", "人工标注"],
+];
+
+function toast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.hidden = true; }, 3200);
+}
+
+async function api(path, opts = {}) {
+  await Engine.ready;
+  const next = { ...opts };
+  if (opts.body instanceof FormData) {
+    next.files = opts.body.getAll("files");
+    delete next.body;
+  } else if (typeof opts.body === "string") {
+    try { next.json = JSON.parse(opts.body); } catch (_) {}
+    delete next.body;
+  }
+  try {
+    return await Engine.request(path, next);
+  } catch (e) {
+    throw new Error(e.message || String(e));
+  }
+}
+
+async function persistMeta(extra) {
+  try {
+    await api("/api/meta", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(extra || {}),
+    });
+  } catch (_) {}
+}
+
+async function go(step) {
+  state.step = step;
+  await persistMeta({ step });
+  await render();
+}
+
+async function refresh() {
+  state = { ...state, ...(await api("/api/state")) };
+  if (!restoredStep) {
+    const s = state.meta?.step;
+    if (s && STEPS.some((x) => x[0] === s)) state.step = s;
+    restoredStep = true;
+  }
+  const name = document.getElementById("studyName");
+  if (name && !name.dataset.dirty) name.value = state.meta?.study_name || "";
+  const skip = state.skipped_n || 0;
+  document.getElementById("asideStatus").textContent =
+    `源数据 ${state.source_n} 条 · 样本 ${state.sample_n} 条 · 已标注 ${state.coded_n} 条` +
+    (skip ? ` · 已跳过 ${skip} 条` : "");
+}
+
+function renderNav() {
+  document.getElementById("steps").innerHTML = STEPS.map(([id, lab], i) =>
+    `<button type="button" class="${state.step === id ? "on" : ""}" data-step="${id}" aria-current="${state.step === id ? "step" : "false"}"><span class="n">${i + 1}</span>${lab}</button>`
+  ).join("");
+  document.querySelectorAll("#steps button").forEach((b) => {
+    b.onclick = () => go(b.dataset.step);
+  });
+}
+
+function leads() {
+  return {
+    import: "本步骤用于导入评论原始表。请上传 CSV 或 Excel 文件，将表格列对应到工作台字段后写入源数据。全部数据仅保存在本浏览器，不会上传至网络。",
+    source: "本页展示已写入的全部源数据及其构成，便于核对导入是否正确。此处所列评论尚未抽样，不能直接编码。日期范围与抽取数量请在「抽样」中设置。",
+    sample: "本步骤从源数据中抽取待编码样本。可先限定评论发布日期，再按分组与分层（如热门、最新）各抽取固定条数。仅抽出的样本进入编码台。在源数据与随机种子均不变时，重复抽取将得到同一批样本。",
+    codebook: "本步骤用于制定编码规则：定义主题类别、「无法编码」的判定说明，以及供本机关键词匹配使用的词典词。词典初标仅依据关键词匹配，并非大模型自动标注。规则确定后请冻结编码表，以保证后续标注口径一致。",
+    coding: "本页对抽出的样本逐条编码。请先用上方状态筛选评论，再从左侧列表选择一条。编码时先判断该条是否可编码；若可编码，再选择主题与整句情绪后保存。经词典初标的条目须经人工复核。",
+    report: "本页预览编码报告：一节一图，图下是按分组写出的读法。比例只用可编码评论。导出时请在打印对话框中选择「另存为 PDF」。",
+  };
+}
+
+function stratumText(s) {
+  const m = {
+    hot: "热门", newest: "最新", new: "最新", "热门": "热门", "最新": "最新",
+    "": "未分层", "未分层": "未分层", "(未分层)": "未分层",
+  };
+  const k = String(s || "").trim();
+  return m[k] != null ? m[k] : (k || "未分层");
+}
+
+function acceptedFiles(list) {
+  const all = [...(list || [])];
+  const files = all.filter((f) => /\.(csv|xlsx|xlsm|txt)$/i.test(f.name || ""));
+  return { files, rejected: all.length - files.length };
+}
+
+function nextThemeId(themes) {
+  const used = new Set((themes || []).map((t) => t.id));
+  for (let i = 1; i < 200; i++) {
+    if (!used.has("T" + i)) return "T" + i;
+  }
+  return "T" + ((themes || []).length + 1);
+}
+
+async function render() {
+  unbindCodingKeys();
+  await refresh();
+  renderNav();
+  const [id, lab] = STEPS.find((s) => s[0] === state.step) || STEPS[0];
+  document.getElementById("pageTitle").textContent = lab;
+  const lead = leads()[id] || "";
+  const leadEl = document.getElementById("pageLead");
+  leadEl.textContent = lead;
+  leadEl.hidden = !lead;
+  const view = document.getElementById("view");
+  document.body.classList.toggle("rpt-mode", id === "report");
+  const fn = { import: viewImport, source: viewSource, sample: viewSample, codebook: viewCodebook, coding: viewCoding, report: viewReport }[id];
+  await fn(view);
+}
+
+document.getElementById("studyName").addEventListener("input", (e) => {
+  e.target.dataset.dirty = "1";
+});
+document.getElementById("studyName").addEventListener("change", async (e) => {
+  const v = e.target.value.trim().slice(0, 80);
+  e.target.value = v;
+  await persistMeta({ study_name: v, step: state.step });
+  delete e.target.dataset.dirty;
+});
+
+function optList(headers, selected) {
+  return `<option value="">不使用</option>` + headers.map((h) =>
+    `<option value="${esc(h)}" ${h === selected ? "selected" : ""}>${esc(h)}</option>`
+  ).join("");
+}
+
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function table(rows, cols) {
+  if (!rows.length) return "<p class='hint'>当前没有可显示的行。</p>";
+  const head = cols.map((c) => `<th>${esc(c[1] || c[0])}</th>`).join("");
+  const body = rows.map((r) => "<tr>" + cols.map(([k]) => {
+    let v = r[k] ?? "";
+    if (k === "stratum") v = stratumText(v);
+    return `<td class="clip">${esc(String(v).slice(0, 180))}</td>`;
+  }).join("") + "</tr>").join("");
+  return `<div style="overflow:auto"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+}
+
+function countLine(obj) {
+  const items = Object.entries(obj || {});
+  if (!items.length) return "无";
+  return items.map(([k, v]) => `${k ? stratumText(k) : "未分层"} ${v} 条`).join("、");
+}
+
+let lastUpload = null;
+
+async function persistMapping() {
+  if (!lastUpload || lastUpload.from_source || !lastUpload.files?.length) return;
+  try {
+    await api("/api/import/session", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mapping, study_name: document.getElementById("studyName").value.trim() }),
+    });
+  } catch (_) {}
+}
+
+async function viewImport(el) {
+  let sess = null;
+  try {
+    sess = await api("/api/import/session");
+  } catch (_) {}
+  if (sess && (sess.files || []).length) {
+    lastUpload = sess;
+    mapping = { ...(sess.mapping || {}), ...mapping };
+    lastUpload.mapping = mapping;
+  }
+  const hasDraft = lastUpload && (lastUpload.files || []).length;
+  const sourceN = sess?.source_n || state.source_n || 0;
+  el.innerHTML = `
+    ${sourceN ? `<div class="status">源数据已保存 ${sourceN} 条。离开本页后数据仍会保留。如需更正，可调整列对应关系后重新写入，或更换表格后覆盖。</div>` : ""}
+    <div class="card drop" id="drop">
+      <p>${hasDraft && !sess?.from_source ? "继续拖入或选择文件，将追加到已添加的表格" : "将表格拖放到此处"}，或
+        <label class="btn" style="display:inline;color:#3B6D8C;cursor:pointer">选择文件（可多选）
+          <input id="files" type="file" accept=".csv,.xlsx,.xlsm,.txt" multiple hidden/>
+        </label>
+      </p>
+      <p class="hint">支持 CSV、Excel（.xlsx / .xlsm）及 UTF-8 文本。Excel 若有多张工作表，将读取数据最多的一张。可一次选择多个文件，也可分次追加。写入源数据时，相同评论编号将去重。${hasDraft && !sess?.from_source ? "仅在选择「更换全部文件」时，才会清除已添加的表格。" : ""}</p>
+      ${hasDraft && !sess?.from_source ? `<p class="row" style="margin-top:12px;justify-content:center"><button type="button" class="btn ghost" id="replaceAll">更换全部文件</button></p>` : ""}
+      ${sourceN || hasDraft ? `<p class="row" style="margin-top:12px;justify-content:center"><button type="button" class="btn ghost" id="wipe">清空本机数据</button></p>` : ""}
+    </div>
+    <div id="mapBox"></div>`;
+  const input = document.getElementById("files");
+  const drop = document.getElementById("drop");
+  let replaceOnce = false;
+  const send = async (fileList, forceReplace) => {
+    const { files, rejected } = acceptedFiles(fileList);
+    if (!files.length) {
+      toast(rejected ? "请选择 CSV 或 Excel 文件。" : "请先选择文件。");
+      return;
+    }
+    const fd = new FormData();
+    files.forEach((f) => fd.append("files", f));
+    const append = !forceReplace && hasDraft && !sess?.from_source;
+    try {
+      lastUpload = await api("/api/import/upload" + (append ? "?append=1" : ""), { method: "POST", body: fd });
+      mapping = lastUpload.mapping || {};
+      const extra = rejected ? `；已忽略 ${rejected} 个不支持的文件` : "";
+      toast(append ? `已追加，当前共 ${lastUpload.files.length} 个文件${extra}` : `已读取 ${lastUpload.files.length} 个文件${extra}`);
+      go("import");
+    } catch (e) { toast(e.message); }
+  };
+  input.onchange = () => {
+    const replace = replaceOnce;
+    replaceOnce = false;
+    send(input.files, replace);
+    input.value = "";
+  };
+  let dragDepth = 0;
+  drop.ondragenter = (e) => { e.preventDefault(); dragDepth += 1; drop.classList.add("over"); };
+  drop.ondragleave = () => { dragDepth = Math.max(0, dragDepth - 1); if (!dragDepth) drop.classList.remove("over"); };
+  drop.ondragover = (e) => { e.preventDefault(); };
+  drop.ondrop = (e) => {
+    e.preventDefault();
+    dragDepth = 0;
+    drop.classList.remove("over");
+    send(e.dataTransfer.files, false);
+  };
+  const replaceAll = document.getElementById("replaceAll");
+  if (replaceAll) {
+    replaceAll.onclick = () => {
+      replaceOnce = true;
+      input.click();
+    };
+  }
+  const wipe = document.getElementById("wipe");
+  if (wipe) {
+    wipe.onclick = async () => {
+      if (!confirm("将删除源数据、样本与全部标注。编码表草稿会保留。确定清空本机数据？")) return;
+      try {
+        await api("/api/reset", { method: "POST" });
+        lastUpload = null;
+        mapping = {};
+        const name = document.getElementById("studyName");
+        name.value = "";
+        delete name.dataset.dirty;
+        toast("已清空本机数据");
+        go("import");
+      } catch (e) { toast(e.message); }
+    };
+  }
+
+  function drawMap() {
+    const box = document.getElementById("mapBox");
+    if (!lastUpload || !(lastUpload.files || []).length) {
+      box.innerHTML = "";
+      return;
+    }
+    const files = lastUpload.files.map((f) => `${esc(f.name)}（${f.rows} 行）`).join("、");
+    const canCommit = !lastUpload.from_source && lastUpload.files_ready !== false;
+    const previewCols = (lastUpload.headers || []).length
+      ? lastUpload.headers.slice(0, 8).map((h) => [h, h])
+      : [["comment_text", "评论正文"], ["group", "分组"], ["comment_date", "日期"], ["source_title", "来源"]];
+    box.innerHTML = `
+      <div class="card">
+        <p>已读取：${files}</p>
+        ${lastUpload.from_source ? `<p class="hint">下表为已写入源数据的预览。如需更改列对应关系，请重新上传原始表格。</p>` : `<p class="hint">请将表格列对应到工作台字段。「评论正文」为必填项；未对应的列不会写入源数据。</p>`}
+        <div class="map" id="map"></div>
+        <p class="row" style="margin-top:12px">
+          <button type="button" class="btn" id="commit" ${canCommit ? "" : "disabled"}>${sourceN ? "按当前对应关系重新写入" : "整理并写入源数据"}</button>
+        </p>
+      </div>
+      <div class="card"><h3 style="margin:0 0 8px">前若干行预览</h3>
+        ${table(lastUpload.preview || [], previewCols)}
+      </div>`;
+    const map = document.getElementById("map");
+    const headers = lastUpload.headers || [];
+    if (headers.length) {
+      map.innerHTML = FIELDS.map(([k, lab]) => `
+        <label>${esc(lab)}</label>
+        <select data-k="${k}">${optList(headers, mapping[k] || "")}</select>`).join("");
+      map.querySelectorAll("select").forEach((s) => {
+        s.onchange = () => {
+          mapping[s.dataset.k] = s.value;
+          lastUpload.mapping = mapping;
+          persistMapping();
+        };
+      });
+    } else {
+      const pairs = Object.entries(mapping || {}).filter(([, v]) => v);
+      map.innerHTML = pairs.length
+        ? pairs.map(([k, v]) => {
+            const lab = (FIELDS.find((f) => f[0] === k) || [k, k])[1];
+            return `<label>${esc(lab)}</label><div>${esc(v)}</div>`;
+          }).join("")
+        : `<p class="hint">没有列对应记录。</p>`;
+    }
+    const btn = document.getElementById("commit");
+    if (btn && canCommit) {
+      btn.onclick = async () => {
+        if (!mapping.comment_text) {
+          toast("请先指定「评论正文」对应的表格列。");
+          return;
+        }
+        try {
+          const name = document.getElementById("studyName").value.trim() || "未命名研究";
+          const r = await api("/api/import/commit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ mapping, study_name: name }),
+          });
+          lastUpload.committed = true;
+          lastUpload.source_n = r.n;
+          toast(`已写入 ${r.n} 条评论`);
+          go("source");
+        } catch (e) { toast(e.message); }
+      };
+    }
+  }
+  drawMap();
+}
+
+async function viewSource(el) {
+  if (!state.has_source) {
+    el.innerHTML = `<div class="card">尚无源数据。请先在「导入」中上传表格并写入源数据。</div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="kpi" id="skpi"></div>
+    <p class="hint" style="margin:-6px 0 14px" id="snote"></p>
+    <div id="ssecs"></div>
+    <div class="card">
+      <div class="row">
+        <input id="q" placeholder="按正文、分组或来源标题检索" style="flex:1" aria-label="检索源数据"/>
+        <button type="button" class="btn ghost" id="qgo">查找</button>
+        <button type="button" class="btn" id="tosample">下一步：抽样</button>
+      </div>
+      <div id="stbl"></div>
+      <div class="pager" id="spager"></div>
+    </div>`;
+  const charts = await api("/api/source/charts");
+  const st = charts.stats || {};
+  const dateSpan = (st.date_min && st.date_max)
+    ? (st.date_min === st.date_max ? st.date_min : `${st.date_min} ～ ${st.date_max}`)
+    : "无日期";
+  const gnames = st.group_names || [];
+  const gnote = gnames.length
+    ? `当前分组：${gnames.map((g) => `<span class="tag">${esc(g)}</span>`).join("")}`
+    : "尚未对应分组列；未对应时全部记为「未分组」。";
+  document.getElementById("skpi").innerHTML = `
+    <div class="cell"><b>${st.n ?? state.source_n}</b><span>导入评论</span></div>
+    <div class="cell"><b>${st.groups ?? "—"}</b><span>分组</span></div>
+    <div class="cell"><b>${st.sources ?? "—"}</b><span>来源 / 视频</span></div>
+    <div class="cell"><b style="font-size:15px;line-height:1.3">${esc(dateSpan)}</b><span>评论日期</span></div>`;
+  document.getElementById("snote").innerHTML =
+    `${gnote} 下图用于查看源数据构成。主题与情绪结果将在完成编码后于「报告」中呈现。`;
+  const sections = [
+    ["mix", "评论构成"],
+    ["time", "发布时间"],
+    ["src", "来源分布"],
+    ["like", "点赞分布"],
+  ];
+  const by = {};
+  (charts.charts || []).forEach((c) => {
+    const k = c.section || "mix";
+    (by[k] || (by[k] = [])).push(c);
+  });
+  document.getElementById("ssecs").className = (st.layout === "single" || (st.groups || 0) <= 1) ? "src-layout single" : "src-layout multi";
+  document.getElementById("ssecs").innerHTML = sections.map(([sid, lab]) => {
+    const items = by[sid] || [];
+    if (!items.length) return "";
+    return `<section class="src-sec"><h2>${esc(lab)}</h2>
+      <div class="fig-grid">${items.map(figCard).join("")}</div></section>`;
+  }).join("");
+  document.getElementById("tosample").onclick = () => go("sample");
+  let offset = 0;
+  const load = async () => {
+    const q = document.getElementById("q").value.trim();
+    const data = await api(`/api/source?offset=${offset}&limit=20&q=${encodeURIComponent(q)}`);
+    document.getElementById("stbl").innerHTML = table(data.rows, [
+      ["group", "分组"], ["stratum", "分层"], ["comment_date", "日期"],
+      ["like_count", "赞"], ["source_title", "来源"], ["comment_text", "正文"],
+    ]);
+    document.getElementById("spager").innerHTML =
+      `<button type="button" class="btn ghost" ${offset <= 0 ? "disabled" : ""} id="prev">上一页</button>
+       <span>${offset + 1}–${Math.min(offset + 20, data.total)} / ${data.total}</span>
+       <button type="button" class="btn ghost" ${offset + 20 >= data.total ? "disabled" : ""} id="next">下一页</button>`;
+    document.getElementById("prev").onclick = () => { offset = Math.max(0, offset - 20); load(); };
+    document.getElementById("next").onclick = () => { offset += 20; load(); };
+  };
+  document.getElementById("qgo").onclick = () => { offset = 0; load(); };
+  document.getElementById("q").onkeydown = (e) => { if (e.key === "Enter") { offset = 0; load(); } };
+  await load();
+}
+
+function figCard(c) {
+  const extra = [c.wide ? "wide" : "", c.scroll ? "scroll" : ""].filter(Boolean).join(" ");
+  return `<figure class="figcard ${extra}">
+    <figcaption>
+      <strong>${esc(c.title || "")}</strong>
+      ${c.caption ? `<span class="hint">${esc(c.caption)}</span>` : ""}
+    </figcaption>
+    <div class="fig-scroll ${c.scroll ? "scroll" : ""}">${c.svg || ""}</div>
+  </figure>`;
+}
+
+async function viewSample(el) {
+  if (!state.has_source) {
+    el.innerHTML = `<div class="card">请先在「导入」中写入源数据，再进行抽样。</div>`;
+    return;
+  }
+  const prev = state.meta?.sample || {};
+  const woOn = prev.window_only !== false;
+  const sf = prev.stratum_field === "__none__" || prev.stratum_field === "" ? "" : "stratum";
+  el.innerHTML = `
+    <div class="card">
+      <div class="grid3">
+        <label>日期范围开始<input id="ws" type="date" value="${esc(prev.window_start || "")}"/></label>
+        <label>日期范围结束<input id="we" type="date" value="${esc(prev.window_end || "")}"/></label>
+        <label>随机种子<input id="seed" type="number" value="${prev.seed || 20260819}"/></label>
+        <label>每组每层抽取条数<input id="ncell" type="number" min="1" value="${prev.n_per_cell || 40}"/></label>
+        <label>分组字段
+          <select id="gf"><option value="group">分组</option></select>
+        </label>
+        <label>分层字段
+          <select id="sf">
+            <option value="stratum" ${sf === "stratum" ? "selected" : ""}>分层（热门 / 最新）</option>
+            <option value="" ${sf === "" ? "selected" : ""}>不分层（每组只抽一批）</option>
+          </select>
+        </label>
+      </div>
+      <p class="hint">日期范围为评论发布时间的起止，留空表示不按日期筛选。勾选下方选项后，范围以外的评论不会进入样本。在源数据与随机种子均不变时，重复抽取将得到同一批样本。</p>
+      <p class="row"><label><input id="wo" type="checkbox" ${woOn ? "checked" : ""}/> 仅抽取该日期范围内的评论</label>
+        <button type="button" class="btn" id="draw">抽取样本</button></p>
+    </div>
+    <div id="sres"></div>`;
+  document.getElementById("draw").onclick = async () => {
+    const ncell = Number(document.getElementById("ncell").value);
+    const ws = document.getElementById("ws").value;
+    const we = document.getElementById("we").value;
+    if (!ncell || ncell < 1) {
+      toast("每组每层抽取条数须为正整数。");
+      return;
+    }
+    if (ws && we && ws > we) {
+      toast("起始日期不能晚于结束日期。");
+      return;
+    }
+    if ((state.coded_n || state.skipped_n) &&
+        !confirm("当前样本已有标注。重新抽样将只保留仍被抽中的评论上的标签，其余标注会删除。确定继续？")) {
+      return;
+    }
+    try {
+      const body = {
+        seed: Number(document.getElementById("seed").value),
+        n_per_cell: ncell,
+        window_start: ws,
+        window_end: we,
+        window_only: document.getElementById("wo").checked,
+        group_field: "group",
+        stratum_field: document.getElementById("sf").value || "__none__",
+      };
+      const r = await api("/api/sample", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      toast(`抽出 ${r.n} 条` + (r.kept_coding ? `，保留原标注 ${r.kept_coding} 条` : ""));
+      await refresh();
+      await showSampleRes(r);
+    } catch (e) { toast(e.message); }
+  };
+  if (state.has_sample) await showSampleRes();
+}
+
+async function showSampleRes(drawn) {
+  const box = document.getElementById("sres");
+  if (!box) return;
+  const data = await api("/api/sample?offset=0&limit=25");
+  const extra = drawn
+    ? `<p class="hint">按分组：${esc(countLine(drawn.groups))}。按分层：${esc(countLine(drawn.strata))}。日期范围内共 ${drawn.window_n ?? "—"} 条。</p>`
+    : "";
+  box.innerHTML = `<div class="card"><p>当前样本共 ${data.total} 条。下表为前 25 条预览。</p>${extra}
+    ${table(data.rows, [["group", "分组"], ["stratum", "分层"], ["comment_date", "日期"], ["like_count", "赞"], ["comment_text", "正文"]])}
+    <p class="row"><button type="button" class="btn" id="tobook">下一步：编码表</button></p></div>`;
+  document.getElementById("tobook").onclick = () => go("codebook");
+}
+
+async function viewCodebook(el) {
+  const book = await api("/api/codebook");
+  state.codebook = book;
+  el.innerHTML = `
+    <div class="card row">
+      <span class="${book.frozen ? "frozen" : "frozen draft"}">${book.frozen ? "已冻结" : "草稿"} · 版本 ${book.version || 1}</span>
+      <button type="button" class="btn ghost" id="tpl" ${book.frozen ? "disabled" : ""}>载入评论模板（10 个主题）</button>
+      <button type="button" class="btn ghost" id="empty" ${book.frozen ? "disabled" : ""}>从空白开始</button>
+      <button type="button" class="btn" id="save" ${book.frozen ? "disabled" : ""}>保存草稿</button>
+      <button type="button" class="btn warn" id="freeze">${book.frozen ? "解冻草稿" : "冻结编码表"}</button>
+    </div>
+    <div class="card">
+      <label>无法编码的判定说明（将显示于编码台）
+        <textarea id="guide">${esc(book.uncodable_guide || "")}</textarea>
+      </label>
+      <p class="hint" style="margin-top:8px">每条评论最多可标注 <input id="maxT" type="number" min="1" max="6" value="${book.max_themes || 3}" style="width:4em" ${book.frozen ? "disabled" : ""}/> 个主题。词典词仅用于本机关键词匹配初标，并非大模型自动标注。冻结后不可增删主题，亦不可更改主题编号与名称，以便已有标注保持对齐。</p>
+    </div>
+    <div class="card" id="themes"></div>
+    <p class="row"><button type="button" class="btn ghost" id="add" ${book.frozen ? "disabled" : ""}>添加主题</button>
+      <button type="button" class="btn" id="tocode">前往编码台</button></p>`;
+
+  const renderThemes = () => {
+    const box = document.getElementById("themes");
+    box.innerHTML = (book.themes || []).map((t, i) => `
+      <div class="theme-ed" data-i="${i}">
+        <div class="grid3">
+          <label>编号<input data-f="id" value="${esc(t.id)}" ${book.frozen ? "disabled" : ""}/></label>
+          <label>名称<input data-f="label" value="${esc(t.label)}" ${book.frozen ? "disabled" : ""}/></label>
+          <label>说明<input data-f="hint" value="${esc(t.hint || "")}" ${book.frozen ? "disabled" : ""}/></label>
+        </div>
+        <label>词典词（以逗号分隔，供本机关键词初标）<input data-f="keywords" value="${esc(t.keywords || "")}" ${book.frozen ? "disabled" : ""}/></label>
+        ${book.frozen || (book.themes || []).length <= 1 ? "" : `<p class="row" style="margin-top:8px"><button type="button" class="btn ghost" data-del>删除此主题</button></p>`}
+      </div>`).join("") || "<p class='hint'>尚未添加主题。请添加主题，或载入评论模板。</p>";
+    box.querySelectorAll("[data-i]").forEach((row) => {
+      row.querySelectorAll("input").forEach((inp) => {
+        inp.oninput = () => { book.themes[Number(row.dataset.i)][inp.dataset.f] = inp.value; };
+      });
+      const del = row.querySelector("[data-del]");
+      if (del) {
+        del.onclick = () => {
+          if ((book.themes || []).length <= 1) {
+            toast("至少保留一个主题。");
+            return;
+          }
+          const t = book.themes[Number(row.dataset.i)];
+          if (!confirm(`确定删除主题「${t.label || t.id}」？已使用该主题的标注将在保存后无法对齐。`)) return;
+          book.themes.splice(Number(row.dataset.i), 1);
+          renderThemes();
+        };
+      }
+    });
+  };
+  renderThemes();
+  const collect = () => {
+    book.uncodable_guide = document.getElementById("guide").value;
+    book.max_themes = Number(document.getElementById("maxT").value) || 3;
+    book.name = document.getElementById("studyName").value || book.name;
+    return book;
+  };
+  document.getElementById("add").onclick = () => {
+    book.themes = book.themes || [];
+    book.themes.push({ id: nextThemeId(book.themes), label: "新主题", hint: "", keywords: "" });
+    renderThemes();
+  };
+  document.getElementById("save").onclick = async () => {
+    try {
+      state.codebook = await api("/api/codebook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: collect() }),
+      });
+      toast("草稿已保存");
+      render();
+    } catch (e) { toast(e.message); }
+  };
+  document.getElementById("tpl").onclick = async () => {
+    if (!confirm("将以默认的 10 个主题模板覆盖当前草稿。确定载入？")) return;
+    await api("/api/codebook/template", { method: "POST" });
+    render();
+  };
+  document.getElementById("empty").onclick = async () => {
+    if (!confirm("将清除现有主题，只保留一个空白主题。确定从空白开始？")) return;
+    await api("/api/codebook/empty", { method: "POST" });
+    render();
+  };
+  document.getElementById("freeze").onclick = async () => {
+    try {
+      if (book.frozen) {
+        if (!confirm("解冻后可修改主题。若增删主题或更改编号，已有标注可能无法对齐。确定解冻？")) return;
+        await api("/api/codebook/unfreeze", { method: "POST" });
+      } else {
+        if (!confirm("冻结后不能增删主题，也不能更改主题编号与名称。编码口径将由此固定。确定冻结？")) return;
+        await api("/api/codebook", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: collect() }),
+        });
+        await api("/api/codebook/freeze", { method: "POST" });
+      }
+      render();
+    } catch (e) { toast(e.message); }
+  };
+  document.getElementById("tocode").onclick = () => go("coding");
+}
+
+async function viewCoding(el) {
+  if (!state.has_sample) {
+    el.innerHTML = `<div class="card">请先在「抽样」中抽出样本，再进行编码。</div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="desk-head">
+      <div class="progress" id="deskProgress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="标注进度"><i style="width:0"></i></div>
+      <div class="filter-bar" id="deskFilters" role="tablist" aria-label="按标注状态筛选"></div>
+      <div class="toolbar" id="deskTools">
+        <button type="button" class="btn" id="autoFill">对未标注作词典初标</button>
+        <button type="button" class="btn ghost" id="autoOver">覆盖已有词典初标</button>
+        <button type="button" class="btn danger" id="clearCoding">清空全部标注</button>
+      </div>
+      <details class="ops-fold" open>
+        <summary>编码步骤与快捷键</summary>
+        <ol class="ops">
+          <li>使用上方状态筛选评论。左侧列表显示符合条件的条目及其标注状态。</li>
+          <li>在列表中选择一条。请先判断该条是否可编码：若无法判断其讨论内容，请勾选「无法编码」后保存。</li>
+          <li>若可编码，请选择主题（数量不超过编码表设定的上限）。点击主题名称以选中或取消；选中后须为其指定情绪（正 / 中 / 负 / 混）。</li>
+          <li>再选择整句情绪。整句情绪指整条评论的总体态度，须与各主题情绪分开判断。</li>
+          <li>点击「保存并下一条」写入结果。「跳过」表示本轮暂不处理，不计入已标注，也不进入报告图表。</li>
+          <li>词典初标仅依据编码表中的词典词在本机做关键词匹配，并非大模型自动标注，须经人工复核后再作为正式结果。</li>
+        </ol>
+        <p class="hint">快捷键：← 上一条；→ 下一条（不保存当前条）；Ctrl + Enter 保存并进入下一条。</p>
+      </details>
+    </div>
+    <div class="desk">
+      <div class="card desk-rail" id="deskRail"></div>
+      <div class="card desk-quote" id="deskQuote"></div>
+      <div class="card desk-form" id="form"></div>
+    </div>`;
+  bindCodingChrome(el);
+  bindCodingKeys();
+  await loadItem(el, codingIndex);
+}
+
+function unbindCodingKeys() {
+  if (codingKeyHandler) {
+    document.removeEventListener("keydown", codingKeyHandler);
+    codingKeyHandler = null;
+  }
+}
+
+function bindCodingKeys() {
+  unbindCodingKeys();
+  codingKeyHandler = (e) => {
+    if (!document.getElementById("form") && !document.querySelector(".filter-bar")) {
+      unbindCodingKeys();
+      return;
+    }
+    const tag = (e.target && e.target.tagName) || "";
+    const typing = tag === "TEXTAREA" || tag === "INPUT" || tag === "SELECT";
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      document.getElementById("save")?.click();
+      return;
+    }
+    if (typing) return;
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      document.getElementById("prev")?.click();
+    }
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      document.getElementById("nextItem")?.click();
+    }
+  };
+  document.addEventListener("keydown", codingKeyHandler);
+}
+
+function statusTag(id, label) {
+  return `<span class="st st-${esc(id)}">${esc(label)}</span>`;
+}
+
+async function loadItem(el, index) {
+  const rail = document.getElementById("deskRail");
+  if (!rail) {
+    await viewCoding(el);
+    return;
+  }
+  const list = await api(`/api/coding/list?filter=${encodeURIComponent(codingFilter)}`);
+  let want = Number(index) || 0;
+  if (list.items.length && !list.items.some((x) => x.index === want)) {
+    want = list.items[0].index;
+  }
+  const data = list.items.length
+    ? await api(`/api/coding/item?index=${want}&filter=all`)
+    : await api(`/api/coding/item?index=0&filter=${encodeURIComponent(codingFilter)}`);
+  currentItem = data;
+  codingIndex = data.empty ? 0 : (data.index || 0);
+  const counts = data.counts || {};
+  const book = data.codebook || {};
+  const pct = data.total ? Math.round(100 * data.coded_n / data.total) : 0;
+  const pos = list.items.findIndex((x) => x.index === codingIndex);
+  const prevIndex = pos > 0 ? list.items[pos - 1].index : null;
+  const nextIndex = pos >= 0 && pos < list.items.length - 1 ? list.items[pos + 1].index : null;
+
+  const progress = document.getElementById("deskProgress");
+  if (progress) {
+    progress.setAttribute("aria-valuenow", String(pct));
+    progress.innerHTML = `<i style="width:${pct}%"></i>`;
+  }
+  document.getElementById("deskFilters").innerHTML = CODING_FILTERS.map(([id, lab]) => {
+    const n = counts[id] != null ? counts[id] : "";
+    return `<button type="button" class="chip ${codingFilter === id ? "on" : ""}" data-filter="${id}" aria-pressed="${codingFilter === id ? "true" : "false"}">${lab} ${n}</button>`;
+  }).join("");
+
+  const filtLab = (CODING_FILTERS.find((x) => x[0] === codingFilter) || [codingFilter, codingFilter])[1];
+  rail.innerHTML = `
+    <div class="rail-head">
+      <div>
+        <strong>${esc(list.title || filtLab)}</strong>
+        <span class="hint">${list.total} 条</span>
+      </div>
+    </div>
+    <div class="clist" id="clist">
+      ${list.items.length ? list.items.map((it) => `
+        <button type="button" class="clist-item ${it.index === codingIndex ? "on" : ""}" data-list-index="${it.index}">
+          <div class="clist-top">
+            ${statusTag(it.status, it.status_label)}
+            ${it.emotion_label ? `<span class="st st-emo">${esc(it.emotion_label)}</span>` : ""}
+            <span class="clist-meta">${esc(it.group)} · ${esc(stratumText(it.stratum))}</span>
+          </div>
+          <div class="clist-text">${esc(it.text.slice(0, 90))}${it.text.length > 90 ? "…" : ""}</div>
+          ${it.theme_labels && it.theme_labels.length ? `<div class="clist-themes">${it.theme_labels.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div>` : ""}
+        </button>`).join("") : `<p class="hint">当前筛选条件下没有评论。请改选上方状态。</p>`}
+    </div>`;
+  const onItem = rail.querySelector(".clist-item.on");
+  if (onItem) onItem.scrollIntoView({ block: "nearest" });
+
+  const quote = document.getElementById("deskQuote");
+  const form = document.getElementById("form");
+  if (!list.items.length || data.empty || !data.row) {
+    quote.innerHTML = `<p class="hint">尚未选中评论。</p>`;
+    form.innerHTML = `<p class="hint">请从左侧列表选择一条评论，开始编码。</p>`;
+    return;
+  }
+
+  const row = data.row;
+  const c = data.coding || { uncodable: false, themes: [], overall_emotion: "", memo: "" };
+  const selected = new Map((c.themes || []).map((t) => [t.id, t.emotion]));
+  const itemStatus = list.items.find((x) => x.index === codingIndex);
+  quote.innerHTML = `
+    <p class="meta">
+      ${itemStatus ? statusTag(itemStatus.status, itemStatus.status_label) : ""}
+      ${esc(row.group || "未分组")} · ${esc(stratumText(row.stratum))} · ${esc(row.comment_date || "无日期")} · 赞 ${esc(row.like_count)} · 回 ${esc(row.reply_count)}
+      · 列表 ${pos + 1} / ${list.total}
+    </p>
+    <p class="meta">${esc(row.source_title || row.source_id || "")}
+      · ${book.frozen ? "编码表已冻结" : "编码表为草稿"}</p>
+    <div class="quote">${esc(row.comment_text)}</div>`;
+
+  form.innerHTML = `
+    <p><label><input type="checkbox" id="unc" ${c.uncodable ? "checked" : ""}/> 无法编码</label></p>
+    <p class="hint">${esc(book.uncodable_guide || "若评论无法判断其所讨论的内容，请勾选此项后保存。")}</p>
+    <div id="able">
+      <p>主题（最多 ${book.max_themes || 3} 个。点击主题名称以选中或取消；选中后须为其指定情绪）</p>
+      <div id="themes"></div>
+      <p style="margin-top:10px">整句情绪（必填；指整条评论的总体态度，而非各主题情绪的合计）</p>
+      <div id="emo"></div>
+    </div>
+    <p>备注（可选）</p>
+    <textarea id="memo">${esc(c.memo || "")}</textarea>
+    <p class="row" style="margin-top:12px">
+      <button type="button" class="btn ghost" id="prev" ${prevIndex == null ? "disabled" : ""}>上一条</button>
+      <button type="button" class="btn ghost" id="nextItem" ${nextIndex == null ? "disabled" : ""}>下一条</button>
+      <button type="button" class="btn ghost" id="skip">跳过</button>
+      <button type="button" class="btn" id="save">保存并下一条</button>
+    </p>`;
+
+  const themesEl = document.getElementById("themes");
+  const maxT = Number(book.max_themes || 3);
+  themesEl.innerHTML = (book.themes || []).map((t) => {
+    const on = selected.has(t.id);
+    const emo = selected.get(t.id);
+    return `<div class="chip ${on ? "on" : ""}" data-id="${esc(t.id)}" title="${esc(t.hint || t.label)}">
+      <span>${esc(t.label)}</span>
+      <span class="theme-emo">${EMO.map(([k, lab]) =>
+        `<button type="button" data-e="${k}" class="${on && emo === k ? "on" : ""}">${lab[0]}</button>`
+      ).join("")}</span>
+    </div><div class="hint theme-hint">${esc(t.hint || "")}</div>`;
+  }).join("");
+
+  const emoEl = document.getElementById("emo");
+  emoEl.innerHTML = EMO.map(([k, lab]) =>
+    `<span class="chip ${c.overall_emotion === k ? "on" : ""}" data-emo="${k}">${lab}</span>`
+  ).join("");
+  emoEl.querySelectorAll(".chip").forEach((ch) => {
+    ch.onclick = () => {
+      emoEl.querySelectorAll(".chip").forEach((x) => x.classList.remove("on"));
+      ch.classList.add("on");
+    };
+  });
+
+  const setThemeChip = (ch, on, emotion) => {
+    ch.classList.toggle("on", on);
+    ch.querySelectorAll("button").forEach((b) => {
+      b.classList.toggle("on", !!(on && emotion && b.dataset.e === emotion));
+    });
+  };
+  themesEl.querySelectorAll(".chip").forEach((ch) => {
+    ch.addEventListener("click", (e) => {
+      const emoBtn = e.target.closest ? e.target.closest(".theme-emo button") : null;
+      if (emoBtn) {
+        if (!ch.classList.contains("on") && themesEl.querySelectorAll(".chip.on").length >= maxT) {
+          toast(`每条评论最多选择 ${maxT} 个主题。`);
+          return;
+        }
+        setThemeChip(ch, true, emoBtn.dataset.e);
+        return;
+      }
+      if (ch.classList.contains("on")) {
+        setThemeChip(ch, false);
+        return;
+      }
+      if (themesEl.querySelectorAll(".chip.on").length >= maxT) {
+        toast(`每条评论最多选择 ${maxT} 个主题。`);
+        return;
+      }
+      setThemeChip(ch, true);
+    });
+  });
+
+  const able = document.getElementById("able");
+  const unc = document.getElementById("unc");
+  const syncUnc = () => {
+    able.style.opacity = unc.checked ? .35 : 1;
+    able.style.pointerEvents = unc.checked ? "none" : "auto";
+  };
+  unc.onchange = syncUnc;
+  syncUnc();
+
+  document.getElementById("prev").onclick = () => {
+    if (prevIndex == null) return;
+    loadItem(el, prevIndex);
+  };
+  document.getElementById("nextItem").onclick = () => {
+    if (nextIndex == null) return;
+    loadItem(el, nextIndex);
+  };
+  const goAfter = async () => {
+    await refresh();
+    if (nextIndex == null) toast("已保存。当前筛选列表已到最后一条。");
+    await loadItem(el, nextIndex != null ? nextIndex : codingIndex);
+  };
+  document.getElementById("save").onclick = async () => {
+    const themes = [];
+    let missingThemeEmo = false;
+    themesEl.querySelectorAll(".chip.on").forEach((ch) => {
+      const emoBtn = ch.querySelector("button.on");
+      if (!emoBtn) { missingThemeEmo = true; return; }
+      themes.push({ id: ch.dataset.id, emotion: emoBtn.dataset.e });
+    });
+    const overall = emoEl.querySelector(".chip.on")?.dataset.emo || "";
+    if (!unc.checked && !themes.length && !missingThemeEmo) {
+      toast("请至少选择一个主题，或勾选「无法编码」。");
+      return;
+    }
+    if (!unc.checked && missingThemeEmo) {
+      toast("已选主题须指定情绪（正 / 中 / 负 / 混）。");
+      return;
+    }
+    if (!unc.checked && !overall) {
+      toast("请选择整句情绪后再保存。");
+      return;
+    }
+    try {
+      await api("/api/coding/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          comment_id: row.comment_id,
+          uncodable: unc.checked,
+          themes,
+          overall_emotion: overall,
+          memo: document.getElementById("memo").value,
+        }),
+      });
+      await goAfter();
+    } catch (e) { toast(e.message); }
+  };
+  document.getElementById("skip").onclick = async () => {
+    try {
+      await api("/api/coding/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          comment_id: row.comment_id,
+          skip: true,
+          memo: document.getElementById("memo").value,
+        }),
+      });
+      await goAfter();
+    } catch (e) { toast(e.message); }
+  };
+}
+
+function bindCodingChrome(el) {
+  if (el.dataset.deskBound === "1") return;
+  el.dataset.deskBound = "1";
+  const runAuto = async (overwrite) => {
+    try {
+      const r = await api("/api/coding/auto", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ overwrite_auto: overwrite }),
+      });
+      toast(`词典初标完成：写入 ${r.n} 条，已有记录跳过 ${r.skipped} 条，未命中 ${r.no_hit} 条，其中判定无法编码 ${r.uncodable_n} 条`);
+      await refresh();
+      await loadItem(el, codingIndex);
+    } catch (e) { toast(e.message); }
+  };
+  el.addEventListener("click", (e) => {
+    if (!document.getElementById("deskRail")) return;
+    const filterBtn = e.target.closest && e.target.closest(".filter-bar [data-filter]");
+    if (filterBtn) {
+      codingFilter = filterBtn.dataset.filter;
+      loadItem(el, 0);
+      return;
+    }
+    const listBtn = e.target.closest && e.target.closest("[data-list-index]");
+    if (listBtn) {
+      loadItem(el, Number(listBtn.dataset.listIndex));
+      return;
+    }
+    if (e.target.id === "autoFill" || (e.target.closest && e.target.closest("#autoFill"))) {
+      if (!confirm("将对尚未保存过的样本做本机关键词初标。已标注、已跳过及经人工保存的条目不会被改写。确定开始？")) return;
+      runAuto(false);
+      return;
+    }
+    if (e.target.id === "autoOver" || (e.target.closest && e.target.closest("#autoOver"))) {
+      if (!confirm("将重新生成所有「词典初标」记录。经人工保存的条目不会被改写。确定覆盖？")) return;
+      runAuto(true);
+      return;
+    }
+    if (e.target.id === "clearCoding" || (e.target.closest && e.target.closest("#clearCoding"))) {
+      (async () => {
+        if (!confirm("将删除全部已标注、无法编码、已跳过与词典初标记录。样本与编码表予以保留。确定清空？")) return;
+        try {
+          const r = await api("/api/coding/clear", { method: "POST" });
+          toast(`已清空 ${r.cleared} 条标注`);
+          await refresh();
+          await loadItem(el, codingIndex);
+        } catch (err) { toast(err.message); }
+      })();
+    }
+  });
+}
+
+function openReportPrint(html) {
+  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const w = window.open(url, "_blank");
+  if (!w) {
+    URL.revokeObjectURL(url);
+    toast("请允许弹出窗口，以便导出 PDF。");
+    return;
+  }
+  const go = () => {
+    try { w.focus(); w.print(); } catch (_) {}
+  };
+  w.onload = go;
+  setTimeout(go, 700);
+  toast("请在打印对话框中选择「另存为 PDF」。");
+}
+
+function printReportFrame(iframe) {
+  const doc = iframe && iframe.contentDocument;
+  const win = iframe && iframe.contentWindow;
+  if (!doc || !win || !doc.body || !doc.body.childElementCount) return false;
+  try {
+    win.focus();
+    win.print();
+    toast("请在打印对话框中选择「另存为 PDF」。");
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+async function viewReport(el) {
+  if (!state.has_sample) {
+    el.innerHTML = `<div class="card">请先完成抽样，并在编码台完成若干条标注后，再查看报告。</div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="rpt-bar">
+      <button type="button" class="btn" id="dl" disabled>生成并下载 PDF 报告</button>
+      <span class="hint">将打开系统打印对话框。请选择「另存为 PDF」或「Microsoft Print to PDF」。报告在本机生成，数据不会上传。</span>
+    </div>
+    <iframe class="rpt-frame" id="rptFrame" title="编码报告预览"></iframe>`;
+  const iframe = document.getElementById("rptFrame");
+  const dl = document.getElementById("dl");
+  try {
+    const html = await api("/api/report.html");
+    dl.disabled = true;
+    const enable = () => { dl.disabled = false; };
+    iframe.onload = enable;
+    setTimeout(enable, 1600);
+    iframe.srcdoc = html;
+    dl.onclick = () => {
+      if (printReportFrame(iframe)) return;
+      openReportPrint(html);
+    };
+  } catch (e) {
+    iframe.replaceWith(Object.assign(document.createElement("div"), {
+      className: "card",
+      textContent: e.message,
+    }));
+    dl.onclick = () => toast(e.message);
+  }
+}
+
+function bindChartTip() {
+  if (bindChartTip.done) return;
+  bindChartTip.done = true;
+  let tip = document.getElementById("chartTip");
+  if (!tip) {
+    tip = document.createElement("div");
+    tip.id = "chartTip";
+    document.body.appendChild(tip);
+  }
+  const findTip = (el) => {
+    while (el && el.nodeType === 1) {
+      if (el.getAttribute && el.getAttribute("data-tip")) return el;
+      el = el.parentElement || el.parentNode;
+    }
+    return null;
+  };
+  const hide = () => { tip.style.display = "none"; };
+  document.addEventListener("pointermove", (e) => {
+    const node = findTip(e.target);
+    if (!node) { hide(); return; }
+    tip.textContent = node.getAttribute("data-tip") || "";
+    tip.style.display = "block";
+    let x = e.clientX + 12;
+    let y = e.clientY + 16;
+    const tw = tip.offsetWidth;
+    const th = tip.offsetHeight;
+    if (x + tw > window.innerWidth - 8) x = e.clientX - tw - 12;
+    if (y + th > window.innerHeight - 8) y = e.clientY - th - 10;
+    tip.style.left = x + "px";
+    tip.style.top = y + "px";
+  });
+  document.addEventListener("scroll", hide, true);
+}
+
+bindChartTip();
+render().catch((e) => toast(e.message));
+
+  </script>
+</body>
+</html>
